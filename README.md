@@ -1,36 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend Project Overview
 
-## Getting Started
+![Project Banner](https://github.com/user-attachments/assets/9754d095-acc8-491f-a201-cc9e0286c043)
 
-First, run the development server:
+This project is the **frontend** built with **Next.js**.  
+It provides the UI for the study, learning, and progress features of our application.
+
+---
+
+## 🛠 Tech Stack
+
+- **Frontend Framework:** [Next.js](https://nextjs.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **State Management:** React context
+- **API Requests:** Fetch API
+
+---
+
+## 🌐 Available Routes
+
+| Route                         | Description           |
+| ----------------------------- | --------------------- |
+| `/`                           | Landing / Home page   |
+| `/dashboard/study`            | Study section page    |
+| `/dashboard/study/flashcard`  | Flashcard page        |
+| `/dashboard/learning`         | Learning section page |
+| `/dashboard/learning/puzzles` | Puzzles page          |
+| `/dashboard/progress`         | Progress section page |
+| `/dashboard/progress/roadmap` | Roadmap page          |
+| `/dashboard/notes`            | Notes section page    |
+| `/dashboard/settings`         | User settings page    |
+| `/login`                      | Login screen          |
+| `/signup`                     | Sign up screen        |
+
+---
+
+## ⚙️ Environment Setup
+
+### 1. Clone the repository
 
 ```bash
+git clone https://github.com/Mikadifo/CognidyFrontend.git
+cd CognidyFrontend
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+# or
+yarn install
+```
+
+### 3. Environment Variables
+
+Create a `.env.local` file at the root of the project. Example:
+
+```ini
+NEXT_PUBLIC_API_URL=http://localhost:5000
+```
+
+_(Ask a team member for the correct API URL and any secret keys.)_
+
+---
+
+## ▶️ Running the Project
+
+```bash
+# Run development server
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.  
+The page will reload if you make edits.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 📦 Build & Start for Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Build the project
+npm run build
+# or
+yarn build
 
-## Learn More
+# Start the production server
+npm start
+# or
+yarn start
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🌱 Development Workflow
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Each task should be developed in a **new branch** based off the `dev` branch using naming conventions:
 
-## Deploy on Vercel
+  - Features → `feature/<name>`  
+    Example: `feature/flashcard-ui`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+  - Bug fixes → `fix/<name>`  
+    Example: `fix/login-validation`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Once a task is completed, create a **Pull Request (PR)**.
+  - The rest of the team will **test it before merging** into `main`.
+
+---
+
+## ✅ Contribution Guidelines
+
+1. Always create a **new branch** for each task.
+2. Follow the branch naming convention (`feature/*`, `fix/*`).
+3. Push your changes and create a **Pull Request**.
+4. Wait for teammates to test your PR before merging.
+5. Keep commits **clear and descriptive**.
+6. Keep `.env.local` and sensitive files out of version control.
+
+---
+
+👥 _Happy coding! Keep branches small and PRs clear for easier review._
