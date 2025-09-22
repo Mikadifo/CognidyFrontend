@@ -10,6 +10,8 @@
   --color-cyan: #0086eb;
   --color-white: #f2f3f9;
   --color-dark: #020712;
+  --color-dark-08: rgba(2, 7, 18, 0.08);
+  --color-dark-88: rgba(2, 7, 18, 0.88);
   --color-red: #c60024;
   --color-green: #00af7f;
   --color-yellow: #ffbf52;
