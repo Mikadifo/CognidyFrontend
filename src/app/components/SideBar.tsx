@@ -11,12 +11,15 @@ import NotesIcon from "./../assets/icons/notes.svg";
 import SettingsIcon from "./../assets/icons/settings.svg";
 
 import { Button } from "./Button";
+import { usePathname } from "next/navigation";
 
 interface SideBarProps {
   className?: string;
 }
 
 export const SideBar: FC<SideBarProps> = ({ className }) => {
+  const pathname = usePathname();
+
   const onLogout = () => {
     console.log("TODO: Logout");
   };
@@ -34,31 +37,31 @@ export const SideBar: FC<SideBarProps> = ({ className }) => {
           <Item
             icon={BookIcon}
             label="Study"
-            active={true}
+            active={pathname.startsWith("/dashboard/study")}
             href="/dashboard/study"
           />
           <Item
             icon={LearningIcon}
             label="Learning"
-            active={false}
+            active={pathname.startsWith("/dashboard/learning")}
             href="/dashboard/learning"
           />
           <Item
             icon={ProgressIcon}
             label="Progress"
-            active={false}
+            active={pathname.startsWith("/dashboard/progress")}
             href="/dashboard/progress"
           />
           <Item
             icon={NotesIcon}
             label="Notes"
-            active={false}
+            active={pathname.startsWith("/dashboard/notes")}
             href="/dashboard/notes"
           />
           <Item
             icon={SettingsIcon}
             label="Settings"
-            active={false}
+            active={pathname.startsWith("/dashboard/settings")}
             href="/dashboard/settings"
           />
         </ul>
