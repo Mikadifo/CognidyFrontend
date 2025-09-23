@@ -31,25 +31,35 @@ export const SideBar: FC<SideBarProps> = ({ className }) => {
 
       <div className="flex flex-col h-full justify-between">
         <ul>
-          <Item icon={BookIcon} label="Study" active={true} href="/study" />
+          <Item
+            icon={BookIcon}
+            label="Study"
+            active={true}
+            href="/dashboard/study"
+          />
           <Item
             icon={LearningIcon}
             label="Learning"
             active={false}
-            href="/learning"
+            href="/dashboard/learning"
           />
           <Item
             icon={ProgressIcon}
             label="Progress"
             active={false}
-            href="/progress"
+            href="/dashboard/progress"
           />
-          <Item icon={NotesIcon} label="Notes" active={false} href="/notes" />
+          <Item
+            icon={NotesIcon}
+            label="Notes"
+            active={false}
+            href="/dashboard/notes"
+          />
           <Item
             icon={SettingsIcon}
             label="Settings"
             active={false}
-            href="/settings"
+            href="/dashboard/settings"
           />
         </ul>
 
