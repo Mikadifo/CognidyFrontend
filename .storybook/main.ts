@@ -2,7 +2,7 @@ import type { StorybookConfig } from "@storybook/nextjs";
 
 const config: StorybookConfig = {
   stories: ["../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
-  addons: [],
+  addons: ["@storybook/addon-docs"],
   framework: {
     name: "@storybook/nextjs",
     options: {},
@@ -30,4 +30,3 @@ const config: StorybookConfig = {
   },
 };
 export default config;
-
