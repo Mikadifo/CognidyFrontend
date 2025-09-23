@@ -106,6 +106,74 @@ yarn start
 
 ---
 
+## UI Theme
+
+Our project uses a custom UI theme with Tailwind CSS v4, which includes specific colors and fonts to maintain consistency throughout the application. Below is an overview of the main theme settings and examples on how to use them.
+
+## Colors
+
+We have defined the following main colors in Tailwind:
+
+- brand: #1e4dd8
+- cyan: #0086eb
+- white: #f2f3f9
+- dark: #020712
+- red: #c60024
+- green: #00af7f
+- yellow: #ffbf52
+
+### Opacity Variants
+
+- brand-84: rgba(30, 77, 216, 0.84)
+- dark-08: rgba(2, 7, 18, 0.08)
+- dark-16: rgba(2, 7, 18, 0.16)
+- dark-88: rgba(2, 7, 18, 0.88)
+
+### Example Usage in Tailwind
+
+```html
+<button class="bg-brand text-white">Primary Button</button>
+<div class="bg-red text-white p-4">Error Alert</div>
+<div class="bg-brand/84 p-2">Overlay Example</div>
+```
+
+> If you need a specific opacity variant that is not included in the `global.css` file, then add it there.
+
+## Fonts
+
+We are using two primary fonts in the project:
+
+- Poppins (mainly for headings)
+- Nunito (mainly for body text)
+
+### Example Usage in Tailwind
+
+```html
+<h1 class="font-poppins text-2xl">Heading Example</h1>
+<p class="font-nunito text-base">Body text example</p>
+```
+
+## Storybook
+
+We are using **Storybook** to document and maintain reusable components. Storybook allows us to visually test components in isolation and provides an interactive way to explore the UI elements.
+
+This ensures that all components adhere to the UI theme and can be reused consistently across the project.
+
+To run the storybook run:
+
+```bash
+npm run storybook
+```
+
+> If you add a new reusable component, make sure to add that to the story book
+
+### Custom Gradients
+
+Theme colors are already in tailwind, so you can use them to create our two custom gradients.
+
+- Gradient 1 (simplified to 3 stops/colors): `bg-linear-to-br from-brand via-cyan to-green`
+- Gradient 2 (blue to black): `bg-linear-to-br from-brand to-dark`
+
 ## ✅ Contribution Guidelines
 
 1. Always create a **new branch** for each task.
