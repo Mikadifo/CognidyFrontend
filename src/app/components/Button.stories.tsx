@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Button } from "./Button";
 import ArrowIcon from "./../assets/icons/arrow.svg";
 import BarChartIcon from "./../assets/icons/barChart.svg";
-import { Description } from "@storybook/addon-docs/blocks";
 
 const icons = {
   None: undefined,
@@ -64,13 +63,6 @@ type Story = StoryObj<typeof Button>;
 export const Filled: Story = {
   args: {
     children: "Button",
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: "Another description on the story, overriding the comments",
-      },
-    },
   },
 };
 
