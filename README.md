@@ -7,6 +7,12 @@ It provides the UI for the study, learning, and progress features of our applica
 
 ---
 
+## Project Overview
+
+Cognidy is a student helper app that helps users create, organize, and learn notes. Promotes critical thinking so a user can actually learn and retain what they are studying.
+
+---
+
 ## 🛠 Tech Stack
 
 - **Frontend Framework:** [Next.js](https://nextjs.org/)
