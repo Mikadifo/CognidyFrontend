@@ -3,8 +3,6 @@ export const metadata = {
   description: "Learning section",
 };
 
-interface LearningProps {}
-
-export default function Learning({}: LearningProps) {
+export default function Learning() {
   return <div>Learning</div>;
 }

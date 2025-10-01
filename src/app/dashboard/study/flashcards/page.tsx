@@ -3,8 +3,6 @@ export const metadata = {
   description: "Flashcards section",
 };
 
-interface FlashcardsProps {}
-
-export default function Flashcards({}: FlashcardsProps) {
+export default function Flashcards() {
   return <div>Flashcards</div>;
 }

@@ -3,8 +3,6 @@ export const metadata = {
   description: "Settings section",
 };
 
-interface SettingsProps {}
-
-export default function Settings({}: SettingsProps) {
+export default function Settings() {
   return <div>Settings</div>;
 }
