@@ -14,6 +14,7 @@ interface BaseButtonProps {
   icon?: ComponentType<SVGProps<SVGSVGElement>>;
   variant?: "filled" | "outline";
   href?: string;
+  disabled?: boolean;
 }
 
 interface asButtonProps
@@ -37,10 +38,11 @@ export const Button: FC<ButtonProps> = ({
   className,
   icon: Icon,
   variant = "filled",
+  disabled = false,
   href,
   ...props
 }) => {
-  const styles = `${className} font-poppins font-normal text-base px-6 py-3 rounded-sm ${variant === "filled" ? "bg-dark text-white hover:opacity-80" : "border border-dark text-dark hover:bg-dark-08"} cursor-pointer ${Icon && "flex gap-2 items-center"}`;
+  const styles = `${className} font-poppins font-normal text-base px-6 py-3 rounded-sm ${variant === "filled" ? `bg-dark text-white ${disabled ? "" : "hover:opacity-80"}` : `border border-dark text-dark ${disabled ? "bg-dark-08" : "hover:bg-dark-08"}`} ${Icon && "flex gap-2 items-center"} ${disabled ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`;
   const children = (
     <>
       {Icon && <Icon className="size-5" />}
@@ -54,6 +56,11 @@ export const Button: FC<ButtonProps> = ({
         {...(props as AnchorHTMLAttributes<HTMLAnchorElement>)}
         href={href}
         className={styles}
+        onClick={(evt) => {
+          if (disabled) {
+            evt.preventDefault();
+          }
+        }}
       >
         {children}
       </Link>
@@ -63,6 +70,7 @@ export const Button: FC<ButtonProps> = ({
       <button
         {...(props as ButtonHTMLAttributes<HTMLButtonElement>)}
         className={styles}
+        disabled={disabled}
       >
         {children}
       </button>
