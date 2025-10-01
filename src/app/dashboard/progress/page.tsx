@@ -38,11 +38,13 @@ export default function Progress({}: ProgressProps) {
             label="Streaks"
             icon={StreaksIcon}
             href="progress/streaks"
+            disabled
           />
           <SectionOption
             label="Trends"
             icon={TrendsIcon}
             href="progress/trends"
+            disabled
           />
         </div>
       </div>
