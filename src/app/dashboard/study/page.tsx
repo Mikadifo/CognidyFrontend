@@ -3,8 +3,6 @@ export const metadata = {
   description: "Study section",
 };
 
-interface StudyProps {}
-
-export default function Study({}: StudyProps) {
+export default function Study() {
   return <div>Study</div>;
 }

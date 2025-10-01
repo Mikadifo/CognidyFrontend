@@ -10,9 +10,7 @@ export const metadata = {
   description: "Progress section",
 };
 
-interface ProgressProps {}
-
-export default function Progress({}: ProgressProps) {
+export default function Progress() {
   return (
     <div className="p-16 flex flex-col gap-8 w-full">
       <DashboardHeader

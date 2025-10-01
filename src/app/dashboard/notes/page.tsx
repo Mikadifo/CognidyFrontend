@@ -3,8 +3,6 @@ export const metadata = {
   description: "Notes section",
 };
 
-interface NotesProps {}
-
-export default function Notes({}: NotesProps) {
+export default function Notes() {
   return <div>Notes</div>;
 }

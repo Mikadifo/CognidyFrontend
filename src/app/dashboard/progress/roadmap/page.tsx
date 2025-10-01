@@ -3,8 +3,6 @@ export const metadata = {
   description: "Roadmap section",
 };
 
-interface RoadmapProps {}
-
-export default function Roadmap({}: RoadmapProps) {
+export default function Roadmap() {
   return <div>Roadmap</div>;
 }

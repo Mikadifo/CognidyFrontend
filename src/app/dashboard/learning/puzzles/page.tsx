@@ -3,8 +3,6 @@ export const metadata = {
   description: "Puzzles section",
 };
 
-interface PuzzlesProps {}
-
-export default function Puzzles({}: PuzzlesProps) {
+export default function Puzzles() {
   return <div>Puzzles</div>;
 }
