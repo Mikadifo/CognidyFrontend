@@ -114,7 +114,11 @@ yarn start
     Example: `fix/login-validation`
 
 - Once a task is completed, create a **Pull Request (PR)**.
-  - The rest of the team will **test it before merging** into `main`.
+- The rest of the team will **test it before merging** into `dev`.
+- Once we have a solid version working we might consider updating `master` by a PR from `dev`
+
+> [!IMPORTANT]
+> Do not push or create PRs to master, since it will trigger a Vercel deploy and might break the current working version.
 
 ---
 
@@ -146,7 +150,7 @@ We have defined the following main colors in Tailwind:
 ```html
 <button class="bg-brand text-white">Primary Button</button>
 <div class="bg-red text-white p-4">Error Alert</div>
-<div class="bg-brand/84 p-2">Overlay Example</div>
+<div class="bg-brand-84 p-2">Overlay Example</div>
 ```
 
 > If you need a specific opacity variant that is not included in the `global.css` file, then add it there.
