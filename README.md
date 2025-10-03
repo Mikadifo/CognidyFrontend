@@ -57,6 +57,12 @@ npm install
 yarn install
 ```
 
+In case you get an error while installing, try the following:
+
+```
+npm install --legacy-peer-deps
+```
+
 ### 3. Environment Variables
 
 Create a `.env.local` file at the root of the project. Example:
