@@ -1,7 +1,7 @@
 import Illustration from "@/app/assets/imgs/heroIllustration.svg";
 import { Button } from "../Button";
 
-export default function () {
+export default function Hero() {
   return (
     <div className="w-[1184px] my-32 flex gap-32 mx-auto justify-center">
       <div className="flex flex-col gap-8 text-dark">
