@@ -14,7 +14,11 @@ export default function CTA() {
             Upload your notes and get flashcards, quizzes, and study plans made
             just for you.
           </p>
-          <Button className="w-fit bg-white !text-dark">
+          <Button
+            as="a"
+            href="/dashboard"
+            className="w-fit bg-white !text-dark"
+          >
             Get Started Free
           </Button>
         </div>

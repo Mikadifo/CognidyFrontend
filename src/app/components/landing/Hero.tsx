@@ -12,7 +12,9 @@ export default function Hero() {
           Upload your class notes and instantly get flashcards, puzzles, and
           personalized study roadmaps
         </p>
-        <Button className="w-fit">Start Learning Free</Button>
+        <Button as="a" href="/dashboard" className="w-fit">
+          Start Learning Free
+        </Button>
       </div>
 
       <Illustration className="h-[486px]" />
