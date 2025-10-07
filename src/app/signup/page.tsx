@@ -2,135 +2,102 @@
 import React, { useState } from "react";
 
 export default function SignupPage() {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: form.name,
+          email: form.email,
+          password: form.password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Signup successful!");
+        console.log("User created:", data);
+      } else {
+        alert(data.message || "Signup failed. Try again.");
+      }
+    } catch (err) {
+      console.error("Error signing up:", err);
+      alert("Something went wrong. Please try again.");
+    }
+  };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        background: "linear-gradient(135deg, #0072ff 0%, #00c6ff 100%)",
-      }}
-    >
-      <div
-        style={{
-          background: "#fff",
-          padding: "40px",
-          borderRadius: "12px",
-          boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
-          width: "350px",
-          textAlign: "center",
-        }}
-      >
-        <img
-          src="/logo.png"
-          alt="Cognidy Logo"
-          style={{ width: "60px", margin: "0 auto 15px auto", display: "block" }}
-        />
-        <h2 style={{ marginBottom: "20px", fontSize: "22px", fontWeight: "bold", color: "#000" }}>
-          Welcome!
-        </h2>
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0f1c] px-4">
+      <div className="bg-[#111827] text-white p-8 rounded-2xl shadow-2xl w-full max-w-md border border-cyan-700/30">
+        <h1 className="text-3xl font-semibold mb-6 text-center text-cyan-400">
+          Create an Account ✨
+        </h1>
 
-        <form>
-          <div style={{ textAlign: "left", marginBottom: "15px" }}>
-            <label style={{ fontWeight: "500", fontSize: "14px", color: "#000",
-}}>Username</label>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm mb-2 text-gray-300">Full Name</label>
             <input
+              name="name"
               type="text"
-              placeholder="Choose a username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "10px",
-                border: "1px solid #ccc",
-                borderRadius: "6px",
-                marginTop: "5px",
-              }}
+              value={form.name}
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 bg-[#1f2937] border border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-400 outline-none"
+              placeholder="John Doe"
             />
           </div>
 
-          <div style={{ textAlign: "left", marginBottom: "15px" }}>
-            <label style={{ fontWeight: "500", fontSize: "14px", color: "#000",
-}}>Email</label>
+          <div>
+            <label className="block text-sm mb-2 text-gray-300">Email</label>
             <input
+              name="email"
               type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "10px",
-                border: "1px solid #ccc",
-                borderRadius: "6px",
-                marginTop: "5px",
-              }}
+              value={form.email}
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 bg-[#1f2937] border border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-400 outline-none"
+              placeholder="you@example.com"
             />
           </div>
 
-          <div style={{ textAlign: "left", marginBottom: "20px" }}>
-            <label style={{ fontWeight: "500", fontSize: "14px", color: "#000",
-}}>Password</label>
+          <div>
+            <label className="block text-sm mb-2 text-gray-300">Password</label>
             <input
+              name="password"
               type="password"
-              placeholder="Enter a password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "10px",
-                border: "1px solid #ccc",
-                borderRadius: "6px",
-                marginTop: "5px",
-              }}
+              value={form.password}
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 bg-[#1f2937] border border-gray-700 rounded-lg focus:ring-2 focus:ring-cyan-400 outline-none"
+              placeholder="••••••••"
             />
           </div>
 
           <button
             type="submit"
-            style={{
-              width: "100%",
-              padding: "12px",
-              background: "#0072ff",
-              color: "#fff",
-              border: "none",
-              borderRadius: "6px",
-              fontSize: "16px",
-              cursor: "pointer",
-              marginBottom: "15px",
-            }}
+            className="w-full bg-cyan-500 hover:bg-cyan-600 transition-colors text-white py-2 rounded-lg font-semibold shadow-md"
           >
-            Sign Up →
+            Sign Up
           </button>
         </form>
 
-        <p style={{ fontSize: "14px" }}>
+        <p className="text-sm text-gray-400 mt-6 text-center">
           Already have an account?{" "}
-          <a href="/login" style={{ color: "#0072ff", fontWeight: "bold" }}>
-            Log In
+          <a href="/login" className="text-cyan-400 hover:underline">
+            Log in
           </a>
         </p>
-
-        <hr style={{ margin: "20px 0" }} />
-
-        <button
-          style={{
-            width: "100%",
-            padding: "12px",
-            background: "#fff",
-            border: "1px solid #ccc",
-            borderRadius: "6px",
-            fontSize: "16px",
-            cursor: "pointer",
-          }}
-        >
-          Continue as Guest
-        </button>
       </div>
     </div>
   );
 }
+
