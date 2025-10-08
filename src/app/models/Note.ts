@@ -1,4 +1,6 @@
 export interface Note {
-  id: number;
-  source: string;
+  _id: string;
+  created_at: string;
+  filename: string;
+  hash: string;
 }
