@@ -1,5 +1,6 @@
 "use client";
 
+import { RoadmapGoalForm } from "@/app/components/RoadmapGoalForm";
 import { RoadmapGoals } from "@/app/components/RoadmapGoals";
 import RoadmapGoal from "@/app/models/RoadmapGoal";
 import { FC, useEffect, useState } from "react";
@@ -62,8 +63,9 @@ export const RoadmapController: FC = () => {
   }, []);
 
   return (
-    <>
+    <div className="flex gap-16">
       <RoadmapGoals goals={goals} setGoals={setGoals} />
-    </>
+      <RoadmapGoalForm goals={goals} setGoals={setGoals} />
+    </div>
   );
 };
