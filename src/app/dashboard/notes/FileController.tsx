@@ -5,7 +5,7 @@ import React, { FC, useEffect, useState } from "react";
 import FileUpload from "@/app/components/FileUpload";
 import { Note } from "@/app/models/Note";
 import { NoteItems } from "@/app/components/NoteItems";
-import { BASE_API } from "@/app/constants";
+import { AUTH_TOKEN, BASE_API } from "@/app/constants";
 
 export const FileController: FC = () => {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -17,8 +17,7 @@ export const FileController: FC = () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1OTg4OTk0NCwianRpIjoiZGY2NWQ5ODYtOWU0Yi00ZGQ2LWJmNmQtZDY1ZjUyNGQzZTlmIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImFkbWluIiwibmJmIjoxNzU5ODg5OTQ0LCJjc3JmIjoiMTM0ODA5OTItN2UyNS00N2Q3LTkzMmYtMmI3YmJkNmQwMWI5IiwiZXhwIjoxNzYxMTg1OTQ0fQ.LtGHpw4aVLezVrL-TK4JYb-SEPez_hwa0qECW6h8Zy8", //TODO: temp token for testing
+          Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
         },
       });
 

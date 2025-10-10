@@ -7,6 +7,7 @@ import DeleteIcon from "@/app/assets/icons/trashcan.svg";
 import PdfIcon from "@/app/assets/icons/pdf.svg";
 import MdIcon from "@/app/assets/icons/markdown.svg";
 import TxtIcon from "@/app/assets/icons/textNotes.svg";
+import { AUTH_TOKEN, BASE_API } from "../constants";
 
 interface NoteItemsProps {
   notes: Note[];
@@ -37,8 +38,28 @@ export const NoteItems: FC<NoteItemsProps> = ({ notes, setNotes }) => {
     );
 
     if (confirmed) {
-      //TODO: call DB to remove the note with the id
-      setNotes((prev) => prev.filter((source) => source._id !== id));
+      fetch(`${BASE_API}/notes/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+        },
+      })
+        .then(async (res) => {
+          if (!res.ok) {
+            const data = await res.json();
+            throw new Error(data.error || "Failed to delete note");
+          }
+
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data);
+          setNotes((prev) => prev.filter((source) => source._id !== id));
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
   };
 
