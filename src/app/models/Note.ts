@@ -1,6 +1,6 @@
 export interface Note {
   _id: string;
-  created_at: string;
+  created_at?: string;
   filename: string;
-  hash: string;
+  hash?: string;
 }

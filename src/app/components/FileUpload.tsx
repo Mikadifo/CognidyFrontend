@@ -3,37 +3,53 @@
 import { Button } from "@/app/components/Button";
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { Note } from "../models/Note";
+import { AUTH_TOKEN, BASE_API } from "../constants";
 
 interface FileUploadProps {
   setNotes: Dispatch<SetStateAction<Note[]>>;
 }
 
 export default function FileUpload({ setNotes }: FileUploadProps) {
-  const [fileName, setFileName] = useState("");
+  const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
+  // TODO: Handle guest user, done once we have custom auth hook
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
-    if (!fileName) {
+    if (!file) {
       return alert("Please select a file");
     }
 
-    const formData = new FormData();
-    formData.append("file", fileName);
-
     setIsUploading(true);
-    setNotes((prev) => [...prev, { id: prev.length, source: fileName }]); // This will come from the API
 
-    try {
-      //TODO:CALL API HERE
-      console.log("FILE UPLOADED!");
-      setFileName("");
-    } catch (error) {
-      console.error("Erorr while uploading the file:", error);
-    } finally {
-      setIsUploading(false);
-    }
+    const formData = new FormData();
+    formData.append("file", file);
+
+    fetch(`${BASE_API}/notes/upload/auth`, {
+      method: "POST",
+      headers: {
+        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+      },
+      body: formData,
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || "Failed to upload note");
+        }
+
+        return res.json();
+      })
+      .then((res) => {
+        console.log(res);
+        setFile(null);
+        setNotes((prev) => [...prev, res.data]);
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => setIsUploading(false));
   };
 
   return (
@@ -46,9 +62,11 @@ export default function FileUpload({ setNotes }: FileUploadProps) {
           id="file-upload"
           type="file"
           className="hidden"
-          onChange={(e) => {
-            if (e.target.files?.[0]) {
-              setFileName(e.target.files[0].name);
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            if (e.target.files && e.target.files.length > 0) {
+              setFile(e.target.files[0]);
+            } else {
+              setFile(null);
             }
           }}
         />
@@ -58,10 +76,12 @@ export default function FileUpload({ setNotes }: FileUploadProps) {
         >
           Choose File
         </label>
-        <span className="text-dark-88">{fileName || "No file chosen"}</span>
+        <span className="text-dark-88">
+          {file ? file.name : "No file chosen"}
+        </span>
       </div>
 
-      <Button className="w-full" type="submit" disabled={!fileName}>
+      <Button className="w-full" type="submit" disabled={!file}>
         {isUploading ? "Uploading..." : "Upload new note"}
       </Button>
     </form>
