@@ -59,7 +59,7 @@ export const NoteItems: FC<NoteItemsProps> = ({ notes, setNotes }) => {
         ))
       ) : (
         <span>
-          You don't have any notes uploaded yet.{" "}
+          You have not uploaded notes yet.{" "}
           <b>Chose a file and press Upload new note.</b>
         </span>
       )}
