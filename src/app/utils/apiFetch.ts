@@ -27,4 +27,12 @@ export const api = {
         Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
       },
     }),
+  deleteNote: (id: string) =>
+    request<{}>(`/notes/delete/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+      },
+    }),
 };

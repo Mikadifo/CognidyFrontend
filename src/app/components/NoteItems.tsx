@@ -7,7 +7,8 @@ import DeleteIcon from "@/app/assets/icons/trashcan.svg";
 import PdfIcon from "@/app/assets/icons/pdf.svg";
 import MdIcon from "@/app/assets/icons/markdown.svg";
 import TxtIcon from "@/app/assets/icons/textNotes.svg";
-import { AUTH_TOKEN, BASE_API } from "../constants";
+import { useApi } from "../hooks/useApi";
+import { api } from "../utils/apiFetch";
 
 interface NoteItemsProps {
   notes: Note[];
@@ -32,34 +33,25 @@ function getIconFromSource(source: string) {
 }
 
 export const NoteItems: FC<NoteItemsProps> = ({ notes, setNotes }) => {
-  const handleDeleteSource = (id: string) => {
+  const { submit: deleteNote, error } = useApi<{}, [id: string]>(
+    api.deleteNote,
+  );
+
+  const handleDeleteSource = async (id: string) => {
     const confirmed = confirm(
       "All flashcards, puzzles and roadmaps generated using this file will also be deleted. Are you sure you want to continue?",
     );
 
-    if (confirmed) {
-      fetch(`${BASE_API}/notes/delete/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
-        },
-      })
-        .then(async (res) => {
-          if (!res.ok) {
-            const data = await res.json();
-            throw new Error(data.error || "Failed to delete note");
-          }
+    if (!confirmed) {
+      return;
+    }
 
-          return res.json();
-        })
-        .then((data) => {
-          console.log(data);
-          setNotes((prev) => prev.filter((source) => source._id !== id));
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+    await deleteNote(id);
+
+    if (error) {
+      console.error(error);
+    } else {
+      setNotes((prev) => prev.filter((source) => source._id !== id));
     }
   };
 
