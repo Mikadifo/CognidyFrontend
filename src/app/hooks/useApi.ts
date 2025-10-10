@@ -15,7 +15,7 @@ export const useApi = <T, Args extends any[]>(
   const [error, setError] = useState<string | null>(null);
 
   const submit = useCallback(
-    async (...args: Args) => {
+    async (...args: Args): Promise<ApiResponse<T>> => {
       setLoading(true);
       setMessage(null);
       setError(null);
@@ -30,8 +30,13 @@ export const useApi = <T, Args extends any[]>(
           setData(res.data ?? null);
           setMessage(res.message ?? null);
         }
+
+        return res;
       } catch (e: any) {
-        setError(e.message ?? "Unexpected error");
+        const errMsg = e.message ?? "Unexpected error";
+        setError(errMsg);
+
+        return { error: errMsg };
       } finally {
         setLoading(false);
       }

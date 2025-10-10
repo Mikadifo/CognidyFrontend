@@ -3,7 +3,8 @@
 import { Button } from "@/app/components/Button";
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { Note } from "../models/Note";
-import { AUTH_TOKEN, BASE_API } from "../constants";
+import { useApi } from "../hooks/useApi";
+import { api } from "../utils/apiFetch";
 
 interface FileUploadProps {
   setNotes: Dispatch<SetStateAction<Note[]>>;
@@ -11,45 +12,36 @@ interface FileUploadProps {
 
 export default function FileUpload({ setNotes }: FileUploadProps) {
   const [file, setFile] = useState<File | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const { loading, submit: uploadNote } = useApi<Note, [formData: FormData]>(
+    api.uploadNoteAuth,
+  );
 
   // TODO: Handle guest user, done once we have custom auth hook
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
     if (!file) {
       return alert("Please select a file");
     }
 
-    setIsUploading(true);
-
     const formData = new FormData();
     formData.append("file", file);
 
-    fetch(`${BASE_API}/notes/upload/auth`, {
-      method: "POST",
-      headers: {
-        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
-      },
-      body: formData,
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          const data = await res.json();
-          throw new Error(data.error || "Failed to upload note");
-        }
+    const response = await uploadNote(formData);
 
-        return res.json();
-      })
-      .then((res) => {
-        console.log(res);
-        setFile(null);
-        setNotes((prev) => [...prev, res.data]);
-      })
-      .catch((err) => {
-        console.error(err);
-      })
-      .finally(() => setIsUploading(false));
+    if (response.error) {
+      console.error(response.error);
+      return;
+    }
+
+    const newNote = response.data;
+    if (!newNote) {
+      console.error("No note returned from API");
+      return;
+    }
+
+    setNotes((prev) => [...prev, newNote]);
+    setFile(null);
   };
 
   return (
@@ -82,7 +74,7 @@ export default function FileUpload({ setNotes }: FileUploadProps) {
       </div>
 
       <Button className="w-full" type="submit" disabled={!file}>
-        {isUploading ? "Uploading..." : "Upload new note"}
+        {loading ? "Uploading..." : "Upload new note"}
       </Button>
     </form>
   );

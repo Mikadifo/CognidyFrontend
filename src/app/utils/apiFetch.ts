@@ -35,4 +35,12 @@ export const api = {
         Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
       },
     }),
+  uploadNoteAuth: (formData: FormData) =>
+    request<{ data: Note }>(`/notes/upload/auth`, {
+      method: "POST",
+      headers: {
+        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+      },
+      body: formData,
+    }),
 };
