@@ -63,7 +63,7 @@ export const RoadmapController: FC = () => {
   }, []);
 
   return (
-    <div className="flex gap-16">
+    <div className="flex gap-16 relative">
       <RoadmapGoals goals={goals} setGoals={setGoals} />
       <RoadmapGoalForm goals={goals} setGoals={setGoals} />
     </div>
