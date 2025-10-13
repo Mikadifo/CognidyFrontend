@@ -3,13 +3,25 @@
 import { Dispatch, FC, SetStateAction } from "react";
 import RoadmapGoal from "../models/RoadmapGoal";
 import { ArcherContainer, ArcherElement } from "react-archer";
+import DeleteIcon from "../assets/icons/trashcan.svg";
+import { api } from "../utils/apiFetch";
+import { useApi } from "../hooks/useApi";
 
 interface RoadmapGoalsProps {
   goals: RoadmapGoal[];
   setGoals: Dispatch<SetStateAction<RoadmapGoal[]>>;
+  getGoals: () => void;
 }
 
-export const RoadmapGoals: FC<RoadmapGoalsProps> = ({ goals, setGoals }) => {
+export const RoadmapGoals: FC<RoadmapGoalsProps> = ({
+  goals,
+  setGoals,
+  getGoals,
+}) => {
+  const { submit: deleteGoal, error } = useApi<{}, [order: number]>(
+    api.deleteGoal,
+  );
+
   const handleComplete = (order: number) => {
     setGoals((prev) =>
       prev.map((goal) =>
@@ -18,6 +30,22 @@ export const RoadmapGoals: FC<RoadmapGoalsProps> = ({ goals, setGoals }) => {
           : { ...goal },
       ),
     );
+  };
+
+  const handleDelete = async (order: number) => {
+    const confirmed = confirm("Are you sure you want to delte this goal?");
+
+    if (!confirmed) {
+      return;
+    }
+
+    await deleteGoal(order);
+
+    if (error) {
+      console.error(error);
+    } else {
+      getGoals();
+    }
   };
 
   return (
@@ -39,7 +67,15 @@ export const RoadmapGoals: FC<RoadmapGoalsProps> = ({ goals, setGoals }) => {
                 : []
             }
           >
-            <div className="flex flex-col gap-4 justify-between bg-dark-08 rounded-lg p-8">
+            <div className="flex flex-col gap-4 justify-between bg-dark-08 rounded-lg p-8 relative">
+              <button
+                type="button"
+                className="absolute top-3 right-3 cursor-pointer hover:bg-red text-red rounded-full p-1.5 bg-white hover:text-white"
+                onClick={() => handleDelete(order)}
+              >
+                <DeleteIcon className="size-3" />
+              </button>
+
               <div className="flex gap-4">
                 <span className="font-poppins font-bold text-xl text-brand">
                   {String(order).padStart(2, "0")}

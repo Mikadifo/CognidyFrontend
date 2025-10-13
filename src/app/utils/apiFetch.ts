@@ -61,4 +61,12 @@ export const api = {
       },
       body: JSON.stringify(newGoal),
     }),
+  deleteGoal: (order: number) =>
+    request<{}>(`/roadmap_goals/delete/${order}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+      },
+    }),
 };
