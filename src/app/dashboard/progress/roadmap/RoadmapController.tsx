@@ -7,9 +7,10 @@ import { useApi } from "@/app/hooks/useApi";
 import { useGoalSettings } from "@/app/hooks/useGoalSettings";
 import RoadmapGoal from "@/app/models/RoadmapGoal";
 import { api } from "@/app/utils/apiFetch";
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 
 export const RoadmapController: FC = () => {
+  const [onLoadFetching, setOnLoadFetching] = useState(true);
   const { hideCompleted, setHideCompleted } = useGoalSettings();
   const {
     submit: getGoals,
@@ -20,11 +21,13 @@ export const RoadmapController: FC = () => {
 
   useEffect(() => {
     getGoals();
+    setOnLoadFetching(true);
   }, []);
 
-  if (loading) {
-    return "Loading...";
-  }
+  const fetchAfterLoad = () => {
+    setOnLoadFetching(false);
+    getGoals();
+  };
 
   if (error) {
     return error;
@@ -45,8 +48,15 @@ export const RoadmapController: FC = () => {
       </Button>
 
       <div className="flex gap-16 relative">
-        <RoadmapGoals goals={filteredGoals || []} getGoals={getGoals} />
-        <RoadmapGoalForm goals={filteredGoals || []} onSubmit={getGoals} />
+        {onLoadFetching && loading ? (
+          "Loading Goals..."
+        ) : (
+          <RoadmapGoals goals={filteredGoals || []} getGoals={fetchAfterLoad} />
+        )}
+        <RoadmapGoalForm
+          goals={filteredGoals || []}
+          onSubmit={fetchAfterLoad}
+        />
       </div>
     </div>
   );
