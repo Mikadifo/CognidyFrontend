@@ -7,6 +7,7 @@ import { Note } from "@/app/models/Note";
 import { NoteItems } from "@/app/components/NoteItems";
 import { api } from "@/app/utils/apiFetch";
 import { useApi } from "@/app/hooks/useApi";
+import { NoteItemsSkeleton } from "@/app/skeletons/NoteItemsSkeleton";
 
 export const FileController: FC = () => {
   const {
@@ -21,17 +22,18 @@ export const FileController: FC = () => {
     getNotes();
   }, []);
 
-  if (loading) {
-    return "Loading...";
-  }
-
   if (error) {
     return error;
   }
 
   return (
     <>
-      <NoteItems notes={notes || []} setNotes={setNotes} />
+      {loading ? (
+        <NoteItemsSkeleton />
+      ) : (
+        <NoteItems notes={notes || []} setNotes={setNotes} />
+      )}
+
       {notes && notes.length < 5 && <FileUpload setNotes={setNotes} />}
     </>
   );
