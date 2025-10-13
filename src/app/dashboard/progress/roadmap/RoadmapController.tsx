@@ -6,6 +6,7 @@ import { RoadmapGoals } from "@/app/components/RoadmapGoals";
 import { useApi } from "@/app/hooks/useApi";
 import { useGoalSettings } from "@/app/hooks/useGoalSettings";
 import RoadmapGoal from "@/app/models/RoadmapGoal";
+import RoadmapGoalsSkeleton from "@/app/skeletons/RoadmapGoalsSkeleton";
 import { api } from "@/app/utils/apiFetch";
 import { FC, useEffect, useState } from "react";
 
@@ -49,7 +50,7 @@ export const RoadmapController: FC = () => {
 
       <div className="flex gap-16 relative">
         {onLoadFetching && loading ? (
-          "Loading Goals..."
+          <RoadmapGoalsSkeleton />
         ) : (
           <RoadmapGoals goals={filteredGoals || []} getGoals={fetchAfterLoad} />
         )}
