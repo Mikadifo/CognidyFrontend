@@ -1,27 +1,26 @@
-import {
-  ChangeEvent,
-  Dispatch,
-  FC,
-  FormEvent,
-  SetStateAction,
-  useState,
-} from "react";
+import { ChangeEvent, FC, FormEvent, useState } from "react";
 import RoadmapGoal from "../models/RoadmapGoal";
 import { Input } from "./Input";
 import { Button } from "./Button";
+import { useApi } from "../hooks/useApi";
+import { api } from "../utils/apiFetch";
+import NewGoalDto from "../dtos/NewGoalDto";
 
 interface RoadmapGoalFormProps {
   goals: RoadmapGoal[];
-  setGoals: Dispatch<SetStateAction<RoadmapGoal[]>>;
+  onSubmit: () => void;
 }
 
 export const RoadmapGoalForm: FC<RoadmapGoalFormProps> = ({
   goals,
-  setGoals,
+  onSubmit,
 }) => {
   const [newGoalOrder, setNewGoalOrder] = useState<number>(goals.length + 1);
   const [newGoalTitle, setNewGoalTitle] = useState<string>("");
   const [newGoalBrief, setNewGoalBrief] = useState<string>("");
+  const { loading, submit: createGoal } = useApi<{}, [newGoal: NewGoalDto]>(
+    api.newGoal,
+  );
 
   const handleNewGoalOrder = (event: ChangeEvent<HTMLInputElement>) => {
     const value = Number(event.target.value);
@@ -41,7 +40,7 @@ export const RoadmapGoalForm: FC<RoadmapGoalFormProps> = ({
     setNewGoalBrief(value);
   };
 
-  const handleAddGoal = (event: FormEvent) => {
+  const handleAddGoal = async (event: FormEvent) => {
     event.preventDefault();
 
     newGoalTitle.trim();
@@ -56,30 +55,24 @@ export const RoadmapGoalForm: FC<RoadmapGoalFormProps> = ({
       return;
     }
 
-    const newGoal: RoadmapGoal = {
+    const newGoal: NewGoalDto = {
       order: newGoalOrder,
       title: newGoalTitle,
       brief: newGoalBrief,
-      completed: false,
     };
 
-    //TODO: CALL API HERE, so it will return sorted
+    const response = await createGoal(newGoal);
 
-    setGoals((prev) => [
-      ...prev.map((goal) =>
-        goal.order >= newGoal.order
-          ? { ...goal, order: goal.order + 1 }
-          : { ...goal },
-      ),
-      newGoal,
-    ]);
-
-    //TODO: PROBABLY delete this after API
-    setGoals((prev) => [...prev].sort((a, b) => a.order - b.order));
+    if (response.error) {
+      console.error(response.error);
+      return;
+    }
 
     setNewGoalOrder(0);
     setNewGoalTitle("");
     setNewGoalBrief("");
+
+    onSubmit();
   };
 
   return (
@@ -116,8 +109,8 @@ export const RoadmapGoalForm: FC<RoadmapGoalFormProps> = ({
         />
       </div>
 
-      <Button type="submit" className="!bg-brand">
-        Create Custom Goal
+      <Button type="submit" className="!bg-brand" disabled={loading}>
+        {loading ? "Loading..." : "Create Custom Goal"}
       </Button>
     </form>
   );

@@ -1,4 +1,5 @@
 import { AUTH_TOKEN, BASE_API } from "../constants";
+import NewGoalDto from "../dtos/NewGoalDto";
 import { Note } from "../models/Note";
 import RoadmapGoal from "../models/RoadmapGoal";
 
@@ -50,5 +51,14 @@ export const api = {
         "Content-Type": "application/json",
         Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
       },
+    }),
+  newGoal: (newGoal: NewGoalDto) =>
+    request<{}>(`/roadmap_goals/new`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+      },
+      body: JSON.stringify(newGoal),
     }),
 };
