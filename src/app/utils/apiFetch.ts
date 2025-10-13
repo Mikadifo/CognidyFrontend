@@ -1,5 +1,7 @@
 import { AUTH_TOKEN, BASE_API } from "../constants";
+import NewGoalDto from "../dtos/NewGoalDto";
 import { Note } from "../models/Note";
+import RoadmapGoal from "../models/RoadmapGoal";
 
 async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE_API}${endpoint}`, options);
@@ -42,5 +44,38 @@ export const api = {
         Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
       },
       body: formData,
+    }),
+  fetchGoals: () =>
+    request<{ data: RoadmapGoal[] }>("/roadmap_goals", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+      },
+    }),
+  newGoal: (newGoal: NewGoalDto) =>
+    request<{}>(`/roadmap_goals/new`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+      },
+      body: JSON.stringify(newGoal),
+    }),
+  deleteGoal: (order: number) =>
+    request<{}>(`/roadmap_goals/delete/${order}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+      },
+    }),
+  updateGoalCompletion: (order: number, completed: boolean) =>
+    request<{}>(`/roadmap_goals/complete/${order}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+      },
+      body: JSON.stringify({ completed }),
     }),
 };

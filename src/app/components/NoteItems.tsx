@@ -65,6 +65,7 @@ export const NoteItems: FC<NoteItemsProps> = ({ notes, setNotes }) => {
               {filename}
             </div>
             <IconButton
+              className="text-red"
               icon={DeleteIcon}
               onClick={() => handleDeleteSource(_id)}
             />
