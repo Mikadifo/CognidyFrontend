@@ -12,9 +12,11 @@ interface FileUploadProps {
 
 export default function FileUpload({ setNotes }: FileUploadProps) {
   const [file, setFile] = useState<File | null>(null);
-  const { loading, submit: uploadNote } = useApi<Note, [formData: FormData]>(
-    api.uploadNoteAuth,
-  );
+  const {
+    loading,
+    submit: uploadNote,
+    error,
+  } = useApi<Note, [formData: FormData]>(api.uploadNoteAuth);
 
   // TODO: Handle guest user, done once we have custom auth hook
   const handleSubmit = async (event: FormEvent) => {
@@ -76,6 +78,10 @@ export default function FileUpload({ setNotes }: FileUploadProps) {
       <Button className="w-full" type="submit" disabled={!file}>
         {loading ? "Uploading..." : "Upload new note"}
       </Button>
+
+      <span className="text-red" hidden={!error}>
+        File already submitted
+      </span>
     </form>
   );
 }
