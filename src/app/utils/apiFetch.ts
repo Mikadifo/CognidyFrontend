@@ -69,4 +69,13 @@ export const api = {
         Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
       },
     }),
+  updateGoalCompletion: (order: number, completed: boolean) =>
+    request<{}>(`/roadmap_goals/complete/${order}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+      },
+      body: JSON.stringify({ completed }),
+    }),
 };

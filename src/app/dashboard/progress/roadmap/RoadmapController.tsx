@@ -13,7 +13,6 @@ export const RoadmapController: FC = () => {
     loading,
     error,
     data: goals,
-    setData: setGoals,
   } = useApi<RoadmapGoal[], []>(api.fetchGoals);
 
   useEffect(() => {
@@ -30,11 +29,7 @@ export const RoadmapController: FC = () => {
 
   return (
     <div className="flex gap-16 relative">
-      <RoadmapGoals
-        goals={goals || []}
-        setGoals={setGoals}
-        getGoals={getGoals}
-      />
+      <RoadmapGoals goals={goals || []} getGoals={getGoals} />
       <RoadmapGoalForm goals={goals || []} onSubmit={getGoals} />
     </div>
   );

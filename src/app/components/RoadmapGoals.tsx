@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, FC, SetStateAction } from "react";
+import { FC } from "react";
 import RoadmapGoal from "../models/RoadmapGoal";
 import { ArcherContainer, ArcherElement } from "react-archer";
 import DeleteIcon from "../assets/icons/trashcan.svg";
@@ -9,27 +9,25 @@ import { useApi } from "../hooks/useApi";
 
 interface RoadmapGoalsProps {
   goals: RoadmapGoal[];
-  setGoals: Dispatch<SetStateAction<RoadmapGoal[]>>;
   getGoals: () => void;
 }
 
-export const RoadmapGoals: FC<RoadmapGoalsProps> = ({
-  goals,
-  setGoals,
-  getGoals,
-}) => {
-  const { submit: deleteGoal, error } = useApi<{}, [order: number]>(
-    api.deleteGoal,
-  );
+export const RoadmapGoals: FC<RoadmapGoalsProps> = ({ goals, getGoals }) => {
+  const { submit: deleteGoal } = useApi<{}, [order: number]>(api.deleteGoal);
+  const { submit: updateGoal } = useApi<
+    {},
+    [order: number, completed: boolean]
+  >(api.updateGoalCompletion);
 
-  const handleComplete = (order: number) => {
-    setGoals((prev) =>
-      prev.map((goal) =>
-        goal.order === order
-          ? { ...goal, completed: !goal.completed }
-          : { ...goal },
-      ),
-    );
+  const handleComplete = async (order: number, completed: boolean) => {
+    const response = await updateGoal(order, !completed);
+
+    if (response.error) {
+      console.error(response.error);
+      return;
+    }
+
+    getGoals();
   };
 
   const handleDelete = async (order: number) => {
@@ -39,13 +37,14 @@ export const RoadmapGoals: FC<RoadmapGoalsProps> = ({
       return;
     }
 
-    await deleteGoal(order);
+    const response = await deleteGoal(order);
 
-    if (error) {
-      console.error(error);
-    } else {
-      getGoals();
+    if (response.error) {
+      console.error(response.error);
+      return;
     }
+
+    getGoals();
   };
 
   return (
@@ -87,11 +86,20 @@ export const RoadmapGoals: FC<RoadmapGoalsProps> = ({
                     <p>{brief}</p>
                   </div>
                   <button
+                    hidden={i >= 1 && !goals[i - 1].completed}
                     type="button"
                     className={`w-fit text-white text-xs font-bold px-4 py-1 rounded-full cursor-pointer hover:opacity-80 ${completed ? "bg-green" : "bg-dark"}`}
-                    onClick={() => handleComplete(order)}
+                    onClick={() => handleComplete(order, completed)}
                   >
-                    {completed ? "Completed" : "Mark as Completed"}
+                    {completed ? (
+                      <div className="flex gap-2">
+                        <span>Completed</span>
+                        <div className="bg-white/80 w-0.5 h-auto" />
+                        <span>Undo</span>
+                      </div>
+                    ) : (
+                      "Mark as Completed"
+                    )}
                   </button>
                 </div>
               </div>
