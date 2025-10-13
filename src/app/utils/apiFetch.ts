@@ -1,5 +1,6 @@
 import { AUTH_TOKEN, BASE_API } from "../constants";
 import { Note } from "../models/Note";
+import RoadmapGoal from "../models/RoadmapGoal";
 
 async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE_API}${endpoint}`, options);
@@ -42,5 +43,12 @@ export const api = {
         Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
       },
       body: formData,
+    }),
+  fetchGoals: () =>
+    request<{ data: RoadmapGoal[] }>("/roadmap_goals", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+      },
     }),
 };
