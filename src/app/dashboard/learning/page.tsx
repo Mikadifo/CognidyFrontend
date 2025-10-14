@@ -18,7 +18,7 @@ export default function Learning() {
       <div className="flex flex-col">
         <div className="w-full h-0.5 bg-dark-16 rounded-full mt-4 mb-8" />
         <SectionOption
-          label="Puzzles"
+          label="Crossword"
           icon={puzzlePieceIcon}
           href="learning/puzzles"
         />
