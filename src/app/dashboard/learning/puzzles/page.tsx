@@ -33,12 +33,12 @@ export default function Puzzles() {
           <SectionOption
             label="Saved Notes"
             icon={textNotes}
-            href="/dashboard/learning/saved-notes"
+            href="/dashboard/learning/puzzles"
           />
           <SectionOption
             label="Upload Notes"
             icon={textNotes}
-            href="/dashboard/learning/upload"
+            href="/dashboard/learning/puzzles"
           />
         </div>
       </div>
