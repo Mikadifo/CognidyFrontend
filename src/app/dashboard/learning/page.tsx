@@ -1,4 +1,6 @@
-import { PuzzlesButton } from '@/app/components/PuzzlesButton';
+import { DashboardHeader } from "@/app/components/DashboardHeader";
+import { SectionOption } from "@/app/components/SectionOption";
+import puzzlePieceIcon from "@/app/assets/icons/puzzlePiece.svg";
 
 export const metadata = {
   title: "Cognidy | Learning",
@@ -7,12 +9,30 @@ export const metadata = {
 
 export default function Learning() {
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="font-poppins text-3xl font-bold mb-8">Learning</h1>
-      <PuzzlesButton />
-      <h2 className="font-poppins text-3xl font-bold mt-8">
-        Coming Soon!
-      </h2>
+    <div className="p-16 flex flex-col gap-8 w-full">
+      <DashboardHeader
+        heading="Your Learning"
+        subheading="Learn and grow with personalized study sessions and games!"
+      />
+
+      <div className="flex flex-col">
+        <div className="w-full h-0.5 bg-dark-16 rounded-full mt-4 mb-8" />
+        <SectionOption
+          label="Puzzles"
+          icon={puzzlePieceIcon}
+          href="learning/puzzles"
+        />
+      </div>
+
+      <div className="flex flex-col">
+        <div className="w-full h-0.5 bg-dark-16 rounded-full mt-4 mb-8" />
+        <SectionOption
+          label="Coming Soon"
+          icon={puzzlePieceIcon}
+          href="learning/puzzles"
+          disabled={true}
+        />
+      </div>
     </div>
   );
 }
