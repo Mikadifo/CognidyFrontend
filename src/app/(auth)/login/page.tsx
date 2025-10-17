@@ -7,7 +7,7 @@ import { Button } from "@/app/components/Button";
 import LoginIcon from "../../assets/icons/arrow.svg";
 import { Input } from "@/app/components/Input";
 import { useApi } from "@/app/hooks/useApi";
-import UserDto from "@/app/dtos/UserDto";
+import { UserLoginDto } from "@/app/dtos/UserDto";
 import { api } from "@/app/utils/apiFetch";
 import { useRouter } from "next/navigation";
 
@@ -19,7 +19,7 @@ export default function LoginPage() {
     loading,
     submit: login,
     error,
-  } = useApi<string, [body: UserDto]>(api.login);
+  } = useApi<string, [body: UserLoginDto]>(api.login);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -42,7 +42,7 @@ export default function LoginPage() {
       <div className="bg-white text-gray-800 rounded-2xl shadow-xl w-[480px] p-16">
         <div className="flex flex-col gap-4 mb-16">
           <Logo className="size-16 rounded-lg mx-auto" />
-          <h1 className="text-2xl font-poppins font-semibold text-center">
+          <h1 className="text-2xl font-poppins font-bold text-center">
             Welcome Back!
           </h1>
         </div>
