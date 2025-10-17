@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import logo from "../../assets/logo.svg";
+import Logo from "../../assets/logo.svg";
+import { Button } from "@/app/components/Button";
+import LoginIcon from "../../assets/icons/arrow.svg";
+import { Input } from "@/app/components/Input";
 
 export default function LoginPage() {
   const [form, setForm] = useState({ username: "", password: "" });
@@ -21,83 +23,80 @@ export default function LoginPage() {
         body: JSON.stringify(form),
       });
       const data = await res.json();
-      res.ok ? alert("Login successful!") : alert(data.message || "Login failed");
+      res.ok
+        ? alert("Login successful!")
+        : alert(data.message || "Login failed");
     } catch (err) {
       alert("Something went wrong. Please try again.");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-brand via-cyan to-dark">
-      <div className="bg-white text-gray-800 p-10 rounded-2xl shadow-xl w-full max-w-md">
-        {/* Logo */}
-        <div className="flex justify-center mb-4">
-          <Image src={logo} alt="Cognidy Logo" width={80} height={80} />
+    <div className="h-screen w-full flex items-center justify-center bg-linear-to-br from-brand via-cyan to-green">
+      <div className="bg-white text-gray-800 rounded-2xl shadow-xl w-[480px] p-16">
+        <div className="flex flex-col gap-4 mb-16">
+          <Logo className="size-16 rounded-lg mx-auto" />
+          <h1 className="text-2xl font-poppins font-semibold text-center">
+            Welcome Back!
+          </h1>
         </div>
 
-        {/* Heading */}
-        <h1 className="text-2xl font-poppins font-semibold text-center mb-8">
-          Welcome Back!
-        </h1>
-
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-sm font-nunito font-semibold mb-1">
-              Username
-            </label>
-            <input
-              name="username"
-              type="text"
+        <form onSubmit={handleSubmit} className="flex flex-col gap-16">
+          <div className="flex flex-col gap-5">
+            <Input
+              label="Username"
               value={form.username}
-              onChange={handleChange}
               placeholder="Nikita_15"
-              className="w-full border rounded-md px-3 py-2 text-sm bg-gray-100 focus:outline-none focus:ring-2 focus:ring-brand"
+              type="text"
+              name="username"
+              onChange={handleChange}
               required
             />
+
+            <div className="flex flex-col gap-1">
+              <Input
+                label="Password"
+                value={form.password}
+                placeholder="****************"
+                type="password"
+                name="password"
+                onChange={handleChange}
+                required
+              />
+              <Link
+                href="#"
+                className="text-dark text-sm hover:underline self-end cursor-pointer"
+              >
+                Forgot Password
+              </Link>
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-nunito font-semibold mb-1">
-              Password
-            </label>
-            <input
-              name="password"
-              type="password"
-              value={form.password}
-              onChange={handleChange}
-              placeholder="********"
-              className="w-full border rounded-md px-3 py-2 text-sm bg-gray-100 focus:outline-none focus:ring-2 focus:ring-brand"
-              required
-            />
-            <p className="text-xs text-right mt-1 text-brand cursor-pointer">
-              Forgot Password
+          <div className="flex flex-col gap-2">
+            <Button
+              type="submit"
+              className="!bg-brand w-full"
+              icon={LoginIcon}
+              iconClassName="!size-4"
+            >
+              Log In
+            </Button>
+
+            <p className="text-sm text-center">
+              Don’t have an account?{" "}
+              <Link href="/signup" className="font-bold hover:underline">
+                Create Account
+              </Link>
             </p>
           </div>
-
-          <button
-            type="submit"
-            className="w-full bg-brand text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition"
-          >
-            Log In →
-          </button>
-
-          <p className="text-xs text-center mt-2">
-            Don’t have an account?{" "}
-            <Link href="/signup" className="font-semibold text-brand">
-              Create Account
-            </Link>
-          </p>
-
-          <hr className="my-4" />
-
-          <button
-            type="button"
-            className="w-full border border-gray-400 py-2 rounded-md font-semibold text-sm hover:bg-gray-100 transition"
-          >
-            Continue as Guest
-          </button>
         </form>
+
+        <div className="bg-dark-16 h-[1px] rounded-full w-[300px] mx-auto my-8" />
+
+        <Button variant="outline" className="w-full" type="button">
+          Continue as Guest
+        </Button>
       </div>
     </div>
   );
