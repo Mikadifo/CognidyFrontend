@@ -1,5 +1,6 @@
 import { AUTH_TOKEN, BASE_API } from "../constants";
 import NewGoalDto from "../dtos/NewGoalDto";
+import UserDto from "../dtos/UserDto";
 import { Note } from "../models/Note";
 import RoadmapGoal from "../models/RoadmapGoal";
 
@@ -22,6 +23,14 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
 }
 
 export const api = {
+  login: (user: UserDto) =>
+    request<{ data: string }>(`/users/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    }),
   fetchNotes: () =>
     request<{ data: Note[] }>("/notes", {
       headers: {

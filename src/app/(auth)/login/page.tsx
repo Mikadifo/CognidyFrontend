@@ -6,9 +6,20 @@ import Logo from "../../assets/logo.svg";
 import { Button } from "@/app/components/Button";
 import LoginIcon from "../../assets/icons/arrow.svg";
 import { Input } from "@/app/components/Input";
+import { useApi } from "@/app/hooks/useApi";
+import UserDto from "@/app/dtos/UserDto";
+import { api } from "@/app/utils/apiFetch";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [form, setForm] = useState({ username: "", password: "" });
+  const router = useRouter();
+  const {
+    data: token,
+    loading,
+    submit: login,
+    error,
+  } = useApi<string, [body: UserDto]>(api.login);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -16,18 +27,13 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-      res.ok
-        ? alert("Login successful!")
-        : alert(data.message || "Login failed");
-    } catch (err) {
-      alert("Something went wrong. Please try again.");
+    const response = await login(form);
+
+    if (response.error) {
+      console.error(response.error);
+      return;
+    } else {
+      router.push("/dashboard");
     }
   };
 
@@ -79,8 +85,9 @@ export default function LoginPage() {
               className="!bg-brand w-full"
               icon={LoginIcon}
               iconClassName="!size-4"
+              disabled={loading}
             >
-              Log In
+              {loading ? "Verifying Credentials..." : "Log In"}
             </Button>
 
             <p className="text-sm text-center">
