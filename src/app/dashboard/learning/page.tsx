@@ -1,8 +1,8 @@
 import { DashboardHeader } from "@/app/components/DashboardHeader";
 import { SectionOption } from "@/app/components/SectionOption";
 import puzzlePieceIcon from "@/app/assets/icons/puzzlePiece.svg";
-import Users from "@/app/assets/icons/users.svg"
-import StylusNote from "@/app/assets/icons/stylusNote.svg"
+import Users from "@/app/assets/icons/users.svg";
+import StylusNote from "@/app/assets/icons/stylusNote.svg";
 
 export const metadata = {
   title: "Cognidy | Learning",
@@ -16,16 +16,16 @@ export default function Learning() {
         heading="Your Learning"
         subheading="Learn and grow with personalized study sessions and games!"
       />
-        <div className="flex flex-col">
-          <span className="font-poppins font-normal text-xl">Goals</span>
-          <div className="w-full h-0.5 bg-dark-16 rounded-full mt-4 mb-8" />
-            <SectionOption
-              label="Puzzles"
-              icon={puzzlePieceIcon}
-              href="progress/puzzles"
-            />
-          </div>
-    
+      <div className="flex flex-col">
+        <span className="font-poppins font-normal text-xl">Goals</span>
+        <div className="w-full h-0.5 bg-dark-16 rounded-full mt-4 mb-8" />
+        <SectionOption
+          label="Puzzles"
+          icon={puzzlePieceIcon}
+          href="learning/puzzles"
+        />
+      </div>
+
       <div className="flex flex-col">
         <span className="font-poppins font-normal text-xl">Coming Soon</span>
         <div className="w-full h-0.5 bg-dark-16 rounded-full mt-4 mb-8" />
@@ -47,3 +47,4 @@ export default function Learning() {
     </div>
   );
 }
+
