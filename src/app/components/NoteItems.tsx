@@ -33,7 +33,7 @@ function getIconFromSource(source: string) {
 }
 
 export const NoteItems: FC<NoteItemsProps> = ({ notes, setNotes }) => {
-  const { submit: deleteNote, error } = useApi<{}, [id: string]>(
+  const { submit: deleteNote, error } = useApi<void, [id: string]>(
     api.deleteNote,
   );
 

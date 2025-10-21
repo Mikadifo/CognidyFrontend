@@ -18,7 +18,7 @@ export const RoadmapGoalForm: FC<RoadmapGoalFormProps> = ({
   const [newGoalOrder, setNewGoalOrder] = useState<number>(goals.length + 1);
   const [newGoalTitle, setNewGoalTitle] = useState<string>("");
   const [newGoalBrief, setNewGoalBrief] = useState<string>("");
-  const { loading, submit: createGoal } = useApi<{}, [newGoal: NewGoalDto]>(
+  const { loading, submit: createGoal } = useApi<void, [newGoal: NewGoalDto]>(
     api.newGoal,
   );
 

@@ -13,9 +13,9 @@ interface RoadmapGoalsProps {
 }
 
 export const RoadmapGoals: FC<RoadmapGoalsProps> = ({ goals, getGoals }) => {
-  const { submit: deleteGoal } = useApi<{}, [order: number]>(api.deleteGoal);
+  const { submit: deleteGoal } = useApi<void, [order: number]>(api.deleteGoal);
   const { submit: updateGoal } = useApi<
-    {},
+    void,
     [order: number, completed: boolean]
   >(api.updateGoalCompletion);
 

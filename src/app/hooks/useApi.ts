@@ -6,7 +6,7 @@ interface ApiResponse<T> {
   error?: string;
 }
 
-export const useApi = <T, Args extends any[]>(
+export const useApi = <T, Args extends unknown[]>(
   apiRequest: (...args: Args) => Promise<ApiResponse<T>>,
 ) => {
   const [loading, setLoading] = useState(false);
@@ -32,8 +32,13 @@ export const useApi = <T, Args extends any[]>(
         }
 
         return res;
-      } catch (e: any) {
-        const errMsg = e.message ?? "Unexpected error";
+      } catch (e: unknown) {
+        let errMsg: string = "";
+
+        if (e instanceof Error) {
+          errMsg = e.message ?? "Unexpected error";
+        }
+
         setError(errMsg);
 
         return { error: errMsg };
