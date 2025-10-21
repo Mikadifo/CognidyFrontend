@@ -23,7 +23,7 @@ export const RoadmapController: FC = () => {
   useEffect(() => {
     getGoals();
     setOnLoadFetching(true);
-  }, []);
+  }, [getGoals]);
 
   const fetchAfterLoad = () => {
     setOnLoadFetching(false);

@@ -15,10 +15,10 @@ export default function LoginPage() {
   const [form, setForm] = useState({ username: "", password: "" });
   const router = useRouter();
   const {
-    data: token,
+    //data: token,
     loading,
     submit: login,
-    error,
+    //error,
   } = useApi<string, [body: UserLoginDto]>(api.login);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

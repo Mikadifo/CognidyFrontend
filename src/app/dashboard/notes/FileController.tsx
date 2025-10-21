@@ -20,7 +20,7 @@ export const FileController: FC = () => {
 
   useEffect(() => {
     getNotes();
-  }, []);
+  }, [getNotes]);
 
   if (error) {
     return error;
