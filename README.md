@@ -65,7 +65,7 @@ npm install --legacy-peer-deps
 
 ### 3. Environment Variables
 
-Create a `.env.local` file at the root of the project. Example:
+Create a `.env` file at the root of the project. Example:
 
 ```ini
 NEXT_PUBLIC_API_URL=http://localhost:5000

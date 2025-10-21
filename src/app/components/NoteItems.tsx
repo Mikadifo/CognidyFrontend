@@ -7,6 +7,8 @@ import DeleteIcon from "@/app/assets/icons/trashcan.svg";
 import PdfIcon from "@/app/assets/icons/pdf.svg";
 import MdIcon from "@/app/assets/icons/markdown.svg";
 import TxtIcon from "@/app/assets/icons/textNotes.svg";
+import { useApi } from "../hooks/useApi";
+import { api } from "../utils/apiFetch";
 
 interface NoteItemsProps {
   notes: Note[];
@@ -31,29 +33,41 @@ function getIconFromSource(source: string) {
 }
 
 export const NoteItems: FC<NoteItemsProps> = ({ notes, setNotes }) => {
-  const handleDeleteSource = (id: number) => {
+  const { submit: deleteNote, error } = useApi<{}, [id: string]>(
+    api.deleteNote,
+  );
+
+  const handleDeleteSource = async (id: string) => {
     const confirmed = confirm(
       "All flashcards, puzzles and roadmaps generated using this file will also be deleted. Are you sure you want to continue?",
     );
 
-    if (confirmed) {
-      //TODO: call DB to remove the note with the id
-      setNotes((prev) => prev.filter((source) => source.id !== id));
+    if (!confirmed) {
+      return;
+    }
+
+    await deleteNote(id);
+
+    if (error) {
+      console.error(error);
+    } else {
+      setNotes((prev) => prev.filter((source) => source._id !== id));
     }
   };
 
   return (
     <div className="flex flex-col gap-4">
       {notes.length > 0 ? (
-        notes.map(({ id, source }) => (
-          <div className="flex gap-2" key={id}>
+        notes.map(({ _id, filename }) => (
+          <div className="flex gap-2" key={_id}>
             <div className="flex gap-2 bg-dark-08 rounded-lg px-4 py-2 w-full items-center">
-              {getIconFromSource(source)}
-              {source}
+              {getIconFromSource(filename)}
+              {filename}
             </div>
             <IconButton
+              className="text-red"
               icon={DeleteIcon}
-              onClick={() => handleDeleteSource(id)}
+              onClick={() => handleDeleteSource(_id)}
             />
           </div>
         ))

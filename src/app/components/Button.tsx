@@ -12,6 +12,7 @@ import {
 interface BaseButtonProps {
   className?: string;
   icon?: ComponentType<SVGProps<SVGSVGElement>>;
+  iconClassName?: String;
   variant?: "filled" | "outline";
   href?: string;
   disabled?: boolean;
@@ -37,16 +38,17 @@ export const Button: FC<ButtonProps> = ({
   as = "button",
   className,
   icon: Icon,
+  iconClassName,
   variant = "filled",
   disabled = false,
   href,
   ...props
 }) => {
-  const styles = `${className} font-poppins font-normal text-base px-6 py-3 rounded-sm ${variant === "filled" ? `bg-dark text-white ${disabled ? "" : "hover:opacity-80"}` : `border border-dark text-dark ${disabled ? "bg-dark-08" : "hover:bg-dark-08"}`} ${Icon && "flex gap-2 items-center"} ${disabled ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`;
+  const styles = `${className} font-poppins font-normal text-base px-6 py-3 rounded-sm ${variant === "filled" ? `bg-dark text-white ${disabled ? "" : "hover:opacity-80"}` : `border border-dark text-dark ${disabled ? "bg-dark-08" : "hover:bg-dark-08"}`} ${Icon && "flex gap-2 items-center justify-center"} ${disabled ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`;
   const children = (
     <>
-      {Icon && <Icon className="size-5" />}
       {props.children}
+      {Icon && <Icon className={`${iconClassName} size-5`} />}
     </>
   );
 
