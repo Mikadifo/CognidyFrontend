@@ -32,10 +32,19 @@ export default function LoginPage() {
     if (response.error) {
       console.error(response.error);
       return;
-    } else {
-      router.push("/dashboard");
-    }
-  };
+    } 
+
+    //If login worked, save the token
+  if (response.data) {
+    localStorage.setItem("token", response.data);
+    console.log("Token saved:", response.data);
+    router.push("/dashboard");
+} else {
+  console.error("No token received:", response);
+}
+};
+    
+  
 
   return (
     <div className="h-screen w-full flex items-center justify-center bg-linear-to-br from-brand via-cyan to-green">
