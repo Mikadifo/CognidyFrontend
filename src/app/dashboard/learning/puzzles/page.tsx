@@ -1,8 +1,6 @@
 import { DashboardHeader } from "@/app/components/DashboardHeader";
 import { SectionOption } from "@/app/components/SectionOption";
-import puzzlePieceIcon from "@/app/assets/icons/puzzlePiece.svg"
-import  FileUploadProps from "@/app/components/FileUpload";
-import textNotes from '@/app/assets/icons/textNotes.svg';
+import textNotes from "@/app/assets/icons/textNotes.svg";
 
 export const metadata = {
   title: "Cognidy | Learning",
@@ -11,7 +9,6 @@ export const metadata = {
 
 export default function Puzzles() {
   return (
-
     // these will access the user's notes, and allow the user to upload notes if they want a new set or do not have one in the db
     // cases to account for:
     //  -user has notes: must be able to access notes from this page
@@ -47,3 +44,4 @@ export default function Puzzles() {
     //
   );
 }
+
