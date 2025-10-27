@@ -1,7 +1,9 @@
 "use client";
 
 import { Button } from "@/app/components/Button";
-import GenerationNotification from "@/app/components/GenerationNotification";
+import GenerationNotification, {
+  GeneratingSection,
+} from "@/app/components/GenerationNotification";
 import { RoadmapGoalForm } from "@/app/components/RoadmapGoalForm";
 import { RoadmapGoals } from "@/app/components/RoadmapGoals";
 import { useApi } from "@/app/hooks/useApi";
@@ -50,7 +52,7 @@ export const RoadmapController: FC = () => {
           {hideCompleted ? "Show" : "Hide"} completed goals
         </Button>
 
-        <GenerationNotification section="roadmap goals" />
+        <GenerationNotification section={GeneratingSection.ROADMAP} />
       </div>
 
       <div className="flex gap-16 relative">
