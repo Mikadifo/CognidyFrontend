@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
-import GenerationNotification from "./GenerationNotification";
+import GenerationNotification, {
+  GeneratingSection,
+} from "./GenerationNotification";
 
 const meta: Meta<typeof GenerationNotification> = {
   title: "Generation Notification",
@@ -22,7 +24,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    section: "roadmap goals",
+    section: GeneratingSection.PUZZLES,
     loading: true,
   },
 };
