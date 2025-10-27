@@ -16,7 +16,7 @@ function getAuthHeader() {
 
 async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE_API}${endpoint}`, options);
-  let json: any;
+  let json: unknown;
 
   try {
     json = await res.json();
@@ -25,11 +25,23 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   }
 
   if (!res.ok) {
-    const errorMessage = json?.error || res.statusText || `HTTP ${res.status}`;
+    let errorMessage: string;
+
+    if (
+      typeof json === "object" &&
+      json !== null &&
+      "error" in json &&
+      typeof (json as { error: unknown }).error === "string"
+    ) {
+      errorMessage = (json as { error: string }).error;
+    } else {
+      errorMessage = res.statusText || `HTTP ${res.status}`;
+    }
+
     throw new Error(errorMessage);
   }
 
-  return json;
+  return json as T;
 }
 
 export const api = {
@@ -57,7 +69,7 @@ export const api = {
       },
     }),
   deleteNote: (id: string) =>
-    request<{}>(`/notes/delete/${id}`, {
+    request<{ message: string }>(`/notes/delete/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -80,7 +92,7 @@ export const api = {
       },
     }),
   newGoal: (newGoal: NewGoalDto) =>
-    request<{}>(`/roadmap_goals/new`, {
+    request<{ message: string }>(`/roadmap_goals/new`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -89,7 +101,7 @@ export const api = {
       body: JSON.stringify(newGoal),
     }),
   deleteGoal: (order: number) =>
-    request<{}>(`/roadmap_goals/delete/${order}`, {
+    request<{ message: string }>(`/roadmap_goals/delete/${order}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -97,7 +109,7 @@ export const api = {
       },
     }),
   updateGoalCompletion: (order: number, completed: boolean) =>
-    request<{}>(`/roadmap_goals/complete/${order}`, {
+    request<{ message: string }>(`/roadmap_goals/complete/${order}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

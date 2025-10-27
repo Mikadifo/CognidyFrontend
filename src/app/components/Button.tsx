@@ -12,7 +12,7 @@ import {
 interface BaseButtonProps {
   className?: string;
   icon?: ComponentType<SVGProps<SVGSVGElement>>;
-  iconClassName?: String;
+  iconClassName?: string;
   variant?: "filled" | "outline";
   href?: string;
   disabled?: boolean;

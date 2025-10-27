@@ -15,10 +15,10 @@ export default function SignupPage() {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const router = useRouter();
   const {
-    data: token,
+    //data: token,
     loading,
     submit: signup,
-    error,
+    //error,
   } = useApi<string, [body: UserSignUpDto]>(api.signup);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
