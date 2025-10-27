@@ -11,11 +11,11 @@ export default function GenerationNotification({
 }: GenerationNotificationProps) {
   return (
     <div
-      className="rounded-[5px] bg-yellow-88 text-dark font-nunito text-base font-semibold px-6 py-3 flex gap-4 items-center w-fit"
+      className="rounded-[5px] bg-yellow-88 text-dark font-nunito text-base font-semibold px-6 py-3 flex gap-4 items-center w-fit whitespace-nowrap max-h-12"
       hidden={!loading}
     >
       <span>Generating personalized {section.toLowerCase()}</span>
-      <LoadingIcon className="animate-spin" />
+      <LoadingIcon className="animate-spin size-5" />
     </div>
   );
 }
