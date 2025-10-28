@@ -1,4 +1,5 @@
 import { AUTH_TOKEN, BASE_API } from "../constants";
+import GenerationStatusDto from "../dtos/GenerationStatusDto";
 import NewGoalDto from "../dtos/NewGoalDto";
 import { UserLoginDto, UserSignUpDto } from "../dtos/UserDto";
 import { Note } from "../models/Note";
@@ -53,6 +54,14 @@ export const api = {
     }),
   fetchNotes: () =>
     request<{ data: Note[] }>("/notes", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+      },
+    }),
+  generationStatus: (id: string) =>
+    request<{ data: GenerationStatusDto }>(`/notes/status/${id}`, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
