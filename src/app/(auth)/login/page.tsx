@@ -18,7 +18,6 @@ export default function LoginPage() {
   const { saveUser } = useAuth();
 
   const {
-    //data: token,
     loading,
     submit: login,
     //error,
@@ -35,25 +34,23 @@ export default function LoginPage() {
     if (response.error) {
       console.error(response.error);
       return;
-    } 
+    }
 
     //If login worked, save the token
-  if (response.data) {
-    saveUser(response.data);
-    console.log("Token saved:", response.data);
-    router.push("/dashboard");
-} else {
-  console.error("No token received:", response);
-}
-};
+    if (response.data) {
+      saveUser(response.data);
+      console.log("Token saved:", response.data);
+      router.push("/dashboard");
+    } else {
+      console.error("No token received:", response);
+    }
+  };
 
-// Guest login button handler
+  // Guest login button handler
   const handleGuest = () => {
     saveUser("guest");
     router.push("/dashboard");
   };
-    
-  
 
   return (
     <div className="h-screen w-full flex items-center justify-center bg-linear-to-br from-brand via-cyan to-green">
@@ -119,7 +116,12 @@ export default function LoginPage() {
 
         <div className="bg-dark-16 h-[1px] rounded-full w-[300px] mx-auto my-8" />
 
-        <Button variant="outline" className="w-full" type="button" onClick={handleGuest}>
+        <Button
+          variant="outline"
+          className="w-full"
+          type="button"
+          onClick={handleGuest}
+        >
           Continue as Guest
         </Button>
       </div>
