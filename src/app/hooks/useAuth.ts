@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export function useAuth() {
@@ -21,14 +20,6 @@ export function useAuth() {
     localStorage.removeItem("token");
     router.push("/login");
   };
-
-  // Optional: Protect pages automatically when mounted
-  useEffect(() => {
-    const token = getToken();
-    if (!token) {
-      router.push("/login");
-    }
-  }, []);
 
   return { saveUser, getToken, logout };
 }
