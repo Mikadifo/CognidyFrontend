@@ -1,6 +1,9 @@
 "use client";
 
 import { Button } from "@/app/components/Button";
+import GenerationNotification, {
+  GeneratingSection,
+} from "@/app/components/GenerationNotification";
 import { RoadmapGoalForm } from "@/app/components/RoadmapGoalForm";
 import { RoadmapGoals } from "@/app/components/RoadmapGoals";
 import { useApi } from "@/app/hooks/useApi";
@@ -40,13 +43,20 @@ export const RoadmapController: FC = () => {
 
   return (
     <div className="flex flex-col gap-8 relative">
-      <Button
-        className="w-fit"
-        variant="outline"
-        onClick={() => setHideCompleted(!hideCompleted)}
-      >
-        {hideCompleted ? "Show" : "Hide"} completed goals
-      </Button>
+      <div className="flex gap-8">
+        <Button
+          className="w-fit"
+          variant="outline"
+          onClick={() => setHideCompleted(!hideCompleted)}
+        >
+          {hideCompleted ? "Show" : "Hide"} completed goals
+        </Button>
+
+        <GenerationNotification
+          section={GeneratingSection.ROADMAP}
+          fetchFunction={getGoals}
+        />
+      </div>
 
       <div className="flex gap-16 relative">
         {onLoadFetching && loading ? (

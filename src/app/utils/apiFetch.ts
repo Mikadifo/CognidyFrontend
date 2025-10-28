@@ -1,9 +1,9 @@
 import { BASE_API } from "../constants";
+import GenerationStatusDto from "../dtos/GenerationStatusDto";
 import NewGoalDto from "../dtos/NewGoalDto";
 import { UserLoginDto, UserSignUpDto } from "../dtos/UserDto";
 import { Note } from "../models/Note";
 import RoadmapGoal from "../models/RoadmapGoal";
-
 
 /* 
    Helper function to read the real token from localStorage
@@ -65,7 +65,15 @@ export const api = {
     request<{ data: Note[] }>("/notes", {
       headers: {
         "Content-Type": "application/json",
-        Authorization: getAuthHeader(), 
+        Authorization: getAuthHeader(),
+      },
+    }),
+  generationStatus: (id: string) =>
+    request<{ data: GenerationStatusDto }>(`/notes/status/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
       },
     }),
   deleteNote: (id: string) =>
@@ -73,14 +81,14 @@ export const api = {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: getAuthHeader(), 
+        Authorization: getAuthHeader(),
       },
     }),
   uploadNoteAuth: (formData: FormData) =>
     request<{ data: Note }>(`/notes/upload/auth`, {
       method: "POST",
       headers: {
-        Authorization: getAuthHeader(), 
+        Authorization: getAuthHeader(),
       },
       body: formData,
     }),
@@ -88,7 +96,7 @@ export const api = {
     request<{ data: RoadmapGoal[] }>("/roadmap_goals", {
       headers: {
         "Content-Type": "application/json",
-        Authorization: getAuthHeader(), 
+        Authorization: getAuthHeader(),
       },
     }),
   newGoal: (newGoal: NewGoalDto) =>
@@ -96,7 +104,7 @@ export const api = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: getAuthHeader(), 
+        Authorization: getAuthHeader(),
       },
       body: JSON.stringify(newGoal),
     }),
@@ -105,7 +113,7 @@ export const api = {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: getAuthHeader(), 
+        Authorization: getAuthHeader(),
       },
     }),
   updateGoalCompletion: (order: number, completed: boolean) =>
@@ -113,7 +121,7 @@ export const api = {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: getAuthHeader(), 
+        Authorization: getAuthHeader(),
       },
       body: JSON.stringify({ completed }),
     }),
