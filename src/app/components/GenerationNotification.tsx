@@ -24,7 +24,7 @@ interface GenerationNotificationProps {
 
 export default function GenerationNotification({
   section,
-  fetchFunction
+  fetchFunction,
 }: GenerationNotificationProps) {
   const [hideNotification, setHideNotification] = useState<boolean>(true);
   const { submit: getGenerationStatuts } = useApi<
@@ -39,9 +39,7 @@ export default function GenerationNotification({
       return;
     }
 
-    setHideNotification(isSectionComplete(section));
-
-    const pollStatus = setInterval(async () => {
+    const pollStatus = async () => {
       const result = await getGenerationStatuts(getNewNoteId());
 
       if (result.error) {
@@ -51,20 +49,25 @@ export default function GenerationNotification({
 
       const newStatus = result.data as GenerationStatusDto;
       updateNewNoteStatus(newStatus);
+      setHideNotification(isSectionComplete(section));
 
       if (isSectionComplete(section)) {
-        clearInterval(pollStatus);
-        setHideNotification(true);
+        clearInterval(pollInterval);
         fetchFunction();
       }
 
       if (allSectionsComplete()) {
-        clearInterval(pollStatus);
+        clearInterval(pollInterval);
+        setHideNotification(true);
         removeNewNoteStatus();
       }
-    }, 3000);
+    };
 
-    return () => clearInterval(pollStatus);
+    pollStatus();
+
+    const pollInterval = setInterval(pollStatus, 3000);
+
+    return () => clearInterval(pollInterval);
   }, [getGenerationStatuts]);
 
   const getGeneratingSectionString = () => {

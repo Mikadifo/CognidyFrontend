@@ -58,18 +58,18 @@ export function isSectionComplete(section: GeneratingSection) {
     sectionString = "puzzles";
   }
 
-  return getNewNoteStatus()[sectionString] === "done";
+  return getNewNoteStatus()[sectionString] !== "generating";
 }
 
 export function allSectionsComplete() {
   const sections = ["flashcards", "goals", "puzzles"];
   const newStatus = getNewNoteStatus();
 
-  sections.forEach((section) => {
+  for (let section of sections) {
     if (newStatus[section] === "generating") {
       return false;
     }
-  });
+  }
 
   return true;
 }
