@@ -6,12 +6,29 @@ import { useRouter } from "next/navigation";
 export function useAuth() {
   const router = useRouter();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+  // Save token (for login or signup)
+  const saveUser = (token: string) => {
+    localStorage.setItem("token", token);
+  };
 
-    // If token doesn’t exist, force redirect to login
+  // Get token (used to check authentication)
+  const getToken = (): string | null => {
+    return localStorage.getItem("token");
+  };
+
+  // Logout function (used in Sidebar)
+  const logout = () => {
+    localStorage.removeItem("token");
+    router.push("/login");
+  };
+
+  // Optional: Protect pages automatically when mounted
+  useEffect(() => {
+    const token = getToken();
     if (!token) {
       router.push("/login");
     }
-  }, [router]);
+  }, []);
+
+  return { saveUser, getToken, logout };
 }
