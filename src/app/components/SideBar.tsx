@@ -3,16 +3,18 @@
 import { ComponentType, FC, SVGProps, useState, useEffect } from "react";
 import { useAuth } from "@/app/hooks/useAuth";
 
+
 import Logo from "./../assets/logoHorizontal.svg";
 import BookIcon from "./../assets/icons/book.svg";
 import ExitIcon from "./../assets/icons/exit.svg";
+import ArrowIcon from "./../assets/icons/arrow.svg";
 import LearningIcon from "./../assets/icons/learning.svg";
 import ProgressIcon from "./../assets/icons/barChart.svg";
 import NotesIcon from "./../assets/icons/notes.svg";
 import SettingsIcon from "./../assets/icons/settings.svg";
 
 import { Button } from "./Button";
-import { usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 interface SideBarProps {
   className?: string;
@@ -29,8 +31,18 @@ export const SideBar: FC<SideBarProps> = ({ className }) => {
     if (token === "guest") setIsGuest(true);
   }, []);
 
-  const onLogout = () => {
-    logout(); 
+ // Dynamic click handler
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (isGuest) {
+      // Guest user → clear token and redirect to login
+      localStorage.removeItem("token");
+      router.push("/login");
+    } else {
+      // Logged-in user → log out
+      logout();
+    }
   };
 
   return (
@@ -75,12 +87,15 @@ export const SideBar: FC<SideBarProps> = ({ className }) => {
           />
         </ul>
 
-       <Button
-        className={`!rounded-none w-full ${
-           isGuest ? "bg-gray-400 hover:bg-gray-500" : "bg-red hover:bg-red-600"
-       }`}
-       icon={ExitIcon}
-       onClick={onLogout}
+     {/* Dynamic Footer Button */}
+        <Button
+          className={`!rounded-none w-full ${
+            isGuest
+              ? "bg-brand hover:bg-brand/80" 
+              : "bg-red hover:bg-red-600" 
+          }`}
+          icon={isGuest ? ArrowIcon : ExitIcon}
+          onClick={handleClick}
       >
        {isGuest ? "Guest Mode" : "Log Out"}
        </Button>
