@@ -1,6 +1,6 @@
 "use client";
 
-import { ComponentType, FC, SVGProps } from "react";
+import { ComponentType, FC, SVGProps, useState, useEffect } from "react";
 import { useAuth } from "@/app/hooks/useAuth";
 
 import Logo from "./../assets/logoHorizontal.svg";
@@ -21,6 +21,13 @@ interface SideBarProps {
 export const SideBar: FC<SideBarProps> = ({ className }) => {
   const pathname = usePathname();
   const { logout } = useAuth();
+   const [isGuest, setIsGuest] = useState(false);
+
+     // Detect guest mode
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token === "guest") setIsGuest(true);
+  }, []);
 
   const onLogout = () => {
     logout(); 
@@ -68,13 +75,15 @@ export const SideBar: FC<SideBarProps> = ({ className }) => {
           />
         </ul>
 
-        <Button
-          className="bg-red !rounded-none w-full"
-          icon={ExitIcon}
-          onClick={onLogout}
-        >
-          Log out
-        </Button>
+       <Button
+        className={`!rounded-none w-full ${
+           isGuest ? "bg-gray-400 hover:bg-gray-500" : "bg-red hover:bg-red-600"
+       }`}
+       icon={ExitIcon}
+       onClick={onLogout}
+      >
+       {isGuest ? "Guest Mode" : "Log Out"}
+       </Button>
       </div>
     </div>
   );
