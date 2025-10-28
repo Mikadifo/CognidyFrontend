@@ -3,7 +3,6 @@
 import { ComponentType, FC, SVGProps, useState, useEffect } from "react";
 import { useAuth } from "@/app/hooks/useAuth";
 
-
 import Logo from "./../assets/logoHorizontal.svg";
 import BookIcon from "./../assets/icons/book.svg";
 import ExitIcon from "./../assets/icons/exit.svg";
@@ -23,15 +22,15 @@ interface SideBarProps {
 export const SideBar: FC<SideBarProps> = ({ className }) => {
   const pathname = usePathname();
   const { logout } = useAuth();
-   const [isGuest, setIsGuest] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
 
-     // Detect guest mode
+  // Detect guest mode
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token === "guest") setIsGuest(true);
   }, []);
 
- // Dynamic click handler
+  // Dynamic click handler
   const router = useRouter();
 
   const handleClick = () => {
@@ -87,18 +86,16 @@ export const SideBar: FC<SideBarProps> = ({ className }) => {
           />
         </ul>
 
-     {/* Dynamic Footer Button */}
+        {/* Dynamic Footer Button */}
         <Button
           className={`!rounded-none w-full ${
-            isGuest
-              ? "bg-brand hover:bg-brand/80" 
-              : "bg-red hover:bg-red-600" 
+            isGuest ? "!bg-brand hover:opacity-60" : "bg-red hover:bg-red-600"
           }`}
           icon={isGuest ? ArrowIcon : ExitIcon}
           onClick={handleClick}
-      >
-       {isGuest ? "Guest Mode" : "Log Out"}
-       </Button>
+        >
+          {isGuest ? "Log In" : "Log Out"}
+        </Button>
       </div>
     </div>
   );
