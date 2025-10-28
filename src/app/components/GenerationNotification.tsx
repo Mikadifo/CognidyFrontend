@@ -19,10 +19,12 @@ export enum GeneratingSection {
 
 interface GenerationNotificationProps {
   section: GeneratingSection;
+  fetchFunction: () => void;
 }
 
 export default function GenerationNotification({
   section,
+  fetchFunction
 }: GenerationNotificationProps) {
   const [hideNotification, setHideNotification] = useState<boolean>(true);
   const { submit: getGenerationStatuts } = useApi<
@@ -53,6 +55,7 @@ export default function GenerationNotification({
       if (isSectionComplete(section)) {
         clearInterval(pollStatus);
         setHideNotification(true);
+        fetchFunction();
       }
 
       if (allSectionsComplete()) {
