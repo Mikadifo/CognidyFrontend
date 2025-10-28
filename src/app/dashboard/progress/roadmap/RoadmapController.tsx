@@ -52,7 +52,10 @@ export const RoadmapController: FC = () => {
           {hideCompleted ? "Show" : "Hide"} completed goals
         </Button>
 
-        <GenerationNotification section={GeneratingSection.ROADMAP} />
+        <GenerationNotification
+          section={GeneratingSection.ROADMAP}
+          fetchFunction={getGoals}
+        />
       </div>
 
       <div className="flex gap-16 relative">
