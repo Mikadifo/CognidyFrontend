@@ -1,7 +1,7 @@
 "use client";
 
 import { ComponentType, FC, SVGProps } from "react";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/hooks/useAuth";
 
 import Logo from "./../assets/logoHorizontal.svg";
 import BookIcon from "./../assets/icons/book.svg";
@@ -20,12 +20,10 @@ interface SideBarProps {
 
 export const SideBar: FC<SideBarProps> = ({ className }) => {
   const pathname = usePathname();
-  const router = useRouter();
+  const { logout } = useAuth();
 
   const onLogout = () => {
-   localStorage.removeItem("token"); // clear saved token
-    console.log("Logged out, token removed");
-    router.push("/login"); // redirect to login
+    logout(); 
   };
 
   return (

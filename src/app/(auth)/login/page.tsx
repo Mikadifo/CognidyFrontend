@@ -10,10 +10,13 @@ import { useApi } from "@/app/hooks/useApi";
 import { UserLoginDto } from "@/app/dtos/UserDto";
 import { api } from "@/app/utils/apiFetch";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/hooks/useAuth";
 
 export default function LoginPage() {
   const [form, setForm] = useState({ username: "", password: "" });
   const router = useRouter();
+  const { saveUser } = useAuth();
+
   const {
     //data: token,
     loading,
@@ -36,13 +39,19 @@ export default function LoginPage() {
 
     //If login worked, save the token
   if (response.data) {
-    localStorage.setItem("token", response.data);
+    saveUser(response.data);
     console.log("Token saved:", response.data);
     router.push("/dashboard");
 } else {
   console.error("No token received:", response);
 }
 };
+
+// Guest login button handler
+  const handleGuest = () => {
+    saveUser("guest");
+    router.push("/dashboard");
+  };
     
   
 
@@ -110,7 +119,7 @@ export default function LoginPage() {
 
         <div className="bg-dark-16 h-[1px] rounded-full w-[300px] mx-auto my-8" />
 
-        <Button variant="outline" className="w-full" type="button">
+        <Button variant="outline" className="w-full" type="button" onClick={handleGuest}>
           Continue as Guest
         </Button>
       </div>
