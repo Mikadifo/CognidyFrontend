@@ -5,7 +5,7 @@ import { Button } from "./Button";
 import { useApi } from "../hooks/useApi";
 import { api } from "../utils/apiFetch";
 import NewGoalDto from "../dtos/NewGoalDto";
-import { title } from "process";
+import { MAX_ROADMAP_GOALS } from "../constants";
 
 interface RoadmapGoalFormProps {
   goals: RoadmapGoal[];
@@ -85,6 +85,11 @@ export const RoadmapGoalForm: FC<RoadmapGoalFormProps> = ({
     }
 
     setNewGoal({ order: 0, title: "", brief: "" });
+    setValidationErrors({
+      order: "",
+      title: "",
+      brief: "",
+    });
     onSubmit();
   };
 
@@ -103,6 +108,14 @@ export const RoadmapGoalForm: FC<RoadmapGoalFormProps> = ({
 
     return undefined;
   };
+
+  if (goals.length >= MAX_ROADMAP_GOALS) {
+    return (
+      <p className="sticky top-0 h-fit">
+        <b>You can only have up to {MAX_ROADMAP_GOALS} goals</b>
+      </p>
+    );
+  }
 
   return (
     <form

@@ -61,6 +61,20 @@ export function isSectionComplete(section: GeneratingSection) {
   return getNewNoteStatus()[sectionString] !== "generating";
 }
 
+export function sectionFailed(section: GeneratingSection) {
+  let sectionString = "flashcards";
+
+  if (section === GeneratingSection.ROADMAP) {
+    sectionString = "goals";
+  }
+
+  if (section === GeneratingSection.PUZZLES) {
+    sectionString = "puzzles";
+  }
+
+  return getNewNoteStatus()[sectionString] === "failed";
+}
+
 export function allSectionsComplete() {
   const sections = ["flashcards", "goals", "puzzles"];
   const newStatus = getNewNoteStatus();
