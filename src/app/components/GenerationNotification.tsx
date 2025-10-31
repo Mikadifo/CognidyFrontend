@@ -42,8 +42,11 @@ export default function GenerationNotification({
     const pollStatus = async () => {
       const result = await getGenerationStatuts(getNewNoteId());
 
+      console.log(result);
+
       if (result.error) {
         console.error(result.error);
+        clearInterval(pollInterval);
         return;
       }
 

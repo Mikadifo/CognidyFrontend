@@ -25,20 +25,14 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   }
 
   if (!res.ok) {
-    let errorMessage: string;
+    if (typeof json === "object" && json !== null) {
+      const obj = json as Record<string, unknown>;
+      const error = obj.error ?? res.statusText ?? `HTTP ${res.status}`;
 
-    if (
-      typeof json === "object" &&
-      json !== null &&
-      "error" in json &&
-      typeof (json as { error: unknown }).error === "string"
-    ) {
-      errorMessage = (json as { error: string }).error;
-    } else {
-      errorMessage = res.statusText || `HTTP ${res.status}`;
+      throw error instanceof Error ? error : error;
     }
 
-    throw new Error(errorMessage);
+    throw new Error(res.statusText || `HTTP ${res.status}`);
   }
 
   return json as T;
@@ -73,7 +67,7 @@ export const api = {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+        Authorization: getAuthHeader(),
       },
     }),
   deleteNote: (id: string) =>

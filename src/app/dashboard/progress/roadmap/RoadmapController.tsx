@@ -45,28 +45,39 @@ export const RoadmapController: FC = () => {
     getGoals();
   };
 
-  if (error) {
+  const hasGoals = () => {
+    return goals && goals?.length > 0;
+  };
+
+  if (error && typeof error === "string") {
     return error;
+  }
+
+  if (token === "guest") {
+    return <GuestLoginCTA />;
   }
 
   const filteredGoals = hideCompleted
     ? goals?.filter((goal) => !goal.completed)
     : goals;
 
-  if (token === "guest") {
-    return <GuestLoginCTA />;
-  }
-
   return (
     <div className="flex flex-col gap-8 relative">
-      <div className="flex gap-8">
-        <Button
-          className="w-fit"
-          variant="outline"
-          onClick={() => setHideCompleted(!hideCompleted)}
-        >
-          {hideCompleted ? "Show" : "Hide"} completed goals
-        </Button>
+      <div className="flex gap-8" hidden={loading}>
+        {hasGoals() ? (
+          <Button
+            className="w-fit"
+            variant="outline"
+            onClick={() => setHideCompleted(!hideCompleted)}
+          >
+            {hideCompleted ? "Show" : "Hide"} completed goals
+          </Button>
+        ) : (
+          <p className="text-md">
+            You don't have goals yet. Create one or upload a file to generate
+            goals using AI.
+          </p>
+        )}
 
         <GenerationNotification
           section={GeneratingSection.ROADMAP}
@@ -78,7 +89,12 @@ export const RoadmapController: FC = () => {
         {onLoadFetching && loading ? (
           <RoadmapGoalsSkeleton />
         ) : (
-          <RoadmapGoals goals={filteredGoals || []} getGoals={fetchAfterLoad} />
+          hasGoals() && (
+            <RoadmapGoals
+              goals={filteredGoals || []}
+              getGoals={fetchAfterLoad}
+            />
+          )
         )}
         <RoadmapGoalForm
           goals={filteredGoals || []}
