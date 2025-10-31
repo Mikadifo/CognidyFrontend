@@ -1,3 +1,4 @@
+import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 
 interface ApiResponse<T> {
@@ -9,6 +10,7 @@ interface ApiResponse<T> {
 export const useApi = <T, Args extends unknown[]>(
   apiRequest: (...args: Args) => Promise<ApiResponse<T>>,
 ) => {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<T | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -35,6 +37,10 @@ export const useApi = <T, Args extends unknown[]>(
 
         return res;
       } catch (e: unknown) {
+        if (e === "UNPROCESSABLE ENTITY") {
+          router.push("/login");
+        }
+
         let err: string | Record<string, string> = "Unexpected error";
 
         if (e instanceof Error) {

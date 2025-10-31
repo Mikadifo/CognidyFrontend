@@ -5,10 +5,6 @@ import { UserLoginDto, UserSignUpDto } from "../dtos/UserDto";
 import { Note } from "../models/Note";
 import RoadmapGoal from "../models/RoadmapGoal";
 
-/* 
-   Helper function to read the real token from localStorage
-   instead of using the static AUTH_TOKEN constant.
-*/
 function getAuthHeader() {
   const token = localStorage.getItem("token");
   return token ? `Bearer ${token}` : "";
