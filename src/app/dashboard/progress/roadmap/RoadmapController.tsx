@@ -32,7 +32,7 @@ export const RoadmapController: FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!token || token === "guest") {
+    if (!getToken() || getToken() === "guest") {
       return;
     }
 
