@@ -26,6 +26,9 @@ export const RoadmapController: FC = () => {
     error,
     data: goals,
   } = useApi<RoadmapGoal[], []>(api.fetchGoals);
+  const filteredGoals = hideCompleted
+    ? goals?.filter((goal) => !goal.completed)
+    : goals;
 
   useEffect(() => {
     setToken(getToken() || "");
@@ -49,6 +52,18 @@ export const RoadmapController: FC = () => {
     return goals && goals?.length > 0;
   };
 
+  const showFilter = () => {
+    if (!hasGoals()) {
+      return false;
+    }
+
+    if (!hideCompleted) {
+      return (goals?.filter((goal) => goal.completed) ?? []).length > 0;
+    }
+
+    return hasGoals();
+  };
+
   if (error && typeof error === "string") {
     return error;
   }
@@ -57,14 +72,10 @@ export const RoadmapController: FC = () => {
     return <GuestLoginCTA />;
   }
 
-  const filteredGoals = hideCompleted
-    ? goals?.filter((goal) => !goal.completed)
-    : goals;
-
   return (
     <div className="flex flex-col gap-8 relative">
       <div className="flex gap-8" hidden={loading}>
-        {hasGoals() ? (
+        {showFilter() && (
           <Button
             className="w-fit"
             variant="outline"
@@ -72,7 +83,9 @@ export const RoadmapController: FC = () => {
           >
             {hideCompleted ? "Show" : "Hide"} completed goals
           </Button>
-        ) : (
+        )}
+
+        {!hasGoals() && (
           <p className="text-md">
             You don't have goals yet. Create one or upload a file to generate
             goals using AI.
