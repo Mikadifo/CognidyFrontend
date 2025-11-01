@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useState } from "react";
 import RoadmapGoal from "../models/RoadmapGoal";
 import { ArcherContainer, ArcherElement } from "react-archer";
 import DeleteIcon from "../assets/icons/trashcan.svg";
@@ -13,6 +13,7 @@ interface RoadmapGoalsProps {
 }
 
 export const RoadmapGoals: FC<RoadmapGoalsProps> = ({ goals, getGoals }) => {
+  const [deletingOrder, setDeletingOrder] = useState<number | null>(null);
   const { submit: deleteGoal } = useApi<void, [order: number]>(api.deleteGoal);
   const { submit: updateGoal } = useApi<
     void,
@@ -31,20 +32,23 @@ export const RoadmapGoals: FC<RoadmapGoalsProps> = ({ goals, getGoals }) => {
   };
 
   const handleDelete = async (order: number) => {
-    const confirmed = confirm("Are you sure you want to delte this goal?");
-
-    if (!confirmed) {
+    if (deletingOrder === null) {
+      setDeletingOrder(order);
       return;
     }
 
-    const response = await deleteGoal(order);
+    const response = await deleteGoal(deletingOrder);
+
+    console.log(response);
 
     if (response.error) {
       console.error(response.error);
+      setDeletingOrder(null);
       return;
     }
 
     getGoals();
+    setDeletingOrder(null);
   };
 
   return (
@@ -69,10 +73,11 @@ export const RoadmapGoals: FC<RoadmapGoalsProps> = ({ goals, getGoals }) => {
             <div className="flex flex-col gap-4 justify-between bg-dark-08 rounded-lg p-8 relative">
               <button
                 type="button"
-                className="absolute top-3 right-3 cursor-pointer hover:bg-red text-red rounded-full p-1.5 bg-white hover:text-white"
+                className={`absolute top-3 right-3 cursor-pointer hover:bg-red text-red rounded-full p-1.5 bg-white hover:text-white flex items-center ${deletingOrder === order ? "px-2 gap-1 font-semibold" : ""}`}
                 onClick={() => handleDelete(order)}
               >
                 <DeleteIcon className="size-3" />
+                {deletingOrder === order ? "Delete" : ""}
               </button>
 
               <div className="flex gap-4">
