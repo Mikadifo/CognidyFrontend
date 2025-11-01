@@ -32,14 +32,12 @@ export const RoadmapGoals: FC<RoadmapGoalsProps> = ({ goals, getGoals }) => {
   };
 
   const handleDelete = async (order: number) => {
-    if (deletingOrder === null) {
+    if (deletingOrder === null || deletingOrder !== order) {
       setDeletingOrder(order);
       return;
     }
 
     const response = await deleteGoal(deletingOrder);
-
-    console.log(response);
 
     if (response.error) {
       console.error(response.error);
