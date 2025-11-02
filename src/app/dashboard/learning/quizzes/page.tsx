@@ -1,4 +1,5 @@
 import { DashboardHeader } from "@/app/components/DashboardHeader";
+import { QuizzesController } from "./QuizzesController";
 
 export const metadata = {
   title: "Cognidy | Quizzes",
@@ -10,8 +11,10 @@ export default function Quizzes() {
     <div className="p-16 flex flex-col gap-16 w-full overflow-y-scroll h-screen">
       <DashboardHeader
         heading="Quizzes"
-        subheading="Follow personalized study goals built from your notes"
+        subheading="Test your knowledge with fun and fast quizzes!"
       />
+
+      <QuizzesController />
     </div>
   );
 }
