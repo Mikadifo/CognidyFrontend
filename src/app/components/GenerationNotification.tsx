@@ -90,7 +90,7 @@ export default function GenerationNotification({
       clearInterval(pollInterval);
       setGenerating(false);
     };
-  }, [getGenerationStatuts]);
+  }, [getGenerationStatuts, fetchFunction, section, setGenerating]);
 
   const getGeneratingSectionString = () => {
     if (section === GeneratingSection.ROADMAP) {
@@ -112,8 +112,8 @@ export default function GenerationNotification({
       {data?.goals === "failed" ? (
         <>
           <span>
-            Oops! We couldn't generate {getGeneratingSectionString()}. Try again
-            later
+            Oops! We couldn&apos;t generate {getGeneratingSectionString()}. Try
+            again later
           </span>
           <button
             type="button"

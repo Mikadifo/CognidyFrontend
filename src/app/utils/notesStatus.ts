@@ -79,7 +79,7 @@ export function allSectionsComplete() {
   const sections = ["flashcards", "goals", "puzzles"];
   const newStatus = getNewNoteStatus();
 
-  for (let section of sections) {
+  for (const section of sections) {
     if (newStatus[section] === "generating") {
       return false;
     }

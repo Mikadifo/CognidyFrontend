@@ -39,12 +39,10 @@ export default function Learning() {
           <SectionOption
             label="Quizzes"
             icon={StylusNote}
-            href="learning/puzzles"
-            disabled
+            href="learning/quizzes"
           />
         </div>
       </div>
     </div>
   );
 }
-
