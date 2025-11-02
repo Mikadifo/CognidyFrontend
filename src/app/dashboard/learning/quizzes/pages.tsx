@@ -1,5 +1,4 @@
 import { DashboardHeader } from "@/app/components/DashboardHeader";
-import React from "react";
 
 export const metadata = {
   title: "Cognidy | Quizzes",
