@@ -35,12 +35,13 @@ export const RoadmapController: FC = () => {
   }, []);
 
   useEffect(() => {
+    setOnLoadFetching(true);
+
     if (!getToken() || getToken() === "guest") {
       return;
     }
 
     getGoals();
-    setOnLoadFetching(true);
   }, [getGoals]);
 
   const fetchAfterLoad = () => {
