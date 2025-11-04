@@ -19,7 +19,6 @@ export const RoadmapController: FC = () => {
   const { getToken } = useAuth();
   const [token, setToken] = useState("");
   const [onLoadFetching, setOnLoadFetching] = useState(true);
-  const [generating, setGenerating] = useState(false);
   const { hideCompleted, setHideCompleted } = useGoalSettings();
   const {
     submit: getGoals,
@@ -96,7 +95,6 @@ export const RoadmapController: FC = () => {
         <GenerationNotification
           section={GeneratingSection.ROADMAP}
           fetchFunction={getGoals}
-          setGenerating={setGenerating}
         />
       </div>
 
@@ -112,12 +110,10 @@ export const RoadmapController: FC = () => {
           )
         )}
 
-        {!generating && (
-          <RoadmapGoalForm
-            goals={filteredGoals || []}
-            onSubmit={fetchAfterLoad}
-          />
-        )}
+        <RoadmapGoalForm
+          goals={filteredGoals || []}
+          onSubmit={fetchAfterLoad}
+        />
       </div>
     </div>
   );
