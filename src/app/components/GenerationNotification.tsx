@@ -82,7 +82,7 @@ export default function GenerationNotification({
     return () => {
       clearInterval(pollInterval);
     };
-  }, [getGenerationStatuts, fetchFunction, section, setGenerating]);
+  }, [getGenerationStatuts, fetchFunction, section]);
 
   const getGeneratingSectionString = () => {
     if (section === GeneratingSection.ROADMAP) {

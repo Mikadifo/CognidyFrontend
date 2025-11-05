@@ -38,22 +38,20 @@
 //   },
 // };
 
-
-import React from 'react';
-import Flashcard from './Flashcard'
-import type {Meta, StoryObj} from '@storybook/react'
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import Flashcard from "./Flashcard";
 
 const meta: Meta<typeof Flashcard> = {
-    title: 'Flashcard',
-    component: Flashcard,
-    parameters: {layout: 'centered'},
-    args: {
-        question: 'How many licks does it take to get to the center of a tootsie pop?',
-        answer: 'The world may never know',
-        defaultFlipped: false,
-        className: '',
-        
-    },
+  title: "Flashcard",
+  component: Flashcard,
+  parameters: { layout: "centered" },
+  args: {
+    question:
+      "How many licks does it take to get to the center of a tootsie pop?",
+    answer: "The world may never know",
+    defaultFlipped: false,
+    className: "",
+  },
 };
 export default meta;
 
@@ -71,5 +69,3 @@ export const ManualInteractions: Story = {
     card.click();
   },
 };
-
-
