@@ -5,6 +5,7 @@ import { Button } from "./Button";
 import { useApi } from "../hooks/useApi";
 import { api } from "../utils/apiFetch";
 import NewGoalDto from "../dtos/NewGoalDto";
+import { MAX_ROADMAP_GOALS } from "../constants";
 
 interface RoadmapGoalFormProps {
   goals: RoadmapGoal[];
@@ -15,65 +16,106 @@ export const RoadmapGoalForm: FC<RoadmapGoalFormProps> = ({
   goals,
   onSubmit,
 }) => {
-  const [newGoalOrder, setNewGoalOrder] = useState<number>(goals.length + 1);
-  const [newGoalTitle, setNewGoalTitle] = useState<string>("");
-  const [newGoalBrief, setNewGoalBrief] = useState<string>("");
-  const { loading, submit: createGoal } = useApi<void, [newGoal: NewGoalDto]>(
-    api.newGoal,
-  );
+  const [newGoal, setNewGoal] = useState<NewGoalDto>({
+    order: goals.length + 1,
+    title: "",
+    brief: "",
+  });
+  const {
+    loading,
+    submit: createGoal,
+    error,
+  } = useApi<void, [newGoal: NewGoalDto]>(api.newGoal);
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({
+    order: "",
+    title: "",
+    brief: "",
+  });
 
-  const handleNewGoalOrder = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = Number(event.target.value);
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
 
-    setNewGoalOrder(value);
-  };
-
-  const handleNewGoalTitle = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-
-    setNewGoalTitle(value);
-  };
-
-  const handleNewGoalBrief = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-
-    setNewGoalBrief(value);
+    setNewGoal((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleAddGoal = async (event: FormEvent) => {
     event.preventDefault();
 
-    newGoalTitle.trim();
-    newGoalBrief.trim();
+    const newTitle = newGoal.title.trim();
+    const newBrief = newGoal.brief.trim();
 
-    if (
-      newGoalOrder <= 0 ||
-      newGoalOrder > goals.length + 1 ||
-      !newGoalTitle ||
-      !newGoalBrief
-    ) {
+    if (newGoal.order <= 0 || newGoal.order > goals.length + 1) {
+      setValidationErrors({
+        ...validationErrors,
+        order: `Order must be in range (1-${goals.length + 1})`,
+      });
+
       return;
     }
 
-    const newGoal: NewGoalDto = {
-      order: newGoalOrder,
-      title: newGoalTitle,
-      brief: newGoalBrief,
-    };
+    if (!newTitle) {
+      setValidationErrors({
+        ...validationErrors,
+        title: "Title cannot be empty",
+      });
+      return;
+    }
 
-    const response = await createGoal(newGoal);
+    if (!newTitle) {
+      setValidationErrors({
+        ...validationErrors,
+        brief: "Brief cannot be empty",
+      });
+      return;
+    }
+
+    const response = await createGoal({
+      order: newGoal.order,
+      title: newTitle,
+      brief: newBrief,
+    });
 
     if (response.error) {
-      console.error(response.error);
       return;
     }
 
-    setNewGoalOrder(0);
-    setNewGoalTitle("");
-    setNewGoalBrief("");
-
+    setNewGoal({ order: 0, title: "", brief: "" });
+    setValidationErrors({
+      order: "",
+      title: "",
+      brief: "",
+    });
     onSubmit();
   };
+
+  const getError = (name: string) => {
+    if (validationErrors[name]) {
+      return validationErrors[name];
+    }
+
+    if (error) {
+      if (typeof error === "object") {
+        return error[name];
+      } else {
+        return String(error);
+      }
+    }
+
+    return undefined;
+  };
+
+  if (goals.length >= MAX_ROADMAP_GOALS) {
+    return (
+      <p className="sticky top-0 h-fit">
+        <b>You can only have up to {MAX_ROADMAP_GOALS} goals</b>
+      </p>
+    );
+  }
 
   return (
     <form
@@ -82,30 +124,37 @@ export const RoadmapGoalForm: FC<RoadmapGoalFormProps> = ({
     >
       <div className="flex flex-col gap-4">
         <Input
+          name="order"
           label={`Goal number (1 - ${goals.length + 1})`}
           placeholder="Goal #"
           type="number"
           min={1}
           max={goals.length + 1}
           required
-          value={newGoalOrder}
-          onChange={handleNewGoalOrder}
+          value={newGoal.order}
+          onChange={handleChange}
+          hidden={goals.length === 0}
+          error={getError("order")}
         />
         <Input
+          name="title"
           label="Goal title"
           placeholder="Goal title"
           type="text"
           required
-          value={newGoalTitle}
-          onChange={handleNewGoalTitle}
+          value={newGoal.title}
+          onChange={handleChange}
+          error={getError("title")}
         />
         <Input
+          name="brief"
           label="Goal brief"
           placeholder="Goal brief"
           type="text"
           required
-          value={newGoalBrief}
-          onChange={handleNewGoalBrief}
+          value={newGoal.brief}
+          onChange={handleChange}
+          error={getError("brief")}
         />
       </div>
 

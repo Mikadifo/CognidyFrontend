@@ -1,18 +1,22 @@
+import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 
 interface ApiResponse<T> {
   message?: string;
   data?: T;
-  error?: string;
+  error?: string | Record<string, string>;
 }
 
 export const useApi = <T, Args extends unknown[]>(
   apiRequest: (...args: Args) => Promise<ApiResponse<T>>,
 ) => {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<T | null>(null);
   const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | Record<string, string> | null>(
+    null,
+  );
 
   const submit = useCallback(
     async (...args: Args): Promise<ApiResponse<T>> => {
@@ -24,7 +28,7 @@ export const useApi = <T, Args extends unknown[]>(
         const res = await apiRequest(...args);
 
         if (res.error) {
-          setError(res.error);
+          setError(res.error ?? "Unexpected error");
           setData(null);
         } else {
           setData(res.data ?? null);
@@ -33,20 +37,28 @@ export const useApi = <T, Args extends unknown[]>(
 
         return res;
       } catch (e: unknown) {
-        let errMsg: string = "";
-
-        if (e instanceof Error) {
-          errMsg = e.message ?? "Unexpected error";
+        if (e === "UNPROCESSABLE ENTITY") {
+          router.push("/login");
         }
 
-        setError(errMsg);
+        let err: string | Record<string, string> = "Unexpected error";
 
-        return { error: errMsg };
+        if (e instanceof Error) {
+          err = e.message ?? "Unexpected error";
+        } else if (typeof e === "object" && e !== null) {
+          err = e as Record<string, string>;
+        } else {
+          err = String(e);
+        }
+
+        setError(err);
+
+        return { error: err };
       } finally {
         setLoading(false);
       }
     },
-    [apiRequest],
+    [apiRequest, router],
   );
 
   const setDataState = setData as unknown as React.Dispatch<

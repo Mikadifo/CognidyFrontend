@@ -1,17 +1,19 @@
 "use client";
 
-import { ComponentType, FC, SVGProps } from "react";
+import { ComponentType, FC, SVGProps, useState, useEffect } from "react";
+import { useAuth } from "@/app/hooks/useAuth";
 
 import Logo from "./../assets/logoHorizontal.svg";
 import BookIcon from "./../assets/icons/book.svg";
 import ExitIcon from "./../assets/icons/exit.svg";
+import ArrowIcon from "./../assets/icons/arrow.svg";
 import LearningIcon from "./../assets/icons/learning.svg";
 import ProgressIcon from "./../assets/icons/barChart.svg";
 import NotesIcon from "./../assets/icons/notes.svg";
 import SettingsIcon from "./../assets/icons/settings.svg";
 
 import { Button } from "./Button";
-import { usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 interface SideBarProps {
   className?: string;
@@ -19,9 +21,27 @@ interface SideBarProps {
 
 export const SideBar: FC<SideBarProps> = ({ className }) => {
   const pathname = usePathname();
+  const { logout } = useAuth();
+  const [isGuest, setIsGuest] = useState(false);
 
-  const onLogout = () => {
-    console.log("TODO: Logout");
+  // Detect guest mode
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token === "guest") setIsGuest(true);
+  }, []);
+
+  // Dynamic click handler
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (isGuest) {
+      // Guest user → clear token and redirect to login
+      localStorage.removeItem("token");
+      router.push("/login");
+    } else {
+      // Logged-in user → log out
+      logout();
+    }
   };
 
   return (
@@ -66,12 +86,15 @@ export const SideBar: FC<SideBarProps> = ({ className }) => {
           />
         </ul>
 
+        {/* Dynamic Footer Button */}
         <Button
-          className="bg-red !rounded-none w-full"
-          icon={ExitIcon}
-          onClick={onLogout}
+          className={`!rounded-none w-full ${
+            isGuest ? "!bg-brand hover:opacity-60" : "bg-red hover:bg-red-600"
+          }`}
+          icon={isGuest ? ArrowIcon : ExitIcon}
+          onClick={handleClick}
         >
-          Log out
+          {isGuest ? "Log In" : "Log Out"}
         </Button>
       </div>
     </div>

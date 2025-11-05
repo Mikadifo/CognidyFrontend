@@ -1,9 +1,10 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useState } from "react";
 import RoadmapGoal from "../models/RoadmapGoal";
 import { ArcherContainer, ArcherElement } from "react-archer";
 import DeleteIcon from "../assets/icons/trashcan.svg";
+import Spinner from "../assets/icons/spinner.svg";
 import { api } from "../utils/apiFetch";
 import { useApi } from "../hooks/useApi";
 
@@ -13,17 +14,21 @@ interface RoadmapGoalsProps {
 }
 
 export const RoadmapGoals: FC<RoadmapGoalsProps> = ({ goals, getGoals }) => {
+  const [deletingOrder, setDeletingOrder] = useState<number | null>(null);
+  const [updatingOrder, setUpdatingOrder] = useState<number | null>(null);
   const { submit: deleteGoal } = useApi<void, [order: number]>(api.deleteGoal);
-  const { submit: updateGoal } = useApi<
+  const { submit: updateGoal, loading: loadingUpdate } = useApi<
     void,
     [order: number, completed: boolean]
   >(api.updateGoalCompletion);
 
   const handleComplete = async (order: number, completed: boolean) => {
+    setUpdatingOrder(order);
     const response = await updateGoal(order, !completed);
 
     if (response.error) {
       console.error(response.error);
+      setUpdatingOrder(null);
       return;
     }
 
@@ -31,20 +36,21 @@ export const RoadmapGoals: FC<RoadmapGoalsProps> = ({ goals, getGoals }) => {
   };
 
   const handleDelete = async (order: number) => {
-    const confirmed = confirm("Are you sure you want to delte this goal?");
-
-    if (!confirmed) {
+    if (deletingOrder === null || deletingOrder !== order) {
+      setDeletingOrder(order);
       return;
     }
 
-    const response = await deleteGoal(order);
+    const response = await deleteGoal(deletingOrder);
 
     if (response.error) {
       console.error(response.error);
+      setDeletingOrder(null);
       return;
     }
 
     getGoals();
+    setDeletingOrder(null);
   };
 
   return (
@@ -69,10 +75,11 @@ export const RoadmapGoals: FC<RoadmapGoalsProps> = ({ goals, getGoals }) => {
             <div className="flex flex-col gap-4 justify-between bg-dark-08 rounded-lg p-8 relative">
               <button
                 type="button"
-                className="absolute top-3 right-3 cursor-pointer hover:bg-red text-red rounded-full p-1.5 bg-white hover:text-white"
+                className={`absolute top-3 right-3 cursor-pointer hover:bg-red text-red rounded-full p-1.5 bg-white hover:text-white flex items-center ${deletingOrder === order ? "px-2 gap-1 font-semibold" : ""}`}
                 onClick={() => handleDelete(order)}
               >
                 <DeleteIcon className="size-3" />
+                {deletingOrder === order ? "Delete" : ""}
               </button>
 
               <div className="flex gap-4">
@@ -88,15 +95,24 @@ export const RoadmapGoals: FC<RoadmapGoalsProps> = ({ goals, getGoals }) => {
                   <button
                     hidden={i >= 1 && !goals[i - 1].completed}
                     type="button"
-                    className={`w-fit text-white text-xs font-bold px-4 py-1 rounded-full cursor-pointer hover:opacity-80 ${completed ? "bg-green" : "bg-dark"}`}
+                    className={`w-fit text-white text-xs font-bold px-4 py-1 rounded-full cursor-pointer hover:opacity-80 ${completed ? "bg-green" : "bg-dark"} disabled:opacity-75 disabled:cursor-not-allowed`}
                     onClick={() => handleComplete(order, completed)}
+                    disabled={loadingUpdate}
                   >
                     {completed ? (
                       <div className="flex gap-2">
-                        <span>Completed</span>
-                        <div className="bg-white/80 w-0.5 h-auto" />
-                        <span>Undo</span>
+                        {loadingUpdate && order === updatingOrder ? (
+                          <Spinner className="size-4 animate-spin" />
+                        ) : (
+                          <>
+                            <span>Completed</span>
+                            <div className="bg-white/80 w-0.5 h-auto" />
+                            <span>Undo</span>
+                          </>
+                        )}
                       </div>
+                    ) : loadingUpdate && order === updatingOrder ? (
+                      <Spinner className="size-4 animate-spin" />
                     ) : (
                       "Mark as Completed"
                     )}

@@ -1,8 +1,14 @@
-import { AUTH_TOKEN, BASE_API } from "../constants";
+import { BASE_API } from "../constants";
+import GenerationStatusDto from "../dtos/GenerationStatusDto";
 import NewGoalDto from "../dtos/NewGoalDto";
 import { UserLoginDto, UserSignUpDto } from "../dtos/UserDto";
 import { Note } from "../models/Note";
 import RoadmapGoal from "../models/RoadmapGoal";
+
+function getAuthHeader() {
+  const token = localStorage.getItem("token");
+  return token ? `Bearer ${token}` : "";
+}
 
 async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE_API}${endpoint}`, options);
@@ -15,20 +21,14 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   }
 
   if (!res.ok) {
-    let errorMessage: string;
+    if (typeof json === "object" && json !== null) {
+      const obj = json as Record<string, unknown>;
+      const error = obj.error ?? res.statusText ?? `HTTP ${res.status}`;
 
-    if (
-      typeof json === "object" &&
-      json !== null &&
-      "error" in json &&
-      typeof (json as { error: unknown }).error === "string"
-    ) {
-      errorMessage = (json as { error: string }).error;
-    } else {
-      errorMessage = res.statusText || `HTTP ${res.status}`;
+      throw error instanceof Error ? error : error;
     }
 
-    throw new Error(errorMessage);
+    throw new Error(res.statusText || `HTTP ${res.status}`);
   }
 
   return json as T;
@@ -55,7 +55,15 @@ export const api = {
     request<{ data: Note[] }>("/notes", {
       headers: {
         "Content-Type": "application/json",
-        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+        Authorization: getAuthHeader(),
+      },
+    }),
+  generationStatus: (id: string) =>
+    request<{ data: GenerationStatusDto }>(`/notes/status/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
       },
     }),
   deleteNote: (id: string) =>
@@ -63,14 +71,14 @@ export const api = {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+        Authorization: getAuthHeader(),
       },
     }),
   uploadNoteAuth: (formData: FormData) =>
     request<{ data: Note }>(`/notes/upload/auth`, {
       method: "POST",
       headers: {
-        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+        Authorization: getAuthHeader(),
       },
       body: formData,
     }),
@@ -78,7 +86,7 @@ export const api = {
     request<{ data: RoadmapGoal[] }>("/roadmap_goals", {
       headers: {
         "Content-Type": "application/json",
-        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+        Authorization: getAuthHeader(),
       },
     }),
   newGoal: (newGoal: NewGoalDto) =>
@@ -86,7 +94,7 @@ export const api = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+        Authorization: getAuthHeader(),
       },
       body: JSON.stringify(newGoal),
     }),
@@ -95,7 +103,7 @@ export const api = {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+        Authorization: getAuthHeader(),
       },
     }),
   updateGoalCompletion: (order: number, completed: boolean) =>
@@ -103,7 +111,7 @@ export const api = {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+        Authorization: getAuthHeader(),
       },
       body: JSON.stringify({ completed }),
     }),

@@ -23,7 +23,7 @@ export const FileController: FC = () => {
   }, [getNotes]);
 
   if (error) {
-    return error;
+    return String(error);
   }
 
   return (

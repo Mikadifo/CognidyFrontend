@@ -5,6 +5,7 @@ import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { Note } from "../models/Note";
 import { useApi } from "../hooks/useApi";
 import { api } from "../utils/apiFetch";
+import { addNewNote } from "../utils/notesStatus";
 
 interface FileUploadProps {
   setNotes: Dispatch<SetStateAction<Note[]>>;
@@ -43,6 +44,7 @@ export default function FileUpload({ setNotes }: FileUploadProps) {
     }
 
     setNotes((prev) => [...prev, newNote]);
+    addNewNote(newNote._id);
     setFile(null);
   };
 
