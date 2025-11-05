@@ -32,7 +32,7 @@ export const RoadmapController: FC = () => {
 
   useEffect(() => {
     setToken(getToken() || "");
-  }, []);
+  }, [getToken]);
 
   useEffect(() => {
     setOnLoadFetching(true);
@@ -88,8 +88,8 @@ export const RoadmapController: FC = () => {
 
         {!hasGoals() && (
           <p className="text-md">
-            You don't have goals yet. Create one or upload a file to generate
-            goals using AI.
+            You don&apos;t have goals yet. Create one or upload a file to
+            generate goals using AI.
           </p>
         )}
 

@@ -2,7 +2,7 @@ import React, { RefObject, useEffect } from "react";
 import { Button } from "./Button";
 
 interface ConfirmationDialogProps {
-  dialogRef: RefObject<HTMLDialogElement>;
+  dialogRef: RefObject<HTMLDialogElement | null>;
   open?: boolean;
   title: string;
   content: string;
@@ -26,8 +26,12 @@ function ConfirmationDialog({
     if (!dialog) return;
 
     const handleOutsideClick = (event: MouseEvent) => {
+      if (!dialogRef) {
+        return;
+      }
+
       if (event.target === dialogRef.current) {
-        dialogRef.current.close();
+        dialogRef?.current?.close();
       }
     };
 

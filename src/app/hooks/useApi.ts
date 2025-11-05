@@ -58,7 +58,7 @@ export const useApi = <T, Args extends unknown[]>(
         setLoading(false);
       }
     },
-    [apiRequest],
+    [apiRequest, router],
   );
 
   const setDataState = setData as unknown as React.Dispatch<
