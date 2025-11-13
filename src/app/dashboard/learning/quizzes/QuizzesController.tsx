@@ -79,6 +79,7 @@ export function QuizzesController() {
         total={quizzes.length}
         missed={missedCount}
         correct={correctCount}
+        onRestart={() => {}}
       />
     </div>
   );

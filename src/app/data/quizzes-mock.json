@@ -8,14 +8,14 @@
       "Abraham Lincoln",
       "Thomas Jefferson"
     ],
-    "correct": "George Washington",
+    "correct": 1,
     "sourceFileName": "example.pdf"
   },
   {
     "_id": "89fm229mvs8882jf",
     "question": "The Sun is a star that produces its own light.",
     "options": ["True", "False"],
-    "correct": "False",
+    "correct": 0,
     "sourceFileName": "example.pdf"
   }
 ]

@@ -11,7 +11,7 @@ interface QuizzesQuestion {
 
 export default function QuizzQuestion({ quizz, handleNext }: QuizzesQuestion) {
   const [options, setOptions] = useState<string[]>([]);
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [completed, setCompleted] = useState<boolean>(false);
   const [showCorrect, setShowCorrect] = useState<boolean>(false);
 
@@ -21,7 +21,7 @@ export default function QuizzQuestion({ quizz, handleNext }: QuizzesQuestion) {
     setOptions(shuffledOptions);
   }, [quizz, setOptions]);
 
-  const isCorrect = (option: string) => {
+  const isCorrect = (option: number) => {
     return selectedOption !== null && completed && option === quizz.correct;
   };
 
@@ -32,9 +32,12 @@ export default function QuizzQuestion({ quizz, handleNext }: QuizzesQuestion) {
   };
 
   const handleActionButton = () => {
+    setShowCorrect(false);
+
     if (completed) {
       setCompleted(false);
-      handleNext(isCorrect(selectedOption || ""));
+      handleNext(isCorrect(selectedOption || -1));
+      setSelectedOption(null);
       return;
     }
 
@@ -53,14 +56,14 @@ export default function QuizzQuestion({ quizz, handleNext }: QuizzesQuestion) {
         <div className="flex flex-wrap gap-4">
           {options.map((option, index) => (
             <button
-              className={`rounded-lg py-2 w-[calc(50%-8px)] text-base ${selectedOption === option ? "bg-brand-16" : "bg-dark-08"} ${!completed ? "cursor-pointer" : ""} relative`}
-              onClick={() => (!completed ? setSelectedOption(option) : {})}
+              className={`rounded-lg py-2 w-[calc(50%-8px)] text-base ${selectedOption === index ? "bg-brand-16" : "bg-dark-08"} ${!completed ? "cursor-pointer" : ""} relative`}
+              onClick={() => (!completed ? setSelectedOption(index) : {})}
               key={index}
             >
               {option}
-              {(option === selectedOption && completed) ||
-              (quizz.correct === option && showCorrect) ? (
-                isCorrect(option) ? (
+              {(index === selectedOption && completed) ||
+              (quizz.correct === index && showCorrect) ? (
+                isCorrect(index) ? (
                   <CorrectIcon className="size-4 absolute right-2 top-1/2 -translate-y-1/2" />
                 ) : (
                   <IncorrectIcon className="size-4 absolute right-2 top-1/2 -translate-y-1/2" />
@@ -77,7 +80,7 @@ export default function QuizzQuestion({ quizz, handleNext }: QuizzesQuestion) {
         <Button disabled={selectedOption === null} onClick={handleActionButton}>
           {completed ? "Next" : "Submit"}
         </Button>
-        {!isCorrect(selectedOption || "") && completed && (
+        {!isCorrect(selectedOption || -1) && completed && (
           <Button variant="outline" onClick={toggleCorrectAnswer}>
             {showCorrect ? "Hide" : "Show"} correct answer
           </Button>

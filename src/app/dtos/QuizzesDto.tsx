@@ -2,6 +2,6 @@ export default interface QuizzesDto {
   _id: string;
   question: string;
   options: string[];
-  correct: string;
+  correct: number;
   sourceFileName: string;
 }
