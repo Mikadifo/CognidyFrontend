@@ -3,27 +3,45 @@
 import { DescriptionCard } from "@/app/components/DescriptionCard";
 import QuizzesDto from "@/app/dtos/QuizzesDto";
 import { useEffect, useState } from "react";
-import quizzesData from "@/app/data/quizzes-mock.json";
 import { Button } from "@/app/components/Button";
 import QuizzQuestion from "@/app/components/QuizzQuestion";
+import { useApi } from "@/app/hooks/useApi";
+import { api } from "@/app/utils/apiFetch";
+import { useAuth } from "@/app/hooks/useAuth";
+import GuestLoginCTA from "@/app/components/GuestLoginCTA";
 
 export function QuizzesController() {
+  const { getToken } = useAuth();
+  const [token, setToken] = useState("");
   const [quizzesCompleted, setQuizzesCompleted] = useState(false);
-  const [quizzes, setQuizzes] = useState<QuizzesDto[] | null>(null);
   const [currentQuiz, setCurrentQuiz] = useState<number>(0);
   const [missedCount, setMissedCount] = useState<number>(0);
   const [correctCount, setCorrectCount] = useState<number>(0);
+  const {
+    submit: getQuizzes,
+    loading,
+    error,
+    data: quizzes,
+  } = useApi<QuizzesDto[], []>(api.fetchQuizzes);
 
   useEffect(() => {
-    //TODO: fetch here (randomized already) from DB, but check LocalStorage first
-    const data = quizzesData.map((q) => ({
-      ...q,
-      correct: q.options[q.correct],
-    }));
-    setQuizzes(data as QuizzesDto[]);
+    setToken(getToken() || "");
+  }, [getToken]);
+
+  useEffect(() => {
+    if (!getToken() || getToken() === "guest") {
+      return;
+    }
+
+    getQuizzes();
+
     //TODO: getCurrentQuiz from localStorage or zero if empty
     setCurrentQuiz(0);
-  }, [setCurrentQuiz, setQuizzes]);
+  }, [setCurrentQuiz, getQuizzes]);
+
+  const hasQuizzes = () => {
+    return quizzes && quizzes?.length > 0;
+  };
 
   const restartQuizzes = () => {
     setQuizzesCompleted(false);
@@ -53,8 +71,25 @@ export function QuizzesController() {
     }
   };
 
+  if (error && typeof error === "string") {
+    return error;
+  }
+
+  if (token === "guest") {
+    return <GuestLoginCTA />;
+  }
+
   if (!quizzes) {
     return null;
+  }
+
+  if (!hasQuizzes()) {
+    return (
+      <p className="text-md">
+        You don&apos;t have quizzes yet. Create one or upload a file to generate
+        goals using AI.
+      </p>
+    );
   }
 
   return (
