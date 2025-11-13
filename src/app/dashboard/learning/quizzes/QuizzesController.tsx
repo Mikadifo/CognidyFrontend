@@ -47,7 +47,7 @@ export function QuizzesController() {
   return (
     <div className="flex gap-16">
       {quizzesCompleted ? (
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-12 w-[640px]">
           <div className="flex flex-col gap-2">
             <h3>You’ve completed all the quizzes!</h3>
             <p>
