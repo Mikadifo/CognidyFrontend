@@ -5,11 +5,9 @@ import QuizzesDto from "@/app/dtos/QuizzesDto";
 import { useEffect, useState } from "react";
 import quizzesData from "@/app/data/quizzes-mock.json";
 import { Button } from "@/app/components/Button";
-import { useRouter } from "next/navigation";
 import QuizzQuestion from "@/app/components/QuizzQuestion";
 
 export function QuizzesController() {
-  const router = useRouter();
   const [quizzesCompleted, setQuizzesCompleted] = useState(false);
   const [quizzes, setQuizzes] = useState<QuizzesDto[] | null>(null);
   const [currentQuiz, setCurrentQuiz] = useState<number>(0);
@@ -34,8 +32,7 @@ export function QuizzesController() {
     setCorrectCount(0);
 
     //TODO: clear quizz from localStorage
-
-    router.refresh();
+    //TODO: call fetch again
   };
 
   const handleNext = (correct: boolean) => {
