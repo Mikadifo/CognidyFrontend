@@ -18,10 +18,25 @@ export function QuizzesController() {
 
   useEffect(() => {
     //TODO: fetch here (randomized already) from DB, but check LocalStorage first
-    setQuizzes(quizzesData as QuizzesDto[]);
+    const data = quizzesData.map((q) => ({
+      ...q,
+      correct: q.options[q.correct],
+    }));
+    setQuizzes(data as QuizzesDto[]);
     //TODO: getCurrentQuiz from localStorage or zero if empty
     setCurrentQuiz(0);
   }, [setCurrentQuiz, setQuizzes]);
+
+  const restartQuizzes = () => {
+    setQuizzesCompleted(false);
+    setCurrentQuiz(0);
+    setMissedCount(0);
+    setCorrectCount(0);
+
+    //TODO: clear quizz from localStorage
+
+    router.refresh();
+  };
 
   const handleNext = (correct: boolean) => {
     if (correct) {
@@ -34,6 +49,7 @@ export function QuizzesController() {
 
     if (quizzes && quizzes[nextQuiz]) {
       setCurrentQuiz(nextQuiz);
+      //TODO: update localStorage
     } else {
       setQuizzesCompleted(true);
       //TODO: clean everyting from localStorage
@@ -58,7 +74,7 @@ export function QuizzesController() {
           </div>
 
           <div className="flex flex-col gap-4">
-            <Button onClick={() => router.refresh()}>Try Again</Button>
+            <Button onClick={restartQuizzes}>Try Again</Button>
             <Button
               as="a"
               href="/dashboard/learning"
@@ -79,7 +95,7 @@ export function QuizzesController() {
         total={quizzes.length}
         missed={missedCount}
         correct={correctCount}
-        onRestart={() => {}}
+        onRestart={restartQuizzes}
       />
     </div>
   );
