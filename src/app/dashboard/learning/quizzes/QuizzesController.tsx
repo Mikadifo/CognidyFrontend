@@ -10,13 +10,12 @@ import { api } from "@/app/utils/apiFetch";
 import { useAuth } from "@/app/hooks/useAuth";
 import GuestLoginCTA from "@/app/components/GuestLoginCTA";
 import QuizzesSkeleton from "@/app/skeletons/QuizzesSkeleton";
-import { useCurrentQuiz } from "@/app/hooks/useCurrentQuiz";
 
 export function QuizzesController() {
   const { getToken } = useAuth();
   const [token, setToken] = useState("");
   const [quizzesCompleted, setQuizzesCompleted] = useState(false);
-  const { currentQuiz, setCurrentQuiz } = useCurrentQuiz();
+  const [currentQuiz, setCurrentQuiz] = useState<number>(0);
   const [missedCount, setMissedCount] = useState<number>(0);
   const [correctCount, setCorrectCount] = useState<number>(0);
   const {
@@ -50,7 +49,7 @@ export function QuizzesController() {
     setMissedCount(0);
     setCorrectCount(0);
 
-    //TODO: call fetch again
+    getQuizzes();
   };
 
   const handleNext = (correct: boolean) => {
