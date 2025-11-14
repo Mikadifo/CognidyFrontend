@@ -10,12 +10,13 @@ import { api } from "@/app/utils/apiFetch";
 import { useAuth } from "@/app/hooks/useAuth";
 import GuestLoginCTA from "@/app/components/GuestLoginCTA";
 import QuizzesSkeleton from "@/app/skeletons/QuizzesSkeleton";
+import { useCurrentQuiz } from "@/app/hooks/useCurrentQuiz";
 
 export function QuizzesController() {
   const { getToken } = useAuth();
   const [token, setToken] = useState("");
   const [quizzesCompleted, setQuizzesCompleted] = useState(false);
-  const [currentQuiz, setCurrentQuiz] = useState<number>(0);
+  const { currentQuiz, setCurrentQuiz } = useCurrentQuiz();
   const [missedCount, setMissedCount] = useState<number>(0);
   const [correctCount, setCorrectCount] = useState<number>(0);
   const {
@@ -36,7 +37,6 @@ export function QuizzesController() {
 
     getQuizzes();
 
-    //TODO: getCurrentQuiz from localStorage or zero if empty
     setCurrentQuiz(0);
   }, [setCurrentQuiz, getQuizzes]);
 
@@ -50,7 +50,6 @@ export function QuizzesController() {
     setMissedCount(0);
     setCorrectCount(0);
 
-    //TODO: clear quizz from localStorage
     //TODO: call fetch again
   };
 
@@ -65,10 +64,8 @@ export function QuizzesController() {
 
     if (quizzes && quizzes[nextQuiz]) {
       setCurrentQuiz(nextQuiz);
-      //TODO: update localStorage
     } else {
       setQuizzesCompleted(true);
-      //TODO: clean everyting from localStorage
     }
   };
 
@@ -84,8 +81,8 @@ export function QuizzesController() {
     <div className="flex gap-16">
       {!hasQuizzes() && !loading && (
         <p className="text-md">
-          You don&apos;t have goals yet. Create one or upload a file to generate
-          goals using AI.
+          You don&apos;t have quizzes yet. Upload a file to generate quizzes
+          using AI.
         </p>
       )}
 
