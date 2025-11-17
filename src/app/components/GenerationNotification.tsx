@@ -17,6 +17,7 @@ export enum GeneratingSection {
   ROADMAP,
   PUZZLES,
   FLASHCARDS,
+  QUIZZES,
 }
 
 interface GenerationNotificationProps {
@@ -91,6 +92,10 @@ export default function GenerationNotification({
 
     if (section === GeneratingSection.FLASHCARDS) {
       return "flashcards";
+    }
+
+    if (section === GeneratingSection.PUZZLES) {
+      return "quizzes";
     }
 
     return "puzzles";

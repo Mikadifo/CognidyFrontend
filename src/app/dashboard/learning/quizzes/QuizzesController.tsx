@@ -10,6 +10,9 @@ import { api } from "@/app/utils/apiFetch";
 import { useAuth } from "@/app/hooks/useAuth";
 import GuestLoginCTA from "@/app/components/GuestLoginCTA";
 import QuizzesSkeleton from "@/app/skeletons/QuizzesSkeleton";
+import GenerationNotification, {
+  GeneratingSection,
+} from "@/app/components/GenerationNotification";
 
 export function QuizzesController() {
   const { getToken } = useAuth();
@@ -77,55 +80,67 @@ export function QuizzesController() {
   }
 
   return (
-    <div className="flex gap-16">
-      {!hasQuizzes() && !loading && (
-        <p className="text-md">
-          You don&apos;t have quizzes yet. Upload a file to generate quizzes
-          using AI.
-        </p>
-      )}
-
-      {loading ? (
-        <QuizzesSkeleton />
-      ) : hasQuizzes() ? (
-        quizzesCompleted ? (
-          <div className="flex flex-col gap-12 w-[640px]">
-            <div className="flex flex-col gap-2">
-              <h3>You’ve completed all the quizzes!</h3>
-              <p>
-                Great job! You’ve answered every question — ready for a new
-                challenge?  You can try them all again in a fresh order or add
-                new quizzes by uploading more files.
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-4">
-              <Button onClick={restartQuizzes}>Try Again</Button>
-              <Button
-                as="a"
-                href="/dashboard/learning"
-                variant="outline"
-                className="text-center"
-              >
-                Explore Learning
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <QuizzQuestion handleNext={handleNext} quizz={quizzes[currentQuiz]} />
-        )
-      ) : null}
-
-      {hasQuizzes() ? (
-        <DescriptionCard
-          sourceFileName={quizzes[currentQuiz].sourceFileName}
-          label="quizzes"
-          total={quizzes.length}
-          missed={missedCount}
-          correct={correctCount}
-          onRestart={restartQuizzes}
+    <div className="flex flex-col gap-8">
+      {!loading ? (
+        <GenerationNotification
+          section={GeneratingSection.QUIZZES}
+          fetchFunction={() => {}}
         />
       ) : null}
+
+      <div className="flex gap-16">
+        {!hasQuizzes() && !loading && (
+          <p className="text-md">
+            You don&apos;t have quizzes yet. Upload a file to generate quizzes
+            using AI.
+          </p>
+        )}
+
+        {loading ? (
+          <QuizzesSkeleton />
+        ) : hasQuizzes() ? (
+          quizzesCompleted ? (
+            <div className="flex flex-col gap-12 w-[640px]">
+              <div className="flex flex-col gap-2">
+                <h3>You’ve completed all the quizzes!</h3>
+                <p>
+                  Great job! You’ve answered every question — ready for a new
+                  challenge?  You can try them all again in a fresh order or add
+                  new quizzes by uploading more files.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <Button onClick={restartQuizzes}>Try Again</Button>
+                <Button
+                  as="a"
+                  href="/dashboard/learning"
+                  variant="outline"
+                  className="text-center"
+                >
+                  Explore Learning
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <QuizzQuestion
+              handleNext={handleNext}
+              quizz={quizzes[currentQuiz]}
+            />
+          )
+        ) : null}
+
+        {hasQuizzes() ? (
+          <DescriptionCard
+            sourceFileName={quizzes[currentQuiz].sourceFileName}
+            label="quizzes"
+            total={quizzes.length}
+            missed={missedCount}
+            correct={correctCount}
+            onRestart={restartQuizzes}
+          />
+        ) : null}
+      </div>
     </div>
   );
 }
