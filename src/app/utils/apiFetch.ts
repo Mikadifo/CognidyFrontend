@@ -1,6 +1,7 @@
 import { BASE_API } from "../constants";
 import GenerationStatusDto from "../dtos/GenerationStatusDto";
 import NewGoalDto from "../dtos/NewGoalDto";
+import QuizzesDto from "../dtos/QuizzesDto";
 import { UserLoginDto, UserSignUpDto } from "../dtos/UserDto";
 import { Note } from "../models/Note";
 import RoadmapGoal from "../models/RoadmapGoal";
@@ -114,5 +115,12 @@ export const api = {
         Authorization: getAuthHeader(),
       },
       body: JSON.stringify({ completed }),
+    }),
+  fetchQuizzes: () =>
+    request<{ data: QuizzesDto[] }>("/quizzes", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
     }),
 };
