@@ -57,7 +57,7 @@ export default function QuizzQuestion({ quizz, handleNext }: QuizzesQuestion) {
         <div className="flex flex-wrap gap-4">
           {options.map((option, index) => (
             <button
-              className={`rounded-lg py-2 w-[calc(50%-8px)] text-base ${selectedOption === option ? "bg-brand-16" : "bg-dark-08"} ${!completed ? "cursor-pointer" : ""} relative`}
+              className={`rounded-lg py-2 px-2 w-[calc(50%-8px)] text-base ${selectedOption === option ? "bg-brand-16" : "bg-dark-08"} ${!completed ? "cursor-pointer" : ""} relative`}
               onClick={() => (!completed ? setSelectedOption(option) : {})}
               key={index}
             >

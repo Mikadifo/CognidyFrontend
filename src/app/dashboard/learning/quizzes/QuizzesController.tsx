@@ -84,7 +84,7 @@ export function QuizzesController() {
       {!loading ? (
         <GenerationNotification
           section={GeneratingSection.QUIZZES}
-          fetchFunction={() => {}}
+          fetchFunction={hasQuizzes() ? () => {} : getQuizzes}
         />
       ) : null}
 
