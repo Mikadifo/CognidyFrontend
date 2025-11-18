@@ -4,46 +4,35 @@ import { useEffect, useState } from "react";
 import PencilIcon from "@/app/assets/icons/pencil.svg";
 import { Button } from "@/app/components/Button";
 import { DashboardHeader } from "@/app/components/DashboardHeader";
-
-
+import { useApi } from "@/app/hooks/useApi";
+import { api } from "@/app/utils/apiFetch";
 
 export default function Settings() {
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [editingField, setEditingField] = useState<"username" | "email" | null>(null);
-  const [loading, setLoading] = useState(true);
+  
 
-  // Fetch user data dynamically from backend
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      console.warn("No token found in localStorage");
-      setLoading(false);
-      return;
+// UseApi wrapper for fetching user
+const {
+  submit: fetchUser,
+  loading: fetchingUser
+} = useApi(api.getUser);
+
+// Load user on mount
+useEffect(() => {
+  fetchUser().then((res) => {
+    if (res?.data) {
+      setUsername(res.data.username);
+      setEmail(res.data.email);
     }
+  });
+}, [fetchUser]);
 
-    fetch("http://127.0.0.1:5000/api/users/me", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.username && data.email) {
-          setUsername(data.username);
-          setEmail(data.email);
-        } else {
-          console.warn("Invalid response:", data);
-        }
-      })
-      .catch((err) => console.error("Error fetching user info:", err))
-      .finally(() => setLoading(false));
-  }, []);
+if (fetchingUser) return <div className="p-6">Loading...</div>;
 
 
- 
   const handleEdit = (field: "username" | "email") => {
     setEditingField(field);
   };
@@ -52,30 +41,12 @@ export default function Settings() {
     setEditingField(null);
   };
 
-  const handleSave = async () => {
-  const token = localStorage.getItem("token");
-  if (!token) return alert("You must be logged in.");
+  const { submit: updateUser } = useApi(api.updateUser);
 
-  const updatedData = { username, email };
-
-  try {
-    const res = await fetch("http://127.0.0.1:5000/api/users/update", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(updatedData),
-    });
-
-    const data = await res.json();
-    alert(data.message || "Profile updated!");
-  } catch (err) {
-    console.error("Error updating user:", err);
-    alert("Something went wrong!");
-  }
+const handleSave = async () => {
+  const res = await updateUser({ username, email });
+  if (res?.message) alert(res.message);
 };
-
 
 
   const resetPassword = () => {
@@ -86,10 +57,7 @@ export default function Settings() {
     alert("Account deletion feature coming soon!");
   };
 
-  if (loading) {
-    return <div className="p-6">Loading...</div>;
-  }
-
+  
   return (
     <div className="flex flex-col p-10 text-dark gap-2">
       <DashboardHeader
