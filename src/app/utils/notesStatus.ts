@@ -9,6 +9,7 @@ export function addNewNote(noteId: string) {
     puzzles: "generating",
     flashcards: "generating",
     goals: "generating",
+    quizzes: "generating",
   };
 
   localStorage.setItem(STORE_KEY, JSON.stringify(noteStatus));
@@ -58,6 +59,10 @@ export function isSectionComplete(section: GeneratingSection) {
     sectionString = "puzzles";
   }
 
+  if (section === GeneratingSection.QUIZZES) {
+    sectionString = "quizzes";
+  }
+
   return getNewNoteStatus()[sectionString] !== "generating";
 }
 
@@ -72,14 +77,18 @@ export function sectionFailed(section: GeneratingSection) {
     sectionString = "puzzles";
   }
 
+  if (section === GeneratingSection.QUIZZES) {
+    sectionString = "quizzes";
+  }
+
   return getNewNoteStatus()[sectionString] === "failed";
 }
 
 export function allSectionsComplete() {
-  const sections = ["flashcards", "goals", "puzzles"];
+  const sections = ["flashcards", "goals", "puzzles", "quizzes"];
   const newStatus = getNewNoteStatus();
 
-  for (let section of sections) {
+  for (const section of sections) {
     if (newStatus[section] === "generating") {
       return false;
     }

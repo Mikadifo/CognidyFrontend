@@ -34,7 +34,7 @@ function getIconFromSource(source: string) {
 }
 
 export const NoteItems: FC<NoteItemsProps> = ({ notes, setNotes }) => {
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const dialogRef = useRef<HTMLDialogElement | null>(null);
   const [deletingNoteId, setDeletingNoteId] = useState<string | null>(null);
   const { submit: deleteNote, error } = useApi<void, [id: string]>(
     api.deleteNote,

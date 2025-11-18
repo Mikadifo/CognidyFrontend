@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import RestartIcon from "./../assets/icons/restartIcon.svg";
 
 interface DescriptionCardProps {
   className?: string;
@@ -7,6 +8,7 @@ interface DescriptionCardProps {
   missed: number;
   total: number;
   label: string;
+  onRestart?: () => void;
 }
 
 export const DescriptionCard: FC<DescriptionCardProps> = ({
@@ -16,14 +18,15 @@ export const DescriptionCard: FC<DescriptionCardProps> = ({
   missed,
   total,
   label,
+  onRestart = () => {},
 }) => {
   const padStart = (num: number) => String(num).padStart(2, "0");
 
   return (
     <div
-      className={`${className} bg-dark-08 flex flex-col gap-8 px-12 py-8 rounded-lg text-dark font-nunito w-fit`}
+      className={`${className} bg-dark-08 flex flex-col gap-8 px-12 py-8 rounded-lg text-dark font-nunito min-w-[276px] max-w-fit h-fit relative`}
     >
-      <span className="text-[10px] max-w-[148px] truncate">
+      <span className="text-xs max-w-[148px] truncate">
         <strong>Source: </strong>
         {sourceFileName}
       </span>
@@ -54,6 +57,13 @@ export const DescriptionCard: FC<DescriptionCardProps> = ({
           <span className="text-base">total {label}</span>
         </div>
       </div>
+
+      <button
+        className="absolute top-3 right-3 cursor-pointer hover:opacity-80"
+        onClick={() => onRestart()}
+      >
+        <RestartIcon className="size-6 text-dark-88" />
+      </button>
     </div>
   );
 };

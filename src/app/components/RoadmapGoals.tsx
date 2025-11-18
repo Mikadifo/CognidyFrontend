@@ -4,6 +4,7 @@ import { FC, useState } from "react";
 import RoadmapGoal from "../models/RoadmapGoal";
 import { ArcherContainer, ArcherElement } from "react-archer";
 import DeleteIcon from "../assets/icons/trashcan.svg";
+import Spinner from "../assets/icons/spinner.svg";
 import { api } from "../utils/apiFetch";
 import { useApi } from "../hooks/useApi";
 
@@ -14,17 +15,20 @@ interface RoadmapGoalsProps {
 
 export const RoadmapGoals: FC<RoadmapGoalsProps> = ({ goals, getGoals }) => {
   const [deletingOrder, setDeletingOrder] = useState<number | null>(null);
+  const [updatingOrder, setUpdatingOrder] = useState<number | null>(null);
   const { submit: deleteGoal } = useApi<void, [order: number]>(api.deleteGoal);
-  const { submit: updateGoal } = useApi<
+  const { submit: updateGoal, loading: loadingUpdate } = useApi<
     void,
     [order: number, completed: boolean]
   >(api.updateGoalCompletion);
 
   const handleComplete = async (order: number, completed: boolean) => {
+    setUpdatingOrder(order);
     const response = await updateGoal(order, !completed);
 
     if (response.error) {
       console.error(response.error);
+      setUpdatingOrder(null);
       return;
     }
 
@@ -91,15 +95,24 @@ export const RoadmapGoals: FC<RoadmapGoalsProps> = ({ goals, getGoals }) => {
                   <button
                     hidden={i >= 1 && !goals[i - 1].completed}
                     type="button"
-                    className={`w-fit text-white text-xs font-bold px-4 py-1 rounded-full cursor-pointer hover:opacity-80 ${completed ? "bg-green" : "bg-dark"}`}
+                    className={`w-fit text-white text-xs font-bold px-4 py-1 rounded-full cursor-pointer hover:opacity-80 ${completed ? "bg-green" : "bg-dark"} disabled:opacity-75 disabled:cursor-not-allowed`}
                     onClick={() => handleComplete(order, completed)}
+                    disabled={loadingUpdate}
                   >
                     {completed ? (
                       <div className="flex gap-2">
-                        <span>Completed</span>
-                        <div className="bg-white/80 w-0.5 h-auto" />
-                        <span>Undo</span>
+                        {loadingUpdate && order === updatingOrder ? (
+                          <Spinner className="size-4 animate-spin" />
+                        ) : (
+                          <>
+                            <span>Completed</span>
+                            <div className="bg-white/80 w-0.5 h-auto" />
+                            <span>Undo</span>
+                          </>
+                        )}
                       </div>
+                    ) : loadingUpdate && order === updatingOrder ? (
+                      <Spinner className="size-4 animate-spin" />
                     ) : (
                       "Mark as Completed"
                     )}

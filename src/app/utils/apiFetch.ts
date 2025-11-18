@@ -1,6 +1,8 @@
 import { BASE_API } from "../constants";
 import GenerationStatusDto from "../dtos/GenerationStatusDto";
 import NewGoalDto from "../dtos/NewGoalDto";
+import QuizzesDto from "../dtos/QuizzesDto";
+import SessionDto from "../dtos/SessionDto";
 import { UserLoginDto, UserSignUpDto } from "../dtos/UserDto";
 import { Note } from "../models/Note";
 import RoadmapGoal from "../models/RoadmapGoal";
@@ -114,5 +116,24 @@ export const api = {
         Authorization: getAuthHeader(),
       },
       body: JSON.stringify({ completed }),
+    }),
+  fetchQuizzes: () =>
+    request<{ data: QuizzesDto[] }>("/quizzes", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+    }),
+  addSession: (newSession: SessionDto) =>
+    request<{ message: string }>("/sessions/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+      body: JSON.stringify({
+        ...newSession,
+        completed_at: newSession.completed_at.toISOString().split("T")[0],
+      }),
     }),
 };

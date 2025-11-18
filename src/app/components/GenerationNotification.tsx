@@ -17,18 +17,17 @@ export enum GeneratingSection {
   ROADMAP,
   PUZZLES,
   FLASHCARDS,
+  QUIZZES,
 }
 
 interface GenerationNotificationProps {
   section: GeneratingSection;
   fetchFunction: () => void;
-  setGenerating: (generating: boolean) => void;
 }
 
 export default function GenerationNotification({
   section,
   fetchFunction,
-  setGenerating,
 }: GenerationNotificationProps) {
   const [hideNotification, setHideNotification] = useState<boolean>(true);
   const { submit: getGenerationStatuts, data } = useApi<
@@ -43,15 +42,12 @@ export default function GenerationNotification({
       return;
     }
 
-    setGenerating(true);
-
     const pollStatus = async () => {
       const result = await getGenerationStatuts(getNewNoteId());
 
       if (result.error) {
         console.error(result.error);
         clearInterval(pollInterval);
-        setGenerating(false);
         return;
       }
 
@@ -63,7 +59,6 @@ export default function GenerationNotification({
 
       if (isSectionComplete(section)) {
         clearInterval(pollInterval);
-        setGenerating(false);
 
         if (!sectionFailed(section)) {
           fetchFunction();
@@ -72,7 +67,6 @@ export default function GenerationNotification({
 
       if (allSectionsComplete()) {
         clearInterval(pollInterval);
-        setGenerating(false);
 
         if (!sectionFailed(section)) {
           setHideNotification(true);
@@ -88,9 +82,8 @@ export default function GenerationNotification({
 
     return () => {
       clearInterval(pollInterval);
-      setGenerating(false);
     };
-  }, [getGenerationStatuts]);
+  }, [getGenerationStatuts, fetchFunction, section]);
 
   const getGeneratingSectionString = () => {
     if (section === GeneratingSection.ROADMAP) {
@@ -99,6 +92,10 @@ export default function GenerationNotification({
 
     if (section === GeneratingSection.FLASHCARDS) {
       return "flashcards";
+    }
+
+    if (section === GeneratingSection.PUZZLES) {
+      return "quizzes";
     }
 
     return "puzzles";
@@ -112,8 +109,8 @@ export default function GenerationNotification({
       {data?.goals === "failed" ? (
         <>
           <span>
-            Oops! We couldn't generate {getGeneratingSectionString()}. Try again
-            later
+            Oops! We couldn&apos;t generate {getGeneratingSectionString()}. Try
+            again later
           </span>
           <button
             type="button"

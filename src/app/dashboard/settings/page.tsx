@@ -1,11 +1,14 @@
 "use client";
 
-import { useEffect,useState } from "react";
-import { Pencil } from "lucide-react";
+import { useEffect, useState } from "react";
+import PencilIcon from "@/app/assets/icons/pencil.svg";
 import { Button } from "@/app/components/Button";
+import { DashboardHeader } from "@/app/components/DashboardHeader";
+
 
 
 export default function Settings() {
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [editingField, setEditingField] = useState<"username" | "email" | null>(null);
@@ -40,6 +43,7 @@ export default function Settings() {
   }, []);
 
 
+ 
   const handleEdit = (field: "username" | "email") => {
     setEditingField(field);
   };
@@ -87,14 +91,11 @@ export default function Settings() {
   }
 
   return (
-    <div className="flex flex-col p-10 text-dark">
-      {/* Title Section */}
-      <div className="mb-6">
-        <h2 className="text-brand text-sm font-semibold uppercase tracking-wider">Settings</h2>
-        <h1 className="text-2xl font-semibold mt-2">
-          Customize your experience and app preferences
-        </h1>
-      </div>
+    <div className="flex flex-col p-10 text-dark gap-2">
+      <DashboardHeader
+        heading="Settings"
+        subheading="Customize your experience and app preferences"
+      />
 
       {/* Form Section */}
       <div className="flex flex-col gap-6 max-w-md">
@@ -118,7 +119,7 @@ export default function Settings() {
               className="ml-2 p-2 hover:bg-gray-200 rounded-md"
               onClick={() => handleEdit("username")}
             >
-              <Pencil size={18} />
+              <PencilIcon className="size-4" />
             </button>
           </div>
         </div>
@@ -143,7 +144,7 @@ export default function Settings() {
               className="ml-2 p-2 hover:bg-gray-200 rounded-md"
               onClick={() => handleEdit("email")}
             >
-              <Pencil size={18} />
+              <PencilIcon className="size-4" />
             </button>
           </div>
         </div>
