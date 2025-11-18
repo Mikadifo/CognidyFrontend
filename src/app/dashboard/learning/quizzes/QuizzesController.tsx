@@ -13,6 +13,7 @@ import QuizzesSkeleton from "@/app/skeletons/QuizzesSkeleton";
 import GenerationNotification, {
   GeneratingSection,
 } from "@/app/components/GenerationNotification";
+import SessionDto from "@/app/dtos/SessionDto";
 
 export function QuizzesController() {
   const { getToken } = useAuth();
@@ -27,6 +28,7 @@ export function QuizzesController() {
     error,
     data: quizzes,
   } = useApi<QuizzesDto[], []>(api.fetchQuizzes);
+  const { submit: addSession } = useApi<string, [SessionDto]>(api.addSession);
 
   useEffect(() => {
     setToken(getToken() || "");
@@ -68,6 +70,17 @@ export function QuizzesController() {
       setCurrentQuiz(nextQuiz);
     } else {
       setQuizzesCompleted(true);
+
+      if (!hasQuizzes()) {
+        return;
+      }
+
+      addSession({
+        total: quizzes!.length,
+        correct: correctCount,
+        section: "quizzes",
+        completed_at: new Date(),
+      });
     }
   };
 
