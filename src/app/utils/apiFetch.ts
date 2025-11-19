@@ -136,4 +136,37 @@ export const api = {
         completed_at: newSession.completed_at.toISOString().split("T")[0],
       }),
     }),
+
+    // Get current logged-in user
+  getUser: () =>
+    request<{ data: { username: string; email: string } }>(`/users/me`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+    }),
+
+  // Update user profile
+  updateUser: (payload: { username: string; email: string }) =>
+  request<{ message: string; token: string }>(`/users/update`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: getAuthHeader(),
+    },
+    body: JSON.stringify(payload),
+  }),
+
+
+    // Reset password
+  resetPassword: (payload: { password: string; new_password: string }) =>
+    request<{ message: string }>(`/users/reset_password`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+      body: JSON.stringify(payload),
+    }),
 };
