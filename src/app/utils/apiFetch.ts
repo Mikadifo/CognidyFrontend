@@ -149,7 +149,19 @@ export const api = {
 
   // Update user profile
   updateUser: (payload: { username: string; email: string }) =>
-    request<{ message: string }>(`/users/update`, {
+  request<{ message: string; token: string }>(`/users/update`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: getAuthHeader(),
+    },
+    body: JSON.stringify(payload),
+  }),
+
+
+    // Reset password
+  resetPassword: (payload: { password: string; new_password: string }) =>
+    request<{ message: string }>(`/users/reset_password`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -157,5 +169,4 @@ export const api = {
       },
       body: JSON.stringify(payload),
     }),
-
 };

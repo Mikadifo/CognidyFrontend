@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 interface ApiResponse<T> {
   message?: string;
   data?: T;
+  token?: string;
   error?: string | Record<string, string>;
 }
 
