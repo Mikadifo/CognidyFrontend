@@ -42,7 +42,6 @@ export default function Progress() {
             label="Trends"
             icon={TrendsIcon}
             href="progress/trends"
-            disabled
           />
         </div>
       </div>

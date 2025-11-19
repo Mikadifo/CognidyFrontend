@@ -6,3 +6,9 @@ export const LocalStorageKeys = {
 } as const;
 
 export const MAX_ROADMAP_GOALS = 15;
+
+export const SectionColors = {
+  quizzes: "#7464d2",
+  flashcards: "#ff68a4",
+  puzzles: "#9fa2d8",
+} as const;

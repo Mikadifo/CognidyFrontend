@@ -2,7 +2,7 @@ import { BASE_API } from "../constants";
 import GenerationStatusDto from "../dtos/GenerationStatusDto";
 import NewGoalDto from "../dtos/NewGoalDto";
 import QuizzesDto from "../dtos/QuizzesDto";
-import SessionDto from "../dtos/SessionDto";
+import Session from "../models/Session";
 import { UserLoginDto, UserSignUpDto } from "../dtos/UserDto";
 import { Note } from "../models/Note";
 import RoadmapGoal from "../models/RoadmapGoal";
@@ -136,8 +136,6 @@ export const api = {
         completed_at: newSession.completed_at.toISOString().split("T")[0],
       }),
     }),
-
-    // Get current logged-in user
   getUser: () =>
     request<{ data: { username: string; email: string } }>(`/users/me`, {
       method: "GET",
@@ -146,20 +144,15 @@ export const api = {
         Authorization: getAuthHeader(),
       },
     }),
-
-  // Update user profile
   updateUser: (payload: { username: string; email: string }) =>
-  request<{ message: string; token: string }>(`/users/update`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: getAuthHeader(),
-    },
-    body: JSON.stringify(payload),
-  }),
-
-
-    // Reset password
+    request<{ message: string; token: string }>(`/users/update`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+      body: JSON.stringify(payload),
+    }),
   resetPassword: (payload: { password: string; new_password: string }) =>
     request<{ message: string }>(`/users/reset_password`, {
       method: "PUT",
@@ -168,5 +161,12 @@ export const api = {
         Authorization: getAuthHeader(),
       },
       body: JSON.stringify(payload),
+    }),
+  fetchSessions: () =>
+    request<{ data: Session[] }>("/sessions", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
     }),
 };
