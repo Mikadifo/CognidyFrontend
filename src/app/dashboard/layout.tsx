@@ -24,7 +24,9 @@ export default function DashboardLayout({
   return (
     <div className="flex bg-white">
       <SideBar />
-      <main className="flex-1 min-h-screen">{children}</main>
+      <main className="flex-1 min-h-screen h-screen overflow-scroll">
+        {children}
+      </main>
     </div>
   );
 }

@@ -5,8 +5,6 @@ import FlashcardIcon from "./../../assets/icons/playingCards.svg";
 import PomodoroIcon from "./../../assets/icons/timer.svg";
 import CheatsheetIcon from "./../../assets/icons/textNotes.svg";
 
-
-
 export const metadata = {
   title: "Cognidy | Study",
   description: "Study section",
@@ -20,19 +18,19 @@ export default function Study() {
         subheading="Choose how you want to study"
       />
 
-    <div className= "flex flex-col">
-      <span className="font-poppins font-normal text-xl">Revision</span>
-      <div className="w-full h-0.5 bg-dark-16 rounded-full mt-4 mb-8"/>
-      <SectionOption
-        label="Flashcards"
-        icon={FlashcardIcon}
-        href="study/flashcards"
-      />
-    </div>
+      <div className="flex flex-col">
+        <span className="font-poppins font-normal text-xl">Revision</span>
+        <div className="w-full h-0.5 bg-dark-16 rounded-full mt-4 mb-8" />
+        <SectionOption
+          label="Flashcards"
+          icon={FlashcardIcon}
+          href="study/flashcards"
+        />
+      </div>
 
       <div className="flex flex-col">
         <span className="font-poppins font-normal text-xl">Coming Soon</span>
-        <div className="w-full h-0.5 bg-dark-16 rounded-full mt-4 mb-8"/>
+        <div className="w-full h-0.5 bg-dark-16 rounded-full mt-4 mb-8" />
         <div className="flex gap-8">
           <SectionOption
             label="Pomodoro"
@@ -46,10 +44,8 @@ export default function Study() {
             href="study/cheatsheet"
             disabled
           />
-          </div>
+        </div>
       </div>
     </div>
-    
-  )
+  );
 }
-
