@@ -4,10 +4,10 @@ import GithubIcon from "@/app/assets/icons/githubIcon.svg";
 
 export default function Footer() {
   return (
-    <footer className="bg-dark-88 text-white w-full h-[584px] mt-[528px] relative">
+    <footer className="bg-dark-88 text-white w-full h-auto xl:h-[584px] xl:mt-[528px] xl:relative">
       <CTA />
 
-      <div className="flex justify-between text-white font-nunito w-[1184px] mx-auto pb-16 absolute bottom-0 left-1/2 -translate-x-1/2">
+      <div className="flex justify-between text-white font-nunito xl:w-[1184px] mx-auto pb-16 xl:absolute xl:bottom-0 xl:left-1/2 xl:-translate-x-1/2 mt-16 xl:mt-0 px-8 xl:px-0">
         <div className="flex flex-col gap-6">
           <b className="text-xl">We are open source!</b>
 
