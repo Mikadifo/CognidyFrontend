@@ -12,7 +12,7 @@ export const metadata = {
 
 export default function Progress() {
   return (
-    <div className="p-16 flex flex-col gap-8 w-full">
+    <div className="p-8 lg:p-16 flex flex-col gap-6 lg:gap-8 w-full">
       <DashboardHeader
         heading="Your Progress"
         subheading="See how far you’ve come with clear insights and stats"

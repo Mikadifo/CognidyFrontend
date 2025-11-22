@@ -12,7 +12,7 @@ export const metadata = {
 
 export default function Study() {
   return (
-    <div className="p-16 flex flex-col gap-8 w-full">
+    <div className="p-8 lg:p-16 flex flex-col gap-6 lg:gap-8 w-full">
       <DashboardHeader
         heading="Study tools"
         subheading="Choose how you want to study"

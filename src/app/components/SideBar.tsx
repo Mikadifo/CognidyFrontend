@@ -46,10 +46,10 @@ export const SideBar: FC<SideBarProps> = ({ className }) => {
 
   return (
     <div
-      className={`flex flex-col h-screen min-w-[240px] w-[240px] bg-white border-e border-dark-16 sticky left-0 ${className}`}
+      className={`flex flex-col h-screen min-w-[200px] w-[200px] lg:min-w-[240px] lg:w-[240px] bg-white border-e border-dark-16 sticky left-0 ${className}`}
     >
-      <div className="p-6 border-b border-dark-16">
-        <Logo className="min-h-[36px] h-[36px]" />
+      <div className="p-4 lg:p-6 border-b border-dark-16">
+        <Logo className="h-8 min-h-8 lg:h-[36px]" />
       </div>
 
       <div className="flex flex-col h-full justify-between">
@@ -88,7 +88,7 @@ export const SideBar: FC<SideBarProps> = ({ className }) => {
 
         {/* Dynamic Footer Button */}
         <Button
-          className={`!rounded-none w-full ${
+          className={`!rounded-none w-full text-sm lg:text-base ${
             isGuest ? "!bg-brand hover:opacity-60" : "bg-red hover:bg-red-600"
           }`}
           icon={isGuest ? ArrowIcon : ExitIcon}
@@ -112,9 +112,9 @@ function Item({ icon: Icon, label, active, href }: ItemProps) {
   return (
     <a
       href={href}
-      className={`flex gap-2 text-dark text-[18px] font-poppins px-6 py-3 items-center ${active ? "bg-dark-08 font-bold" : "cursor-pointer hover:bg-dark-16"}`}
+      className={`flex gap-2 text-dark text-base lg:text-[18px] font-poppins px-4 lg:px-6 py-3 items-center ${active ? "bg-dark-08 font-bold" : "cursor-pointer hover:bg-dark-16"}`}
     >
-      {<Icon className={`size-6 ${active ? "" : "text-dark-88"}`} />}
+      {<Icon className={`size-5 lg:size-6 ${active ? "" : "text-dark-88"}`} />}
       <span>{label}</span>
     </a>
   );
