@@ -3,7 +3,8 @@
 import { ComponentType, FC, SVGProps, useState, useEffect } from "react";
 import { useAuth } from "@/app/hooks/useAuth";
 
-import Logo from "./../assets/logoHorizontal.svg";
+import LogoHorizontal from "./../assets/logoHorizontal.svg";
+import Logo from "./../assets/logo.svg";
 import BookIcon from "./../assets/icons/book.svg";
 import ExitIcon from "./../assets/icons/exit.svg";
 import ArrowIcon from "./../assets/icons/arrow.svg";
@@ -46,13 +47,14 @@ export const SideBar: FC<SideBarProps> = ({ className }) => {
 
   return (
     <div
-      className={`flex flex-col h-screen min-w-[200px] w-[200px] lg:min-w-[240px] lg:w-[240px] bg-white border-e border-dark-16 sticky left-0 ${className}`}
+      className={`flex flex-col h-screen w-fit md:min-w-[200px] md:w-[200px] lg:min-w-[240px] lg:w-[240px] bg-white border-e border-dark-16 sticky left-0 ${className}`}
     >
       <div className="p-4 lg:p-6 border-b border-dark-16">
-        <Logo className="h-8 min-h-8 lg:h-[36px]" />
+        <LogoHorizontal className="h-8 min-h-8 lg:h-[36px] hidden md:block" />
+        <Logo className="h-8 min-h-8 lg:h-[36px] rounded-lg md:hidden" />
       </div>
 
-      <div className="flex flex-col h-full justify-between">
+      <div className="flex flex-col h-full justify-between items-center md:items-stretch">
         <ul>
           <Item
             icon={BookIcon}
@@ -94,7 +96,9 @@ export const SideBar: FC<SideBarProps> = ({ className }) => {
           icon={isGuest ? ArrowIcon : ExitIcon}
           onClick={handleClick}
         >
-          {isGuest ? "Log In" : "Log Out"}
+          <span className="hidden md:block">
+            {isGuest ? "Log In" : "Log Out"}
+          </span>
         </Button>
       </div>
     </div>
@@ -115,7 +119,7 @@ function Item({ icon: Icon, label, active, href }: ItemProps) {
       className={`flex gap-2 text-dark text-base lg:text-[18px] font-poppins px-4 lg:px-6 py-3 items-center ${active ? "bg-dark-08 font-bold" : "cursor-pointer hover:bg-dark-16"}`}
     >
       {<Icon className={`size-5 lg:size-6 ${active ? "" : "text-dark-88"}`} />}
-      <span>{label}</span>
+      <span className="hidden md:block">{label}</span>
     </a>
   );
 }
