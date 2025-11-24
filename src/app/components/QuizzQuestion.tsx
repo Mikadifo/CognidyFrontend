@@ -19,6 +19,9 @@ export default function QuizzQuestion({ quizz, handleNext }: QuizzesQuestion) {
     const shuffledOptions = [...quizz.options].sort(() => Math.random() - 0.5);
 
     setOptions(shuffledOptions);
+    setSelectedOption(null);
+    setCompleted(false);
+    setShowCorrect(false);
   }, [quizz, setOptions]);
 
   const isCorrect = (option: string) => {
@@ -32,8 +35,9 @@ export default function QuizzQuestion({ quizz, handleNext }: QuizzesQuestion) {
   };
 
   const handleActionButton = () => {
+    setShowCorrect(false);
+
     if (completed) {
-      setCompleted(false);
       handleNext(isCorrect(selectedOption || ""));
       return;
     }
@@ -53,7 +57,7 @@ export default function QuizzQuestion({ quizz, handleNext }: QuizzesQuestion) {
         <div className="flex flex-wrap gap-4">
           {options.map((option, index) => (
             <button
-              className={`rounded-lg py-2 w-[calc(50%-8px)] text-base ${selectedOption === option ? "bg-brand-16" : "bg-dark-08"} ${!completed ? "cursor-pointer" : ""} relative`}
+              className={`rounded-lg py-2 px-2 w-[calc(50%-8px)] text-base ${selectedOption === option ? "bg-brand-16" : "bg-dark-08"} ${!completed ? "cursor-pointer" : ""} relative`}
               onClick={() => (!completed ? setSelectedOption(option) : {})}
               key={index}
             >
@@ -65,9 +69,7 @@ export default function QuizzQuestion({ quizz, handleNext }: QuizzesQuestion) {
                 ) : (
                   <IncorrectIcon className="size-4 absolute right-2 top-1/2 -translate-y-1/2" />
                 )
-              ) : (
-                ""
-              )}
+              ) : null}
             </button>
           ))}
         </div>

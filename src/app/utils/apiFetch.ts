@@ -1,6 +1,8 @@
 import { BASE_API } from "../constants";
 import GenerationStatusDto from "../dtos/GenerationStatusDto";
 import NewGoalDto from "../dtos/NewGoalDto";
+import QuizzesDto from "../dtos/QuizzesDto";
+import Session from "../models/Session";
 import { UserLoginDto, UserSignUpDto } from "../dtos/UserDto";
 import { Note } from "../models/Note";
 import RoadmapGoal from "../models/RoadmapGoal";
@@ -126,67 +128,119 @@ export const api = {
       }
     ),
 
-    createFlashcard: (card: {front: string; back: string}) =>
-      request<{ id:string; front: string; back: string; }>(
-        `/study/flashcards`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: getAuthHeader(),
-          },
-          body: JSON.stringify(card),
-        }
-      ),
+  createFlashcard: (card: {front: string; back: string}) =>
+    request<{ id:string; front: string; back: string; }>(
+      `/study/flashcards`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getAuthHeader(),
+        },
+        body: JSON.stringify(card),
+      }
+    ),
 
-      deleteFlashcard: (id: string) =>
-        request<{message: string}>(
-          `/study/flashcards/${id}`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: getAuthHeader()
-            },
-          } 
-        ),
+  deleteFlashcard: (id: string) =>
+    request<{message: string}>(
+      `/study/flashcards/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getAuthHeader()
+        },
+      } 
+    ),
 
-        createAiCard: (topic: string) =>
-          request<{id:string; front: string; back: string;}>(
-            `/study/ai-card`,{
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: getAuthHeader()
-              },
-              body: JSON.stringify({topic}),
-            }
-          ),
+  createAiCard: (topic: string) =>
+    request<{id:string; front: string; back: string;}>(
+      `/study/ai-card`,{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getAuthHeader()
+        },
+        body: JSON.stringify({topic}),
+      }
+    ),
 
-        editFlashcard: (id: string, data: Partial<{front: string; back: string}>)=>
-          request<{ id: string; front: string; back: string}> (
-            `/study/flashcards/${id}`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: getAuthHeader()
-              },
-              body: JSON.stringify(data)
-            }
-          ),
+  editFlashcard: (id: string, data: Partial<{front: string; back: string}>)=>
+    request<{ id: string; front: string; back: string}> (
+      `/study/flashcards/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getAuthHeader()
+        },
+        body: JSON.stringify(data)
+      }
+    ),
 
-        createAiMulticards: (topic: string, count: number) => 
-          request<{ cards: {id:string; front: string; back: string}[] }>(
-            `/study/ai-card/multi`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: getAuthHeader()
-              },
-              body: JSON.stringify({topic, count}),
-            }
-          ),     
-
+  createAiMulticards: (topic: string, count: number) => 
+    request<{ cards: {id:string; front: string; back: string}[] }>(
+      `/study/ai-card/multi`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getAuthHeader()
+        },
+        body: JSON.stringify({topic, count}),
+      }
+    ),
+  
+  fetchQuizzes: () =>
+    request<{ data: QuizzesDto[] }>("/quizzes", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+    }),
+  addSession: (newSession: SessionDto) =>
+    request<{ message: string }>("/sessions/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+      body: JSON.stringify({
+        ...newSession,
+        completed_at: newSession.completed_at.toISOString().split("T")[0],
+      }),
+    }),
+  getUser: () =>
+    request<{ data: { username: string; email: string } }>(`/users/me`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+    }),
+  updateUser: (payload: { username: string; email: string }) =>
+    request<{ message: string; token: string }>(`/users/update`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+      body: JSON.stringify(payload),
+    }),
+  resetPassword: (payload: { password: string; new_password: string }) =>
+    request<{ message: string }>(`/users/reset_password`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+      body: JSON.stringify(payload),
+    }),
+  fetchSessions: () =>
+    request<{ data: Session[] }>("/sessions", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+    }),
 };

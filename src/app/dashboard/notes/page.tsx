@@ -8,7 +8,7 @@ export const metadata = {
 
 export default async function Notes() {
   return (
-    <div className="p-16 flex flex-col gap-16">
+    <div className="p-8 lg:p-16 flex flex-col gap-12 lg:gap-16">
       <DashboardHeader
         heading="Your Notes"
         subheading="Upload files or jot down your own study notes"
@@ -25,3 +25,4 @@ export default async function Notes() {
     </div>
   );
 }
+
