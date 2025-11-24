@@ -115,4 +115,78 @@ export const api = {
       },
       body: JSON.stringify({ completed }),
     }),
+  fetchFlashcards: () =>
+    request<{ id: string; front: string; back: string }[]>(
+      `/study/flashcards`, 
+      {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+        },
+      }
+    ),
+
+    createFlashcard: (card: {front: string; back: string}) =>
+      request<{ id:string; front: string; back: string; }>(
+        `/study/flashcards`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: getAuthHeader(),
+          },
+          body: JSON.stringify(card),
+        }
+      ),
+
+      deleteFlashcard: (id: string) =>
+        request<{message: string}>(
+          `/study/flashcards/${id}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: getAuthHeader()
+            },
+          } 
+        ),
+
+        createAiCard: (topic: string) =>
+          request<{id:string; front: string; back: string;}>(
+            `/study/ai-card`,{
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: getAuthHeader()
+              },
+              body: JSON.stringify({topic}),
+            }
+          ),
+
+        editFlashcard: (id: string, data: Partial<{front: string; back: string}>)=>
+          request<{ id: string; front: string; back: string}> (
+            `/study/flashcards/${id}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: getAuthHeader()
+              },
+              body: JSON.stringify(data)
+            }
+          ),
+
+        createAiMulticards: (topic: string, count: number) => 
+          request<{ cards: {id:string; front: string; back: string}[] }>(
+            `/study/ai-card/multi`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: getAuthHeader()
+              },
+              body: JSON.stringify({topic, count}),
+            }
+          ),     
+
 };

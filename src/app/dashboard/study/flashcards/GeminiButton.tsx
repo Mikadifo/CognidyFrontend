@@ -1,14 +1,13 @@
 "use client";
 import { useState } from "react";
+import {api} from "@/app/utils/apiFetch"
 
 type ApiCard = { id: string; front: string; back: string };
 
 export default function GeminiCard({
-  url = "http://127.0.0.1:8000/api/study/ai-card", //backend
   onCreated,
   className = "",
 }: {
-  url?: string;
   onCreated?: (card: ApiCard) => void;
   className?: string;
 }) {
@@ -36,26 +35,16 @@ export default function GeminiCard({
     try {
       setErr("");
       setStatus("loading");
-      const res = await fetch(url, {
-        //post method from backend
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic: topic.trim() }),
-      });
-      const data = await res.json();
-
-      if (!res.ok || data?.error) {
-        setStatus("error");
-        setErr(mapError(data?.error, data?.preview));
-        return;
-      }
-
-      onCreated?.(data as ApiCard);
+      const resp = await api.createAiCard(topic.trim())
+      const card = (resp as any).data ?? resp;
+      onCreated?.(card as ApiCard)
       setTopic("");
       setStatus("idle");
-    } catch {
+    } catch (e) {
       setStatus("error");
       setErr("Network error.");
+      const msg = e instanceof Error ? e.message : undefined;
+      setErr(mapError(msg))
     }
   }
   return (
@@ -67,9 +56,9 @@ export default function GeminiCard({
     >
       <div className="flex flex-col gap-3 md:flex-row md:items-end">
         <div className="flex-1">
-          <label className="block text-sm text-black/70 mb-1">
+          {/* <label className="block text-sm text-black/70 mb-1">
             Create Flashcards With Google Gemini
-          </label>
+          </label> */}
           <input
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
@@ -94,4 +83,3 @@ export default function GeminiCard({
     </div>
   );
 }
-
