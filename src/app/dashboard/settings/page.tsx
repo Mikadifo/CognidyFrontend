@@ -85,7 +85,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="flex flex-col p-10 text-dark gap-2">
+    <div className="flex flex-col p-8 lg:p-10 text-dark gap-2">
       <DashboardHeader
         heading="Settings"
         subheading="Customize your experience and app preferences"
