@@ -10,12 +10,14 @@ import { useApi } from "@/app/hooks/useApi";
 import { UserLoginDto } from "@/app/dtos/UserDto";
 import { api } from "@/app/utils/apiFetch";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/hooks/useAuth";
 
 export default function LoginPage() {
   const [form, setForm] = useState({ username: "", password: "" });
   const router = useRouter();
+  const { saveUser } = useAuth();
+
   const {
-    //data: token,
     loading,
     submit: login,
     //error,
@@ -32,14 +34,27 @@ export default function LoginPage() {
     if (response.error) {
       console.error(response.error);
       return;
-    } else {
+    }
+
+    //If login worked, save the token
+    if (response.data) {
+      saveUser(response.data);
+      console.log("Token saved:", response.data);
       router.push("/dashboard");
+    } else {
+      console.error("No token received:", response);
     }
   };
 
+  // Guest login button handler
+  const handleGuest = () => {
+    saveUser("guest");
+    router.push("/dashboard");
+  };
+
   return (
-    <div className="h-screen w-full flex items-center justify-center bg-linear-to-br from-brand via-cyan to-green">
-      <div className="bg-white text-gray-800 rounded-2xl shadow-xl w-[480px] p-16">
+    <div className="h-screen w-full flex items-center justify-center bg-white sm:bg-linear-to-br sm:from-brand sm:via-cyan sm:to-green">
+      <div className="bg-white text-gray-800 rounded-2xl sm:shadow-xl w-full sm:w-[480px] p-8 sm:p-16">
         <div className="flex flex-col gap-4 mb-16">
           <Logo className="size-16 rounded-lg mx-auto" />
           <h1 className="text-2xl font-poppins font-bold text-center">
@@ -99,9 +114,14 @@ export default function LoginPage() {
           </div>
         </form>
 
-        <div className="bg-dark-16 h-[1px] rounded-full w-[300px] mx-auto my-8" />
+        <div className="bg-dark-16 h-[1px] rounded-full w-full sm:w-[300px] mx-auto my-8" />
 
-        <Button variant="outline" className="w-full" type="button">
+        <Button
+          variant="outline"
+          className="w-full"
+          type="button"
+          onClick={handleGuest}
+        >
           Continue as Guest
         </Button>
       </div>

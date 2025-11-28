@@ -10,9 +10,11 @@ export const DashboardHeader: FC<DashboardHeaderProps> = ({
   subheading,
 }) => (
   <div className="font-poppins flex flex-col gap-1">
-    <span className="text-xl font-bold text-brand-84 tracking-tight uppercase">
+    <span className="text-lg lg:text-xl font-bold text-brand-84 tracking-tight uppercase">
       {heading}
     </span>
-    <span className="text-dark font-normal text-[32px]">{subheading}</span>
+    <span className="text-dark font-normal text-3xl lg:text-[32px]">
+      {subheading}
+    </span>
   </div>
 );

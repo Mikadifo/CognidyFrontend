@@ -1,8 +1,14 @@
 export const BASE_API = `${process.env.NEXT_PUBLIC_API_URL}/api`;
-//TODO REMOVE THIS TOKEN ONCE LOGIN IS IMPLEMENTED
-export const AUTH_TOKEN =
-  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1OTg4OTk0NCwianRpIjoiZGY2NWQ5ODYtOWU0Yi00ZGQ2LWJmNmQtZDY1ZjUyNGQzZTlmIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImFkbWluIiwibmJmIjoxNzU5ODg5OTQ0LCJjc3JmIjoiMTM0ODA5OTItN2UyNS00N2Q3LTkzMmYtMmI3YmJkNmQwMWI5IiwiZXhwIjoxNzYxMTg1OTQ0fQ.LtGHpw4aVLezVrL-TK4JYb-SEPez_hwa0qECW6h8Zy8";
 
 export const LocalStorageKeys = {
   HIDE_COMPLETED: "hideCompletedGoals",
+  CURRENT_QUIZ: "currentQuiz",
+} as const;
+
+export const MAX_ROADMAP_GOALS = 15;
+
+export const SectionColors = {
+  quizzes: "#7464d2",
+  flashcards: "#ff68a4",
+  puzzles: "#9fa2d8",
 } as const;

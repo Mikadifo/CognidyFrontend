@@ -1,17 +1,20 @@
 "use client";
 
-import { ComponentType, FC, SVGProps } from "react";
+import { ComponentType, FC, SVGProps, useState, useEffect } from "react";
+import { useAuth } from "@/app/hooks/useAuth";
 
-import Logo from "./../assets/logoHorizontal.svg";
+import LogoHorizontal from "./../assets/logoHorizontal.svg";
+import Logo from "./../assets/logo.svg";
 import BookIcon from "./../assets/icons/book.svg";
 import ExitIcon from "./../assets/icons/exit.svg";
+import ArrowIcon from "./../assets/icons/arrow.svg";
 import LearningIcon from "./../assets/icons/learning.svg";
 import ProgressIcon from "./../assets/icons/barChart.svg";
 import NotesIcon from "./../assets/icons/notes.svg";
 import SettingsIcon from "./../assets/icons/settings.svg";
 
 import { Button } from "./Button";
-import { usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 interface SideBarProps {
   className?: string;
@@ -19,20 +22,39 @@ interface SideBarProps {
 
 export const SideBar: FC<SideBarProps> = ({ className }) => {
   const pathname = usePathname();
+  const { logout } = useAuth();
+  const [isGuest, setIsGuest] = useState(false);
 
-  const onLogout = () => {
-    console.log("TODO: Logout");
+  // Detect guest mode
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token === "guest") setIsGuest(true);
+  }, []);
+
+  // Dynamic click handler
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (isGuest) {
+      // Guest user → clear token and redirect to login
+      localStorage.removeItem("token");
+      router.push("/login");
+    } else {
+      // Logged-in user → log out
+      logout();
+    }
   };
 
   return (
     <div
-      className={`flex flex-col h-screen min-w-[240px] w-[240px] bg-white border-e border-dark-16 sticky left-0 ${className}`}
+      className={`flex flex-col h-screen w-fit md:min-w-[200px] md:w-[200px] lg:min-w-[240px] lg:w-[240px] bg-white border-e border-dark-16 sticky left-0 ${className}`}
     >
-      <div className="p-6 border-b border-dark-16">
-        <Logo className="min-h-[36px] h-[36px]" />
+      <div className="p-4 lg:p-6 border-b border-dark-16">
+        <LogoHorizontal className="h-8 min-h-8 lg:h-[36px] hidden md:block" />
+        <Logo className="h-8 min-h-8 lg:h-[36px] rounded-lg md:hidden" />
       </div>
 
-      <div className="flex flex-col h-full justify-between">
+      <div className="flex flex-col h-full justify-between items-center md:items-stretch">
         <ul>
           <Item
             icon={BookIcon}
@@ -66,12 +88,17 @@ export const SideBar: FC<SideBarProps> = ({ className }) => {
           />
         </ul>
 
+        {/* Dynamic Footer Button */}
         <Button
-          className="bg-red !rounded-none w-full"
-          icon={ExitIcon}
-          onClick={onLogout}
+          className={`!rounded-none w-full text-sm lg:text-base ${
+            isGuest ? "!bg-brand hover:opacity-60" : "bg-red hover:bg-red-600"
+          }`}
+          icon={isGuest ? ArrowIcon : ExitIcon}
+          onClick={handleClick}
         >
-          Log out
+          <span className="hidden md:block">
+            {isGuest ? "Log In" : "Log Out"}
+          </span>
         </Button>
       </div>
     </div>
@@ -89,10 +116,10 @@ function Item({ icon: Icon, label, active, href }: ItemProps) {
   return (
     <a
       href={href}
-      className={`flex gap-2 text-dark text-[18px] font-poppins px-6 py-3 items-center ${active ? "bg-dark-08 font-bold" : "cursor-pointer hover:bg-dark-16"}`}
+      className={`flex gap-2 text-dark text-base lg:text-[18px] font-poppins px-4 lg:px-6 py-3 items-center ${active ? "bg-dark-08 font-bold" : "cursor-pointer hover:bg-dark-16"}`}
     >
-      {<Icon className={`size-6 ${active ? "" : "text-dark-88"}`} />}
-      <span>{label}</span>
+      {<Icon className={`size-5 lg:size-6 ${active ? "" : "text-dark-88"}`} />}
+      <span className="hidden md:block">{label}</span>
     </a>
   );
 }

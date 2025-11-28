@@ -11,7 +11,7 @@ export const metadata = {
 
 export default function Learning() {
   return (
-    <div className="p-16 flex flex-col gap-8 w-full">
+    <div className="p-8 lg:p-16 flex flex-col gap-6 lg:gap-8 w-full">
       <DashboardHeader
         heading="Your Learning"
         subheading="Learn and grow with personalized study sessions and games!"
@@ -39,12 +39,10 @@ export default function Learning() {
           <SectionOption
             label="Quizzes"
             icon={StylusNote}
-            href="learning/puzzles"
-            disabled
+            href="learning/quizzes"
           />
         </div>
       </div>
     </div>
   );
 }
-

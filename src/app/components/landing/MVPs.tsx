@@ -5,7 +5,7 @@ import Image, { StaticImageData } from "next/image";
 
 export default function MVPs() {
   return (
-    <div className="w-[1184px] my-32 flex mx-auto justify-center flex-col gap-48">
+    <div className="xl:w-[1184px] my-28 xl:my-32 flex mx-auto justify-center flex-col gap-32 xl:gap-48 px-8">
       <MVP
         title="Study - Flashcards"
         content="Stop wasting time making flashcards. Upload your notes and get instant, accurate cards that help you memorize faster."
@@ -50,19 +50,21 @@ function MVP({
   imgLeft = true,
 }: MVPProps) {
   return (
-    <div className="flex gap-32 items-center">
+    <div className="flex flex-col xl:flex-row gap-16 xl:gap-32 items-center">
       <Image
         src={img}
         alt={alt}
-        className={`${imgLeft ? "order-first" : "order-last"}`}
+        className={`order-first ${imgLeft ? "xl:order-first" : "xl:order-last"}`}
       />
 
       <div
-        className={`${imgLeft ? "order-last" : "order-first"} font-nunito flex flex-col gap-16`}
+        className={`${imgLeft ? "order-last" : "order-first"} font-nunito flex flex-col gap-13 xl:gap-16`}
       >
-        <div className="flex flex-col gap-8">
-          <h2 className="font-bold font-poppins text-[32px]">{title}</h2>
-          <p className="text-[28px]">{content}</p>
+        <div className="flex flex-col gap-6 xl:gap-8">
+          <h2 className="font-bold font-poppins text-3xl xl:text-[32px]">
+            {title}
+          </h2>
+          <p className="text-2xl xl:text-[28px]">{content}</p>
         </div>
 
         <div className="flex flex-col gap-4">

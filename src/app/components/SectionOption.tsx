@@ -16,9 +16,11 @@ export const SectionOption: FC<SectionOptionProps> = ({
 }) => {
   if (disabled) {
     return (
-      <div className="bg-dark text-white flex flex-col gap-4 p-6 size-[200px] rounded-2xl items-center cursor-not-allowed opacity-[48%]">
-        <Icon />
-        <span className="font-bold font-poppins text-xl">{label}</span>
+      <div className="bg-dark text-white flex flex-col gap-3 lg:gap-4 p-4 lg:p-6 size-[150px] lg:size-[200px] rounded-2xl items-center cursor-not-allowed opacity-[48%]">
+        <Icon className="size-[96px] lg:size-[100px]" />
+        <span className="font-bold font-poppins text-base lg:text-xl">
+          {label}
+        </span>
       </div>
     );
   }
@@ -26,10 +28,12 @@ export const SectionOption: FC<SectionOptionProps> = ({
   return (
     <Link
       href={href}
-      className="bg-dark text-white flex flex-col gap-4 p-6 size-[200px] rounded-2xl items-center hover:scale-95 hover:opacity-95"
+      className="bg-dark text-white flex flex-col gap-3 lg:gap-4 p-4 lg:p-6 size-[150px] lg:size-[200px] rounded-2xl items-center hover:scale-95 hover:opacity-95"
     >
-      <Icon />
-      <span className="font-bold font-poppins text-xl">{label}</span>
+      <Icon className="size-[96px] lg:size-[100px]" />
+      <span className="font-bold font-poppins text-base lg:text-xl">
+        {label}
+      </span>
     </Link>
   );
 };
