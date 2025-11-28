@@ -6,6 +6,7 @@ import Session from "../models/Session";
 import { UserLoginDto, UserSignUpDto } from "../dtos/UserDto";
 import { Note } from "../models/Note";
 import RoadmapGoal from "../models/RoadmapGoal";
+import SessionDto from "../dtos/SessionDto";
 
 function getAuthHeader() {
   const token = localStorage.getItem("token");
