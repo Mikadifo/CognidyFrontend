@@ -18,6 +18,9 @@ export default function Settings() {
   const [newPassword, setNewPassword] = useState("");
   const [showPasswordFields, setShowPasswordFields] = useState(false);
 
+  const [oldPasswordValid, setOldPasswordValid] = useState<boolean | null>(null);
+  const { submit: checkPasswordApi } = useApi(api.checkPassword);
+
   // UseApi wrapper for fetching user
   const { submit: fetchUser, loading: fetchingUser } = useApi(api.getUser);
 
@@ -56,29 +59,47 @@ export default function Settings() {
   };
 
   const handlePasswordUpdate = async () => {
-    if (!password || !newPassword) {
-      return alert("Please fill out both password fields.");
+  if (oldPasswordValid !== true) {
+    return alert("Please verify your current password first.");
+  }
+
+  if (!password || !newPassword) {
+    return alert("Please fill out both password fields.");
+  }
+
+  try {
+    const res = await resetPasswordApi({
+      password,
+      new_password: newPassword,
+    });
+
+    if (res?.message) {
+      alert(res.message);
     }
 
-    try {
-      const res = await resetPasswordApi({
-        password,
-        new_password: newPassword,
-      });
+    // Reset UI after success
+    setPassword("");
+    setNewPassword("");
+    setShowPasswordFields(false);
+    setOldPasswordValid(null);
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong updating your password.");
+  }
+};
 
-      if (res?.message) {
-        alert(res.message);
-      }
 
-      // Clear the fields and hide the section
-      setPassword("");
-      setNewPassword("");
-      setShowPasswordFields(false);
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong updating your password.");
-    }
-  };
+  const handleCheckPassword = async () => {
+  if (!password) {
+    alert("Please enter your current password first.");
+    return;
+  }
+
+  const res = await checkPasswordApi({ password });
+
+   const isValid = res?.data?.valid === true;
+  setOldPasswordValid(isValid);
+};
 
   const deleteAccount = () => {
     alert("Account deletion feature coming soon!");
@@ -125,7 +146,7 @@ export default function Settings() {
             <input
               type="email"
               value={email}
-              disabled={editingField !== "email"}
+              disabled={true}
               onChange={(e) => setEmail(e.target.value)}
               onBlur={handleBlur}
               className={`w-full border border-gray-300 rounded-md px-3 py-2 ${
@@ -134,12 +155,6 @@ export default function Settings() {
                   : "bg-gray-100 cursor-not-allowed"
               }`}
             />
-            <button
-              className="ml-2 p-2 hover:bg-gray-200 rounded-md"
-              onClick={() => handleEdit("email")}
-            >
-              <PencilIcon className="size-4" />
-            </button>
           </div>
         </div>
 
@@ -155,6 +170,23 @@ export default function Settings() {
                 className="w-full border border-gray-300 rounded-md px-3 py-2 bg-white"
               />
             </div>
+
+            {/* Check Password Button */}
+            <Button 
+               className="bg-dark text-white hover:opacity-80 w-full mt-2"
+               onClick={handleCheckPassword}
+               >
+              Check current password
+            </Button>
+
+            {/* Feedback Message */}
+            {oldPasswordValid === true && (
+              <p className="text-green-600 text-sm">✔ Password is correct</p>
+            )}
+            {oldPasswordValid === false && (
+              <p className="text-red-600 text-sm">✘ Incorrect password</p>
+            )}
+
 
             {/* New Password */}
             <div>
