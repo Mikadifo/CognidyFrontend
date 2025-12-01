@@ -1,5 +1,6 @@
 "use client";
 
+import Alert from "@/app/components/Alert";
 import GuestLoginCTA from "@/app/components/GuestLoginCTA";
 import LineChartTrend from "@/app/components/LineChartTrend";
 import { useApi } from "@/app/hooks/useApi";
@@ -11,6 +12,11 @@ import { FC, useEffect, useState } from "react";
 
 export const TrendsController: FC = ({}) => {
   const { getToken } = useAuth();
+  const [alert, setAlert] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
   const [token, setToken] = useState("");
   const {
     submit: getSessions,
@@ -31,12 +37,22 @@ export const TrendsController: FC = ({}) => {
     getSessions();
   }, [getSessions]);
 
+  useEffect(() => {
+    if (error && typeof error === "string") {
+      setAlert({
+        open: true,
+        message: "Something went wrong. Try again later",
+        severity: "error",
+      });
+    }
+  }, [error]);
+
   const hasSessions = () => {
     return sessions && sessions?.length > 0;
   };
 
   if (error && typeof error === "string") {
-    return error;
+    return <Alert alert={alert} setAlert={setAlert} />;
   }
 
   if (token === "guest") {
