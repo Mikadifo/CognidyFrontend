@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 
 interface LineChartToolTipProps {
-  active?: Boolean;
+  active?: boolean;
   payload?: Array<{
     dataKey: string;
     value: number;

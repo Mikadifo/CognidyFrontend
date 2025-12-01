@@ -54,8 +54,12 @@ export const RoadmapGoals: FC<RoadmapGoalsProps> = ({ goals, getGoals }) => {
   };
 
   return (
-    <ArcherContainer strokeColor="#92959C" strokeDasharray="5,5">
-      <div className="font-nunito text-dark flex flex-col gap-16 w-[480px]">
+    <ArcherContainer
+      strokeColor="#92959C"
+      strokeDasharray="5,5"
+      className="order-2 lg:order-1"
+    >
+      <div className="font-nunito text-dark flex flex-col gap-16 w-full lg:w-[480px]">
         {goals.map(({ order, title, brief, completed }, i) => (
           <ArcherElement
             key={order}
