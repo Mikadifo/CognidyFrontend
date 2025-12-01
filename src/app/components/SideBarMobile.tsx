@@ -122,7 +122,7 @@ function Item({ icon: Icon, label, active, href }: ItemProps) {
   return (
     <a
       href={href}
-      className={`flex gap-2 text-dark text-base lg:text-[18px] font-poppins px-4 lg:px-6 py-3 items-center ${active ? "bg-dark-08 font-bold" : "cursor-pointer hover:bg-dark-16"}`}
+      className={`flex gap-2 text-dark text-base lg:text-[18px] font-poppins px-4 lg:px-6 py-3 items-center w-screen justify-center ${active ? "bg-dark-08 font-bold" : "cursor-pointer hover:bg-dark-16"}`}
     >
       {<Icon className={`size-5 lg:size-6 ${active ? "" : "text-dark-88"}`} />}
       <span>{label}</span>

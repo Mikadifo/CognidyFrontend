@@ -119,7 +119,7 @@ export const RoadmapGoalForm: FC<RoadmapGoalFormProps> = ({
 
   return (
     <form
-      className="flex bg-dark-08 rounded-lg p-8 w-[400px] flex-col gap-8 h-fit sticky top-0"
+      className="flex bg-dark-08 rounded-lg p-8 lg:w-[400px] flex-col gap-8 h-fit lg:sticky top-0 order-1 lg:order-2 w-full"
       onSubmit={handleAddGoal}
     >
       <div className="flex flex-col gap-4">
