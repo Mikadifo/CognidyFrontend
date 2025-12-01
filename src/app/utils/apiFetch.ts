@@ -125,7 +125,7 @@ export const api = {
         Authorization: getAuthHeader(),
       },
     }),
-  addSession: (newSession: SessionDto) =>
+  addSession: (newSession: any) =>
     request<{ message: string }>("/sessions/add", {
       method: "POST",
       headers: {
@@ -163,6 +163,19 @@ export const api = {
       },
       body: JSON.stringify(payload),
     }),
+
+  // Check old password
+checkPassword: (payload: { password: string }) =>
+  request<{ data: {valid: boolean} }>(`/users/check_password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: getAuthHeader(),
+    },
+    body: JSON.stringify(payload),
+  }),
+
+
   fetchSessions: () =>
     request<{ data: Session[] }>("/sessions", {
       headers: {
