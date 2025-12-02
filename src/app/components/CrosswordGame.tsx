@@ -3,6 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/app/components/Button';
 
+interface CrosswordMetadata {
+  puzzleID: string;
+  userID: string;
+  title: string;
+  completed: boolean;
+}
+
 interface CrosswordCell {
   letter: string;
   number?: number;
@@ -17,6 +24,14 @@ interface CrosswordWord {
   direction: 'across' | 'down';
   startRow: number;
   startCol: number;
+}
+
+interface CrosswordGameData {
+  grid: CrosswordCell[][];
+  solutionGrid: CrosswordCell[][];
+  completedGrid: CrosswordCell[][];
+  words: CrosswordWord[];
+  hints: string[];
 }
 
 interface CrosswordGameProps {
