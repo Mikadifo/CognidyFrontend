@@ -1,4 +1,5 @@
 import LoadingIcon from "@/app/assets/icons/loadingIcon.svg";
+import CloseIcon from "@/app/assets/icons/closeIcon.svg";
 import { useApi } from "../hooks/useApi";
 import GenerationStatusDto from "../dtos/GenerationStatusDto";
 import { api } from "../utils/apiFetch";
@@ -9,12 +10,14 @@ import {
   isSectionComplete,
   removeNewNoteStatus,
   updateNewNoteStatus,
+  sectionFailed,
 } from "../utils/notesStatus";
 
 export enum GeneratingSection {
   ROADMAP,
   PUZZLES,
   FLASHCARDS,
+  QUIZZES,
 }
 
 interface GenerationNotificationProps {
@@ -27,7 +30,7 @@ export default function GenerationNotification({
   fetchFunction,
 }: GenerationNotificationProps) {
   const [hideNotification, setHideNotification] = useState<boolean>(true);
-  const { submit: getGenerationStatuts } = useApi<
+  const { submit: getGenerationStatuts, data } = useApi<
     GenerationStatusDto,
     [id: string]
   >(api.generationStatus);
@@ -44,21 +47,31 @@ export default function GenerationNotification({
 
       if (result.error) {
         console.error(result.error);
+        clearInterval(pollInterval);
         return;
       }
 
       const newStatus = result.data as GenerationStatusDto;
       updateNewNoteStatus(newStatus);
-      setHideNotification(isSectionComplete(section));
+      setHideNotification(
+        isSectionComplete(section) && !sectionFailed(section),
+      );
 
       if (isSectionComplete(section)) {
         clearInterval(pollInterval);
-        fetchFunction();
+
+        if (!sectionFailed(section)) {
+          fetchFunction();
+        }
       }
 
       if (allSectionsComplete()) {
         clearInterval(pollInterval);
-        setHideNotification(true);
+
+        if (!sectionFailed(section)) {
+          setHideNotification(true);
+        }
+
         removeNewNoteStatus();
       }
     };
@@ -67,8 +80,10 @@ export default function GenerationNotification({
 
     const pollInterval = setInterval(pollStatus, 3000);
 
-    return () => clearInterval(pollInterval);
-  }, [getGenerationStatuts]);
+    return () => {
+      clearInterval(pollInterval);
+    };
+  }, [getGenerationStatuts, fetchFunction, section]);
 
   const getGeneratingSectionString = () => {
     if (section === GeneratingSection.ROADMAP) {
@@ -79,16 +94,38 @@ export default function GenerationNotification({
       return "flashcards";
     }
 
+    if (section === GeneratingSection.PUZZLES) {
+      return "quizzes";
+    }
+
     return "puzzles";
   };
 
   return (
     <div
-      className="rounded-[5px] bg-yellow-88 text-dark font-nunito text-base font-semibold px-6 py-3 flex gap-4 items-center w-fit whitespace-nowrap max-h-[50px]"
+      className={`rounded-[5px] ${data?.goals === "failed" ? "bg-red text-white" : "bg-yellow-88 text-dark"} font-nunito text-base font-semibold px-6 py-3 flex gap-4 items-center w-fit whitespace-nowrap max-h-[50px]`}
       hidden={hideNotification}
     >
-      <span>Generating personalized {getGeneratingSectionString()}</span>
-      <LoadingIcon className="animate-spin size-5" />
+      {data?.goals === "failed" ? (
+        <>
+          <span>
+            Oops! We couldn&apos;t generate {getGeneratingSectionString()}. Try
+            again later
+          </span>
+          <button
+            type="button"
+            className="cursor-pointer hover:rotate-6"
+            onClick={() => setHideNotification(true)}
+          >
+            <CloseIcon className="size-5" />
+          </button>
+        </>
+      ) : (
+        <>
+          <span>Generating personalized {getGeneratingSectionString()}</span>
+          <LoadingIcon className="animate-spin size-5" />
+        </>
+      )}
     </div>
   );
 }

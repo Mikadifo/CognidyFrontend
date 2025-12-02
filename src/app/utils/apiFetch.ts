@@ -1,14 +1,13 @@
 import { BASE_API } from "../constants";
 import GenerationStatusDto from "../dtos/GenerationStatusDto";
 import NewGoalDto from "../dtos/NewGoalDto";
+import QuizzesDto from "../dtos/QuizzesDto";
+import Session from "../models/Session";
 import { UserLoginDto, UserSignUpDto } from "../dtos/UserDto";
 import { Note } from "../models/Note";
 import RoadmapGoal from "../models/RoadmapGoal";
+import SessionDto from "../dtos/SessionDto";
 
-/* 
-   Helper function to read the real token from localStorage
-   instead of using the static AUTH_TOKEN constant.
-*/
 function getAuthHeader() {
   const token = localStorage.getItem("token");
   return token ? `Bearer ${token}` : "";
@@ -25,20 +24,14 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   }
 
   if (!res.ok) {
-    let errorMessage: string;
+    if (typeof json === "object" && json !== null) {
+      const obj = json as Record<string, unknown>;
+      const error = obj.error ?? res.statusText ?? `HTTP ${res.status}`;
 
-    if (
-      typeof json === "object" &&
-      json !== null &&
-      "error" in json &&
-      typeof (json as { error: unknown }).error === "string"
-    ) {
-      errorMessage = (json as { error: string }).error;
-    } else {
-      errorMessage = res.statusText || `HTTP ${res.status}`;
+      throw error instanceof Error ? error : error;
     }
 
-    throw new Error(errorMessage);
+    throw new Error(res.statusText || `HTTP ${res.status}`);
   }
 
   return json as T;
@@ -73,7 +66,7 @@ export const api = {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: AUTH_TOKEN, // TODO: use login token instead and also check for guest user, need auth hook
+        Authorization: getAuthHeader(),
       },
     }),
   deleteNote: (id: string) =>
@@ -124,5 +117,69 @@ export const api = {
         Authorization: getAuthHeader(),
       },
       body: JSON.stringify({ completed }),
+    }),
+  fetchQuizzes: () =>
+    request<{ data: QuizzesDto[] }>("/quizzes", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+    }),
+  addSession: (newSession: SessionDto) =>
+    request<{ message: string }>("/sessions/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+      body: JSON.stringify({
+        ...newSession,
+        completed_at: newSession.completed_at.toISOString().split("T")[0],
+      }),
+    }),
+  getUser: () =>
+    request<{ data: { username: string; email: string } }>(`/users/me`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+    }),
+  updateUser: (payload: { username: string; email: string }) =>
+    request<{ message: string; token: string }>(`/users/update`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+      body: JSON.stringify(payload),
+    }),
+  resetPassword: (payload: { password: string; new_password: string }) =>
+    request<{ message: string }>(`/users/reset_password`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+      body: JSON.stringify(payload),
+    }),
+
+  // Check old password
+  checkPassword: (payload: { password: string }) =>
+    request<{ data: { valid: boolean } }>(`/users/check_password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+      body: JSON.stringify(payload),
+    }),
+
+  fetchSessions: () =>
+    request<{ data: Session[] }>("/sessions", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
     }),
 };

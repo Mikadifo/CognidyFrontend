@@ -26,18 +26,22 @@ export const RoadmapController: FC = () => {
     error,
     data: goals,
   } = useApi<RoadmapGoal[], []>(api.fetchGoals);
+  const filteredGoals = hideCompleted
+    ? goals?.filter((goal) => !goal.completed)
+    : goals;
 
   useEffect(() => {
     setToken(getToken() || "");
-  }, []);
+  }, [getToken]);
 
   useEffect(() => {
-    if (!token || token === "guest") {
+    setOnLoadFetching(true);
+
+    if (!getToken() || getToken() === "guest") {
       return;
     }
 
     getGoals();
-    setOnLoadFetching(true);
   }, [getGoals]);
 
   const fetchAfterLoad = () => {
@@ -45,13 +49,25 @@ export const RoadmapController: FC = () => {
     getGoals();
   };
 
-  if (error) {
+  const hasGoals = () => {
+    return goals && goals?.length > 0;
+  };
+
+  const showFilter = () => {
+    if (!hasGoals()) {
+      return false;
+    }
+
+    if (!hideCompleted) {
+      return (goals?.filter((goal) => goal.completed) ?? []).length > 0;
+    }
+
+    return hasGoals();
+  };
+
+  if (error && typeof error === "string") {
     return error;
   }
-
-  const filteredGoals = hideCompleted
-    ? goals?.filter((goal) => !goal.completed)
-    : goals;
 
   if (token === "guest") {
     return <GuestLoginCTA />;
@@ -59,14 +75,23 @@ export const RoadmapController: FC = () => {
 
   return (
     <div className="flex flex-col gap-8 relative">
-      <div className="flex gap-8">
-        <Button
-          className="w-fit"
-          variant="outline"
-          onClick={() => setHideCompleted(!hideCompleted)}
-        >
-          {hideCompleted ? "Show" : "Hide"} completed goals
-        </Button>
+      <div className="flex gap-8" hidden={loading}>
+        {showFilter() && (
+          <Button
+            className="w-fit"
+            variant="outline"
+            onClick={() => setHideCompleted(!hideCompleted)}
+          >
+            {hideCompleted ? "Show" : "Hide"} completed goals
+          </Button>
+        )}
+
+        {!hasGoals() && (
+          <p className="text-md">
+            You don&apos;t have goals yet. Create one or upload a file to
+            generate goals using AI.
+          </p>
+        )}
 
         <GenerationNotification
           section={GeneratingSection.ROADMAP}
@@ -74,12 +99,18 @@ export const RoadmapController: FC = () => {
         />
       </div>
 
-      <div className="flex gap-16 relative">
+      <div className="flex gap-16 relative flex-col lg:flex-row">
         {onLoadFetching && loading ? (
           <RoadmapGoalsSkeleton />
         ) : (
-          <RoadmapGoals goals={filteredGoals || []} getGoals={fetchAfterLoad} />
+          hasGoals() && (
+            <RoadmapGoals
+              goals={filteredGoals || []}
+              getGoals={fetchAfterLoad}
+            />
+          )
         )}
+
         <RoadmapGoalForm
           goals={filteredGoals || []}
           onSubmit={fetchAfterLoad}

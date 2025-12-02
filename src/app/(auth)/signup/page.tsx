@@ -38,8 +38,8 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="h-screen w-full flex items-center justify-center bg-linear-to-br from-brand via-cyan to-green">
-      <div className="bg-white text-gray-800 p-10 rounded-2xl shadow-xl w-full max-w-md">
+    <div className="h-screen w-full flex items-center justify-center bg-white sm:bg-linear-to-br sm:from-brand sm:via-cyan sm:to-green">
+      <div className="bg-white text-gray-800 rounded-2xl sm:shadow-xl w-full sm:w-[480px] p-8 sm:p-16">
         <div className="flex flex-col gap-4 mb-16">
           <Logo className="size-16 rounded-lg mx-auto" />
           <h1 className="text-2xl font-poppins text-center font-bold">
@@ -94,14 +94,14 @@ export default function SignupPage() {
 
             <p className="text-sm text-center">
               Have an account already?{" "}
-              <Link href="/signup" className="font-bold hover:underline">
+              <Link href="/login" className="font-bold hover:underline">
                 Log In
               </Link>
             </p>
           </div>
         </form>
 
-        <div className="bg-dark-16 h-[1px] rounded-full w-[300px] mx-auto my-8" />
+        <div className="bg-dark-16 h-[1px] rounded-full w-full sm:w-[300px] mx-auto my-8" />
 
         <Button variant="outline" className="w-full" type="button">
           Continue as Guest
