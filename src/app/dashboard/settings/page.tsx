@@ -262,7 +262,7 @@ export default function Settings() {
           </Button>
         </div>
       </div>
-      <Alert alert={alert} setAlert={setAlert} closeAfter={null} />
+      <Alert alert={alert} setAlert={setAlert} closeAfter={3000} />
     </div>
   );
 }
