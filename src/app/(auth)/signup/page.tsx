@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Input } from "@/app/components/Input";
 import SignUpIcon from "../../assets/icons/arrow.svg";
@@ -10,16 +10,32 @@ import { useApi } from "@/app/hooks/useApi";
 import { api } from "@/app/utils/apiFetch";
 import { useRouter } from "next/navigation";
 import { UserSignUpDto } from "@/app/dtos/UserDto";
+import Alert from "@/app/components/Alert";
 
 export default function SignupPage() {
+  const [alert, setAlert] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const router = useRouter();
   const {
-    //data: token,
     loading,
     submit: signup,
-    //error,
+    error,
   } = useApi<string, [body: UserSignUpDto]>(api.signup);
+
+  useEffect(() => {
+    if (error && typeof error === "string") {
+      console.log(error);
+      setAlert({
+        open: true,
+        message: error,
+        severity: "error",
+      });
+    }
+  }, [error]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -30,7 +46,6 @@ export default function SignupPage() {
     const response = await signup(form);
 
     if (response.error) {
-      console.error(response.error);
       return;
     } else {
       router.push("/dashboard");
@@ -107,6 +122,8 @@ export default function SignupPage() {
           Continue as Guest
         </Button>
       </div>
+
+      <Alert alert={alert} setAlert={setAlert} closeAfter={3000} />
     </div>
   );
 }
