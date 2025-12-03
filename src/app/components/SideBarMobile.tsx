@@ -48,7 +48,7 @@ export const SideBarMobile: FC<SideBarMobileProps> = ({ className }) => {
 
   return (
     <div
-      className={`flex flex-col w-full h-fit bg-white border-b border-dark-16 sticky top-0 p-3 ${className}`}
+      className={`flex flex-col w-full h-fit bg-white border-b border-dark-16 fixed top-0 p-3 z-50 sm:hidden ${className}`}
     >
       <div className="flex w-full justify-between">
         <LogoHorizontal className="h-8 min-h-8" />
@@ -62,7 +62,7 @@ export const SideBarMobile: FC<SideBarMobileProps> = ({ className }) => {
 
       {isMenuOpen && (
         <div className="flex flex-col w-full items-center">
-          <ul>
+          <ul className="w-full">
             <Item
               icon={BookIcon}
               label="Study"
@@ -122,7 +122,7 @@ function Item({ icon: Icon, label, active, href }: ItemProps) {
   return (
     <a
       href={href}
-      className={`flex gap-2 text-dark text-base lg:text-[18px] font-poppins px-4 lg:px-6 py-3 items-center w-screen justify-center ${active ? "bg-dark-08 font-bold" : "cursor-pointer hover:bg-dark-16"}`}
+      className={`flex gap-2 text-dark text-base lg:text-[18px] font-poppins px-4 lg:px-6 py-3 items-center w-full justify-center ${active ? "bg-dark-08 font-bold" : "cursor-pointer hover:bg-dark-16"}`}
     >
       {<Icon className={`size-5 lg:size-6 ${active ? "" : "text-dark-88"}`} />}
       <span>{label}</span>

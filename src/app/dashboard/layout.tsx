@@ -25,8 +25,8 @@ export default function DashboardLayout({
   return (
     <div className="flex flex-col sm:flex-row bg-white">
       <SideBar className="hidden sm:flex" />
-      <SideBarMobile className="sm:hidden" />
-      <main className="flex-1 min-h-screen h-screen overflow-scroll">
+      <SideBarMobile />
+      <main className="flex-1 sm:min-h-screen sm:h-screen sm:overflow-scroll pt-[57px] sm:pt-0 overflow-hidden">
         {children}
       </main>
     </div>
