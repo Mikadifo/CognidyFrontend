@@ -36,7 +36,6 @@ export default function Study() {
             label="Pomodoro"
             icon={PomodoroIcon}
             href="study/pomodoro"
-            disabled //not available yet so not clickable
           />
           <SectionOption
             label="Cheat Sheets"
