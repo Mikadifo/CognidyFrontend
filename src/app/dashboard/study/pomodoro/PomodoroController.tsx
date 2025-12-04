@@ -4,10 +4,10 @@ import { Button } from "@/app/components/Button";
 import TimerIcon from "../../../assets/icons/timerIcon.svg";
 import ClockIcon from "../../../assets/icons/clockIcon.svg";
 import RestartIcon from "../../../assets/icons/restartIcon.svg";
-import { FC, useState } from "react";
+import { useState } from "react";
 import { Timer } from "@/app/components/Timer";
 
-export const PomodoroController: FC = () => {
+export function PomodoroController() {
   const [timer, setTimer] = useState<number>(25); // in minutes
   const [reset, setReset] = useState<boolean>(false);
   const [currentTimer, setCurrentTimer] = useState<
@@ -29,11 +29,24 @@ export const PomodoroController: FC = () => {
     setCurrentTimer("pomodoro");
   };
 
+  const setGlobalWidget = () => {
+    const widgetEnabled = localStorage.getItem("pomodoro");
+
+    if (widgetEnabled) {
+      return;
+    }
+
+    localStorage.setItem("pomodoro", "pomodoro");
+    window.location.reload();
+  };
+
   return (
     <div className="flex flex-col sm:flex-row gap-8 font-nunito text-dark">
       <div className="flex flex-col gap-4">
         <Timer timer={timer} reset={reset} />
-        <Button className="bg-brand!">Open Widget</Button>
+        <Button className="bg-brand!" onClick={setGlobalWidget}>
+          Open Widget
+        </Button>
       </div>
 
       <ul className="flex flex-col gap-2">
@@ -79,4 +92,4 @@ export const PomodoroController: FC = () => {
       </ul>
     </div>
   );
-};
+}

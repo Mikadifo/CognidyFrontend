@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { SideBar } from "../components/SideBar";
 import { useAuth } from "@/app/hooks/useAuth";
 import { SideBarMobile } from "../components/SideBarMobile";
+import { PomodoroWidget } from "../components/PomodoroWidget";
 
 export default function DashboardLayout({
   children,
@@ -29,6 +30,8 @@ export default function DashboardLayout({
       <main className="flex-1 sm:min-h-screen sm:h-screen sm:overflow-scroll pt-[57px] sm:pt-0 overflow-hidden">
         {children}
       </main>
+
+      <PomodoroWidget />
     </div>
   );
 }
