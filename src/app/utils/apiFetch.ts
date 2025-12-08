@@ -125,7 +125,7 @@ export const api = {
         Authorization: getAuthHeader(),
       },
     }),
-  addSession: (newSession: any) =>
+  addSession: (newSession: SessionDto) =>
     request<{ message: string }>("/sessions/add", {
       method: "POST",
       headers: {
@@ -189,7 +189,6 @@ checkPassword: (payload: { password: string }) =>
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   }),
-
 
   fetchSessions: () =>
     request<{ data: Session[] }>("/sessions", {
