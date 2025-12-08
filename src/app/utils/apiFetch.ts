@@ -175,6 +175,21 @@ checkPassword: (payload: { password: string }) =>
     body: JSON.stringify(payload),
   }),
 
+    // Forgot Password Public Endpoints 
+  requestPasswordReset: (payload: { email: string }) =>
+  request<{ message: string }>("/users/request_password_reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }),
+
+  resetPasswordPublic: (payload: { token: string; new_password: string }) =>
+  request<{ message: string }>("/users/reset_password_public", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  }),
+
 
   fetchSessions: () =>
     request<{ data: Session[] }>("/sessions", {

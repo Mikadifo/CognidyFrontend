@@ -86,7 +86,7 @@ export default function LoginPage() {
                 required
               />
               <Link
-                href="#"
+                href="/forgot-password"
                 className="text-dark text-sm hover:underline self-end cursor-pointer"
               >
                 Forgot Password
@@ -128,3 +128,6 @@ export default function LoginPage() {
     </div>
   );
 }
+
+
+
