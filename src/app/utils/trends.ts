@@ -16,7 +16,9 @@ export function getChartData(sessions: Session[]) {
     entry[session.section] = score;
   });
 
-  return Array.from(map.values());
+  return Array.from(map.values()).sort(
+    (a, b) => Number(a.name) - Number(b.name),
+  );
 }
 
 export function getSections(sessions: Session[]) {
