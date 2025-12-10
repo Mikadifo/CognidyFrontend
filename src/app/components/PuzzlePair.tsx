@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "./Button";
-import CorrectIcon from "@/app/assets/icons/correctIcon.svg";
-import IncorrectIcon from "@/app/assets/icons/incorrectIcon.svg";
+//import CorrectIcon from "@/app/assets/icons/correctIcon.svg";
+//import IncorrectIcon from "@/app/assets/icons/incorrectIcon.svg";
 import PuzzlesDto from "../dtos/PuzzlesDto";
 import { ArcherContainer, ArcherElement } from "react-archer";
 
@@ -31,6 +31,7 @@ export default function PuzzlePair({ puzzle, handleNext }: PuzzlePairProps) {
     setSelectedRight(null);
     setCompleted(false);
     setShowCorrect(false);
+    setMatches([]);
   }, [puzzle, setLeftOptions, setRightOptions]);
 
   useEffect(() => {

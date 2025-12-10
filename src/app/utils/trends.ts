@@ -9,7 +9,7 @@ export function getChartData(sessions: Session[]) {
     const score = Math.round((session.correct / session.total) * 100);
 
     if (!map.has(key)) {
-      map.set(key, { name: `Session ${key}` });
+      map.set(key, { name: `${key}` });
     }
 
     const entry = map.get(key)!;

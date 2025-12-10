@@ -77,7 +77,7 @@ export function QuizzesController() {
 
       addSession({
         total: quizzes!.length,
-        correct: correctCount,
+        correct: correct ? correctCount + 1 : correctCount,
         section: "quizzes",
         completed_at: new Date(),
       });

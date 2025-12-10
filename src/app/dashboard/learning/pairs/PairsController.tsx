@@ -7,11 +7,12 @@ import { api } from "@/app/utils/apiFetch";
 import SessionDto from "@/app/dtos/SessionDto";
 import GuestLoginCTA from "@/app/components/GuestLoginCTA";
 import { Button } from "@/app/components/Button";
-
-//TODO: delete this
-import puzzles from "./mock-data.json";
 import PuzzlePair from "@/app/components/PuzzlePair";
 import { DescriptionCard } from "@/app/components/DescriptionCard";
+import PuzzlesDto from "@/app/dtos/PuzzlesDto";
+import GenerationNotification, {
+  GeneratingSection,
+} from "@/app/components/GenerationNotification";
 
 export function PairsController() {
   const { getToken } = useAuth();
@@ -20,12 +21,12 @@ export function PairsController() {
   const [currentPuzzle, setCurrentPuzzle] = useState<number>(0);
   const [missedCount, setMissedCount] = useState<number>(0);
   const [correctCount, setCorrectCount] = useState<number>(0);
-  //const {
-  //submit: getPuzzles,
-  //loading,
-  //error,
-  //data: puzzles,
-  //} = useApi<PuzzlesDto[], []>(api.fetchPuzzles);
+  const {
+    submit: getPuzzles,
+    loading,
+    error,
+    data: puzzles,
+  } = useApi<PuzzlesDto[], []>(api.fetchPuzzlesPairs);
   const { submit: addSession } = useApi<string, [SessionDto]>(api.addSession);
 
   useEffect(() => {
@@ -37,11 +38,10 @@ export function PairsController() {
       return;
     }
 
-    //getPuzzles();
+    getPuzzles();
 
-    //setCurrentPuzzle(0);
-  });
-  //}, [setCurrentPuzzle, getPuzzles]);
+    setCurrentPuzzle(0);
+  }, [setCurrentPuzzle, getPuzzles]);
 
   const hasPuzzles = () => {
     return puzzles && puzzles?.length > 0;
@@ -53,7 +53,7 @@ export function PairsController() {
     setMissedCount(0);
     setCorrectCount(0);
 
-    //getPuzzles();
+    getPuzzles();
   };
 
   const handleNext = (correct: boolean) => {
@@ -76,16 +76,16 @@ export function PairsController() {
 
       addSession({
         total: puzzles!.length,
-        correct: correctCount,
+        correct: correct ? correctCount + 1 : correctCount,
         section: "puzzles",
         completed_at: new Date(),
       });
     }
   };
 
-  //if (error && typeof error === "string") {
-  //return error;
-  //}
+  if (error && typeof error === "string") {
+    return error;
+  }
 
   if (token === "guest") {
     return <GuestLoginCTA />;
@@ -93,12 +93,12 @@ export function PairsController() {
 
   return (
     <div className="flex flex-col gap-8">
-      {/*!loading ? (
+      {!loading ? (
         <GenerationNotification
-          section={GeneratingSection.QUIZZES}
+          section={GeneratingSection.PUZZLES}
           fetchFunction={hasPuzzles() ? () => {} : getPuzzles}
         />
-	) : null*/}
+      ) : null}
 
       <div className="flex gap-16">
         {!hasPuzzles() && (
