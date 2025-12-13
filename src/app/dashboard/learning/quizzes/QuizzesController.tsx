@@ -138,16 +138,16 @@ export function QuizzesController() {
           ) : (
             <QuizzQuestion
               handleNext={handleNext}
-              quizz={quizzes[currentQuiz]}
+              quizz={quizzes![currentQuiz]}
             />
           )
         ) : null}
 
         {hasQuizzes() ? (
           <DescriptionCard
-            sourceFileName={quizzes[currentQuiz].sourceFileName}
+            sourceFileName={quizzes![currentQuiz].sourceFileName}
             label="quizzes"
-            total={quizzes.length}
+            total={quizzes!.length}
             missed={missedCount}
             correct={correctCount}
             onRestart={restartQuizzes}

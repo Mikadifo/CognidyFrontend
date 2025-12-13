@@ -24,7 +24,7 @@ export const DescriptionCard: FC<DescriptionCardProps> = ({
 
   return (
     <div
-      className={`${className} bg-dark-08 flex flex-col gap-8 px-12 py-8 rounded-lg text-dark font-nunito min-w-[276px] max-w-fit h-fit relative`}
+      className={`${className} bg-dark-08 flex-col gap-8 px-12 py-8 rounded-lg text-dark font-nunito min-w-[276px] max-w-fit h-fit relative hidden lg:flex`}
     >
       <span className="text-xs max-w-[148px] truncate">
         <strong>Source: </strong>

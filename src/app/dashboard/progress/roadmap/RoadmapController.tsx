@@ -99,7 +99,7 @@ export const RoadmapController: FC = () => {
         />
       </div>
 
-      <div className="flex gap-16 relative">
+      <div className="flex gap-16 relative flex-col lg:flex-row">
         {onLoadFetching && loading ? (
           <RoadmapGoalsSkeleton />
         ) : (

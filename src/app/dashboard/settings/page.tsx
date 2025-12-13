@@ -6,8 +6,14 @@ import { Button } from "@/app/components/Button";
 import { DashboardHeader } from "@/app/components/DashboardHeader";
 import { useApi } from "@/app/hooks/useApi";
 import { api } from "@/app/utils/apiFetch";
+import Alert from "@/app/components/Alert";
 
 export default function Settings() {
+  const [alert, setAlert] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [editingField, setEditingField] = useState<"username" | "email" | null>(
@@ -17,6 +23,11 @@ export default function Settings() {
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [showPasswordFields, setShowPasswordFields] = useState(false);
+
+  const [oldPasswordValid, setOldPasswordValid] = useState<boolean | null>(
+    null,
+  );
+  const { submit: checkPasswordApi } = useApi(api.checkPassword);
 
   // UseApi wrapper for fetching user
   const { submit: fetchUser, loading: fetchingUser } = useApi(api.getUser);
@@ -52,12 +63,25 @@ export default function Settings() {
       localStorage.setItem("token", res.token); // Save NEW TOKEN
     }
 
-    if (res?.message) alert(res.message);
+    if (res?.message)
+      setAlert({ message: res.message, open: true, severity: "success" });
   };
 
   const handlePasswordUpdate = async () => {
+    if (oldPasswordValid !== true) {
+      return setAlert({
+        message: "Please verify your current password first.",
+        open: true,
+        severity: "error",
+      });
+    }
+
     if (!password || !newPassword) {
-      return alert("Please fill out both password fields.");
+      return setAlert({
+        message: "Please fill out both password fields.",
+        open: true,
+        severity: "error",
+      });
     }
 
     try {
@@ -67,30 +91,59 @@ export default function Settings() {
       });
 
       if (res?.message) {
-        alert(res.message);
+        setAlert({
+          message: res.message,
+          severity: "success",
+          open: true,
+        });
       }
 
-      // Clear the fields and hide the section
+      // Reset UI after success
       setPassword("");
       setNewPassword("");
       setShowPasswordFields(false);
+      setOldPasswordValid(null);
     } catch (err) {
       console.error(err);
-      alert("Something went wrong updating your password.");
+      setAlert({
+        message: "Something went wrong updating your password.",
+        severity: "error",
+        open: true,
+      });
     }
   };
 
+  const handleCheckPassword = async () => {
+    if (!password) {
+      setAlert({
+        message: "Please enter your current password first.",
+        severity: "error",
+        open: true,
+      });
+      return;
+    }
+
+    const res = await checkPasswordApi({ password });
+
+    const isValid = res?.data?.valid === true;
+    setOldPasswordValid(isValid);
+  };
+
   const deleteAccount = () => {
-    alert("Account deletion feature coming soon!");
+    setAlert({
+      message: "Account deletion cooming soon",
+      severity: "error",
+      open: true,
+    });
+    return;
   };
 
   return (
-    <div className="flex flex-col p-10 text-dark gap-2">
+    <div className="flex flex-col p-8 lg:p-10 text-dark gap-2">
       <DashboardHeader
         heading="Settings"
         subheading="Customize your experience and app preferences"
       />
-
       {/* Form Section */}
       <div className="flex flex-col gap-6 max-w-md">
         {/* Username Field */}
@@ -125,7 +178,7 @@ export default function Settings() {
             <input
               type="email"
               value={email}
-              disabled={editingField !== "email"}
+              disabled={true}
               onChange={(e) => setEmail(e.target.value)}
               onBlur={handleBlur}
               className={`w-full border border-gray-300 rounded-md px-3 py-2 ${
@@ -134,12 +187,6 @@ export default function Settings() {
                   : "bg-gray-100 cursor-not-allowed"
               }`}
             />
-            <button
-              className="ml-2 p-2 hover:bg-gray-200 rounded-md"
-              onClick={() => handleEdit("email")}
-            >
-              <PencilIcon className="size-4" />
-            </button>
           </div>
         </div>
 
@@ -155,6 +202,22 @@ export default function Settings() {
                 className="w-full border border-gray-300 rounded-md px-3 py-2 bg-white"
               />
             </div>
+
+            {/* Check Password Button */}
+            <Button
+              className="bg-dark text-white hover:opacity-80 w-full mt-2"
+              onClick={handleCheckPassword}
+            >
+              Check current password
+            </Button>
+
+            {/* Feedback Message */}
+            {oldPasswordValid === true && (
+              <p className="text-green-600 text-sm">✔ Password is correct</p>
+            )}
+            {oldPasswordValid === false && (
+              <p className="text-red-600 text-sm">✘ Incorrect password</p>
+            )}
 
             {/* New Password */}
             <div>
@@ -199,6 +262,7 @@ export default function Settings() {
           </Button>
         </div>
       </div>
+      <Alert alert={alert} setAlert={setAlert} closeAfter={3000} />
     </div>
   );
 }
