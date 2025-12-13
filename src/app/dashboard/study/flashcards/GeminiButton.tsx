@@ -2,14 +2,16 @@
 import { useState } from "react";
 import {api} from "@/app/utils/apiFetch"
 
-type ApiCard = { id: string; front: string; back: string };
+type ApiCard = { id: string; front: string; back: string; section?: string; };
 
 export default function GeminiCard({
   onCreated,
   className = "",
+  section,
 }: {
   onCreated?: (card: ApiCard) => void;
   className?: string;
+  section?: string;
 }) {
   const [topic, setTopic] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
@@ -35,7 +37,10 @@ export default function GeminiCard({
     try {
       setErr("");
       setStatus("loading");
-      const resp = await api.createAiCard(topic.trim())
+      const resp = await api.createAiCard(
+        topic.trim(),
+        section?.trim() || undefined
+      )
       const card = (resp as any).data ?? resp;
       onCreated?.(card as ApiCard)
       setTopic("");
@@ -72,7 +77,7 @@ export default function GeminiCard({
           onClick={handleCreate}
           disabled={!canGo}
           aria-busy={status === "loading"}
-          className="rounded-xl bg-black text-white px-4 py-2 text-sm disabled:opacity-50"
+          className="rounded-xl bg-brand px-4 py-2 text-white disabled:opacity-50"
         >
           {status === "loading" ? "Generating..." : "Generate flashcard"}
         </button>

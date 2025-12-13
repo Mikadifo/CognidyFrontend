@@ -117,9 +117,9 @@ export const api = {
       },
       body: JSON.stringify({ completed }),
     }),
-  fetchFlashcards: () =>
-    request<{ id: string; front: string; back: string }[]>(
-      `/study/flashcards`, 
+  fetchFlashcards: (section?: string) =>
+    request<{ id: string; front: string; back: string; section?: string }[]>(
+      section ? `/study/flashcards?section=${encodeURIComponent(section)}` : `/study/flashcards`, 
       {
       headers: {
         "Content-Type": "application/json",
@@ -128,8 +128,8 @@ export const api = {
       }
     ),
 
-  createFlashcard: (card: {front: string; back: string}) =>
-    request<{ id:string; front: string; back: string; }>(
+  createFlashcard: (card: {front: string; back: string; section?: string}) =>
+    request<{ id:string; front: string; back: string; section?: string }>(
       `/study/flashcards`,
       {
         method: "POST",
@@ -153,20 +153,20 @@ export const api = {
       } 
     ),
 
-  createAiCard: (topic: string) =>
-    request<{id:string; front: string; back: string;}>(
+  createAiCard: (topic: string, section?: string) =>
+    request<{id:string; front: string; back: string; section?: string}>(
       `/study/ai-card`,{
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: getAuthHeader()
         },
-        body: JSON.stringify({topic}),
+        body: JSON.stringify( section ? {topic, section } : {topic} ),
       }
     ),
 
-  editFlashcard: (id: string, data: Partial<{front: string; back: string}>)=>
-    request<{ id: string; front: string; back: string}> (
+  editFlashcard: (id: string, data: Partial<{front: string; back: string; section?: string}>)=>
+    request<{ id: string; front: string; back: string; section?: string}> (
       `/study/flashcards/${id}`,
       {
         method: "PUT",
@@ -178,8 +178,8 @@ export const api = {
       }
     ),
 
-  createAiMulticards: (topic: string, count: number) => 
-    request<{ cards: {id:string; front: string; back: string}[] }>(
+  createAiMulticards: (topic: string, count: number, section?: string) => 
+    request<{ cards: {id:string; front: string; back: string; section?: string}[] }>(
       `/study/ai-card/multi`,
       {
         method: "POST",
@@ -187,7 +187,7 @@ export const api = {
           "Content-Type": "application/json",
           Authorization: getAuthHeader()
         },
-        body: JSON.stringify({topic, count}),
+        body: JSON.stringify( section ? {topic, count, section}:{topic, count}),
       }
     ),
   
