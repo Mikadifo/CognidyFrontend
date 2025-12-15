@@ -12,7 +12,7 @@ export const Navbar: FC<NavbarProps> = ({ className }) => {
       className={`flex w-full bg-white border-b border-dark-16 px-8 py-2 justify-between sticky top-0 z-50 items-center ${className}`}
     >
       <Logo className="h-9 md:h-12" />
-      <Button className="!bg-brand" as="a" href="/dashboard">
+      <Button className="!bg-brand" as="a" href="/dashboard/study">
         Dashboard
       </Button>
     </header>
