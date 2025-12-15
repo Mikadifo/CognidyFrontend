@@ -9,14 +9,16 @@ export function getChartData(sessions: Session[]) {
     const score = Math.round((session.correct / session.total) * 100);
 
     if (!map.has(key)) {
-      map.set(key, { name: `Session ${key}` });
+      map.set(key, { name: `${key}` });
     }
 
     const entry = map.get(key)!;
     entry[session.section] = score;
   });
 
-  return Array.from(map.values());
+  return Array.from(map.values()).sort(
+    (a, b) => Number(a.name) - Number(b.name),
+  );
 }
 
 export function getSections(sessions: Session[]) {
