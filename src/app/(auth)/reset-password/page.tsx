@@ -6,6 +6,8 @@ import { Button } from "@/app/components/Button";
 import { api } from "@/app/utils/apiFetch";
 import { useApi } from "@/app/hooks/useApi";
 import { useRouter, useSearchParams } from "next/navigation";
+import { isStrongPassword } from "@/app/utils/validation";
+
 
 export default function ResetPasswordPage() {
   const searchParams = useSearchParams();
@@ -24,6 +26,13 @@ export default function ResetPasswordPage() {
       alert("Missing reset token!");
       return;
     }
+
+    if (!isStrongPassword(newPassword)) {
+    window.alert(
+      "Password must be at least 8 characters, include uppercase, lowercase, number, and symbol."
+    );
+    return;
+  }
 
     const res = await resetPassword({
       token,

@@ -153,6 +153,35 @@ export const api = {
         Authorization: getAuthHeader(),
       },
     }),
+
+    // Get user settings
+  getUserSettings: () =>
+  request<{
+    data: {
+      settings: {
+        autoDeleteGeneratedContent: boolean;
+      };
+    };
+  }>("/users/settings", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: getAuthHeader(),
+    },
+  }),
+
+
+  // Update user settings
+  updateUserSettings: (payload: { autoDeleteGeneratedContent: boolean }) =>
+    request<{ message: string }>("/users/settings", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+      body: JSON.stringify(payload),
+    }),
+  
   updateUser: (payload: { username: string; email: string }) =>
     request<{ message: string; token: string }>(`/users/update`, {
       method: "PUT",

@@ -55,7 +55,7 @@ export default function LoginPage() {
     //If login worked, save the token
     if (response.data) {
       saveUser(response.data);
-      router.push("/dashboard/study");
+      router.push("/dashboard/learning");
     } else {
       console.error("No token received:", response);
     }
