@@ -55,7 +55,7 @@ export default function LoginPage() {
     //If login worked, save the token
     if (response.data) {
       saveUser(response.data);
-      router.push("/dashboard");
+      router.push("/dashboard/study");
     } else {
       console.error("No token received:", response);
     }
@@ -64,7 +64,7 @@ export default function LoginPage() {
   // Guest login button handler
   const handleGuest = () => {
     saveUser("guest");
-    router.push("/dashboard");
+    router.push("/dashboard/study");
   };
 
   return (
@@ -145,6 +145,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
-
-

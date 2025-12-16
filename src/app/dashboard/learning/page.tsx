@@ -19,11 +19,18 @@ export default function Learning() {
       <div className="flex flex-col">
         <span className="font-poppins font-normal text-xl">Goals</span>
         <div className="w-full h-0.5 bg-dark-16 rounded-full mt-4 mb-8" />
-        <SectionOption
-          label="Puzzles"
-          icon={puzzlePieceIcon}
-          href="learning/puzzles"
-        />
+        <div className="flex gap-8">
+          <SectionOption
+            label="Crossword"
+            icon={puzzlePieceIcon}
+            href="learning/puzzles"
+          />
+          <SectionOption
+            label="Match Pairs"
+            icon={puzzlePieceIcon}
+            href="learning/pairs"
+          />
+        </div>
       </div>
 
       <div className="flex flex-col">
