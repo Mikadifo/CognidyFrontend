@@ -11,6 +11,9 @@ import { api } from "@/app/utils/apiFetch";
 import { useRouter } from "next/navigation";
 import { UserSignUpDto } from "@/app/dtos/UserDto";
 import Alert from "@/app/components/Alert";
+import { isStrongPassword } from "@/app/utils/validation";
+import PasswordRules from "./PasswordRules";
+
 
 export default function SignupPage() {
   const [alert, setAlert] = useState({
@@ -43,6 +46,11 @@ export default function SignupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!isStrongPassword(form.password)) {
+    window.alert("Password must be at least 8 characters, include uppercase, lowercase, number, and symbol.");
+    return;
+  }
     const response = await signup(form);
 
     if (response.error) {
@@ -94,6 +102,7 @@ export default function SignupPage() {
               onChange={handleChange}
               required
             />
+            <PasswordRules password={form.password} />
           </div>
 
           <div className="flex flex-col gap-2">
