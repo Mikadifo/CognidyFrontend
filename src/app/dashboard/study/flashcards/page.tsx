@@ -1,12 +1,10 @@
 import { DashboardHeader } from "@/app/components/DashboardHeader";
 import FlashcardsApi from "./FlashcardsAPI";
-import GeminiCard from "./GeminiButton";
 
 export const metadata = {
   title: "Cognidy | Flashcards",
   description: "Flashcards section",
 };
-
 
 export default function Flashcards() {
   return (
@@ -15,10 +13,7 @@ export default function Flashcards() {
         heading="Flashcards"
         subheading="Practice and test your memory with quick study cards"
       />
-      <FlashcardsApi/>
+      <FlashcardsApi />
     </div>
-  ) 
+  );
 }
-
-
-

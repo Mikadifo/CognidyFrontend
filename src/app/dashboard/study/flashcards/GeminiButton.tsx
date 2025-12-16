@@ -1,12 +1,12 @@
 "use client";
 import { useState } from "react";
-import {api} from "@/app/utils/apiFetch"
+import { api } from "@/app/utils/apiFetch";
 
-type ApiCard = { 
-  id: string; 
-  front: string; 
-  back: string; 
-  section?: string; 
+type ApiCard = {
+  id: string;
+  front: string;
+  back: string;
+  section?: string;
 }; //shape of flashcard
 
 export default function GeminiCard({
@@ -19,8 +19,8 @@ export default function GeminiCard({
   section?: string; //optional section for created card
 }) {
   const [topic, setTopic] = useState(""); //input for what type of card is requested
-  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");// status checker for actual button
-  const [err, setErr] = useState("");//error checker
+  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle"); // status checker for actual button
+  const [err, setErr] = useState(""); //error checker
 
   const canGo = topic.trim().length > 0 && status !== "loading"; //button disabled unless you type something in
 
@@ -42,19 +42,21 @@ export default function GeminiCard({
     try {
       setErr("");
       setStatus("loading");
-      const resp = await api.createAiCard( //uses ai create a card backend 
+      const resp = await api.createAiCard(
+        //uses ai create a card backend
         topic.trim(),
-        section?.trim() || undefined
-      )
+        section?.trim() || undefined,
+      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const card = (resp as any).data ?? resp;
-      onCreated?.(card as ApiCard)
+      onCreated?.(card as ApiCard);
       setTopic("");
       setStatus("idle");
     } catch (e) {
       setStatus("error");
       setErr("Network error.");
       const msg = e instanceof Error ? e.message : undefined;
-      setErr(mapError(msg))
+      setErr(mapError(msg));
     }
   }
   return (
@@ -68,7 +70,7 @@ export default function GeminiCard({
         <div className="flex-1">
           <label className="block text-sm text-black/70 mb-1">
             Topic/Question
-          </label> 
+          </label>
           <input
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
