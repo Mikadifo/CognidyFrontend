@@ -1,229 +1,338 @@
+// components/CrosswordGame.tsx
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Button } from '@/app/components/Button';
-
-interface CrosswordMetadata {
-  puzzleID: string;
-  userID: string;
-  title: string;
-  completed: boolean;
-}
-
-interface CrosswordCell {
-  letter: string;
-  number?: number;
-  isBlocked: boolean;
-  userInput: string;
-}
-
-interface CrosswordWord {
-  id: number;
-  word: string;
-  clue: string;
-  direction: 'across' | 'down';
-  startRow: number;
-  startCol: number;
-}
-
-interface CrosswordGameData {
-  grid: CrosswordCell[][];
-  solutionGrid: CrosswordCell[][];
-  completedGrid: CrosswordCell[][];
-  words: CrosswordWord[];
-  hints: string[];
-}
+import { CrosswordPuzzle, CrosswordWord } from '@/app/models/Crossword';
 
 interface CrosswordGameProps {
+  puzzle: CrosswordPuzzle;
   onExit: () => void;
 }
 
-const CROSSWORD_DATA: CrosswordWord[] = [
-  { id: 1, word: "CAT", clue: "Feline pet", direction: "across", startRow: 0, startCol: 0 },
-  { id: 3, word: "TAR", clue: "Black sticky substance", direction: "down", startRow: 0, startCol: 2 },
-  { id: 2, word: "RAT", clue: "Small rodent", direction: "across", startRow: 2, startCol: 2 },
-  { id: 4, word: "ART", clue: "Creative work", direction: "down", startRow: 2, startCol: 3 },
-];
-
-const GRID_SIZE = 5;
-
-export function CrosswordGame({ onExit }: CrosswordGameProps) {
-  const [grid, setGrid] = useState<CrosswordCell[][]>([]);
+export function CrosswordGame({ puzzle, onExit }: CrosswordGameProps) {
+  const [userGrid, setUserGrid] = useState<(string | null)[][]>(puzzle.userGrid);
   const [selectedCell, setSelectedCell] = useState<{row: number, col: number} | null>(null);
+  const [selectedWord, setSelectedWord] = useState<CrosswordWord | null>(null);
   const [isComplete, setIsComplete] = useState(false);
+  const [showHints, setShowHints] = useState(true);
 
+  // Load saved progress from session storage
   useEffect(() => {
-    initializeGrid();
-  }, []);
+    const savedProgress = sessionStorage.getItem(`progress_${puzzle.metadata.puzzleID}`);
+    if (savedProgress) {
+      const parsedGrid = JSON.parse(savedProgress);
+      setUserGrid(parsedGrid);
+    }
+  }, [puzzle.metadata.puzzleID]);
 
+  // Save progress to session storage
+  const saveProgress = () => {
+    sessionStorage.setItem(`progress_${puzzle.metadata.puzzleID}`, JSON.stringify(userGrid));
+  };
+
+  // Check win condition
   useEffect(() => {
     checkWinCondition();
-  }, [grid]);
+  }, [userGrid]);
 
-  const initializeGrid = () => {
-    // Create empty grid
-    const newGrid: CrosswordCell[][] = Array(GRID_SIZE).fill(null).map(() =>
-      Array(GRID_SIZE).fill(null).map(() => ({
-        letter: '',
-        isBlocked: true,
-        userInput: '',
-      }))
-    );
+  const checkWinCondition = () => {
+    if (!puzzle.answerGrid || !userGrid) return;
 
-    // Place words and assign numbers
-    CROSSWORD_DATA.forEach((wordData) => {
-      const { word, startRow, startCol, direction, id } = wordData;
-      
-      for (let i = 0; i < word.length; i++) {
-        const row = direction === 'across' ? startRow : startRow + i;
-        const col = direction === 'across' ? startCol + i : startCol;
+    let allCorrect = true;
+    for (let row = 0; row < puzzle.answerGrid.length; row++) {
+      for (let col = 0; col < puzzle.answerGrid[row].length; col++) {
+        const answerCell = puzzle.answerGrid[row][col];
+        const userCell = userGrid[row][col];
         
-        if (row < GRID_SIZE && col < GRID_SIZE) {
-          newGrid[row][col] = {
-            letter: word[i],
-            number: i === 0 ? id : newGrid[row][col].number,
-            isBlocked: false,
-            userInput: newGrid[row][col].userInput || '',
-          };
+        // If answer cell has a letter, user cell must match
+        if (answerCell !== null && userCell !== answerCell) {
+          allCorrect = false;
+          break;
         }
       }
-    });
-
-    setGrid(newGrid);
+      if (!allCorrect) break;
+    }
+    
+    if (allCorrect) {
+      setIsComplete(true);
+      // Mark as completed in session storage
+      const completedPuzzle = { ...puzzle, metadata: { ...puzzle.metadata, completed: true } };
+      sessionStorage.setItem(`crossword_${puzzle.metadata.puzzleID}`, JSON.stringify(completedPuzzle));
+    }
   };
 
   const handleCellClick = (row: number, col: number) => {
-    if (!grid[row][col].isBlocked) {
+    // Only allow clicking on cells that should have letters
+    if (puzzle.answerGrid[row][col] !== null) {
       setSelectedCell({ row, col });
+      
+      // Find word that starts at or contains this cell
+      const wordAtCell = puzzle.words.find(word => {
+        if (word.direction === 'across') {
+          return row === word.startRow && col >= word.startCol && col < word.startCol + word.length;
+        } else {
+          return col === word.startCol && row >= word.startRow && row < word.startRow + word.length;
+        }
+      });
+      
+      setSelectedWord(wordAtCell || null);
     }
   };
 
   const handleInputChange = (row: number, col: number, value: string) => {
     if (value.length <= 1 && /^[A-Za-z]*$/.test(value)) {
-      const newGrid = [...grid];
-      newGrid[row][col].userInput = value.toUpperCase();
-      setGrid(newGrid);
+      const newGrid = [...userGrid];
+      newGrid[row][col] = value.toUpperCase() || null;
+      setUserGrid(newGrid);
     }
   };
 
-  const checkWinCondition = () => {
-  // Add safety checks for grid initialization
-  if (!grid || grid.length === 0 || !grid[0] || grid[0].length === 0) {
-    return;
-  }
+  const handleKeyDown = (e: React.KeyboardEvent, row: number, col: number) => {
+    if (e.key === 'Backspace' && !userGrid[row][col]) {
+      // Move to previous cell if current is empty
+      moveToPreviousCell(row, col);
+    } else if (e.key.length === 1 && /^[A-Za-z]$/.test(e.key)) {
+      // Move to next cell after input
+      setTimeout(() => moveToNextCell(row, col), 0);
+    }
+  };
 
-  let allCorrect = true;
-  for (let row = 0; row < GRID_SIZE; row++) {
-    for (let col = 0; col < GRID_SIZE; col++) {
-      const cell = grid[row]?.[col]; // Add optional chaining
-      if (!cell) continue; // Skip if cell doesn't exist
-      
-      if (!cell.isBlocked && cell.userInput !== cell.letter) {
-        allCorrect = false;
-        break;
+  const moveToNextCell = (row: number, col: number) => {
+    if (!selectedWord) return;
+    
+    if (selectedWord.direction === 'across') {
+      const nextCol = col + 1;
+      if (nextCol < selectedWord.startCol + selectedWord.length) {
+        setSelectedCell({ row, col: nextCol });
+      }
+    } else {
+      const nextRow = row + 1;
+      if (nextRow < selectedWord.startRow + selectedWord.length) {
+        setSelectedCell({ row: nextRow, col });
       }
     }
-    if (!allCorrect) break;
-  }
-  setIsComplete(allCorrect);
-};
-
-  const saveAndExit = () => {
-    // Here you could save the current state to localStorage or send to API
-    localStorage.setItem('crosswordProgress', JSON.stringify(grid));
-    onExit();
   };
 
-  const resetGame = () => {
-    initializeGrid();
-    setSelectedCell(null);
-    setIsComplete(false);
+  const moveToPreviousCell = (row: number, col: number) => {
+    if (!selectedWord) return;
+    
+    if (selectedWord.direction === 'across') {
+      const prevCol = col - 1;
+      if (prevCol >= selectedWord.startCol) {
+        setSelectedCell({ row, col: prevCol });
+      }
+    } else {
+      const prevRow = row - 1;
+      if (prevRow >= selectedWord.startRow) {
+        setSelectedCell({ row: prevRow, col });
+      }
+    }
+  };
+
+  const clearGrid = () => {
+    const clearedGrid = puzzle.userGrid.map(row => row.map(() => null));
+    setUserGrid(clearedGrid);
+    sessionStorage.removeItem(`progress_${puzzle.metadata.puzzleID}`);
+  };
+
+  const deletePuzzle = () => {
+    sessionStorage.removeItem(`crossword_${puzzle.metadata.puzzleID}`);
+    sessionStorage.removeItem(`progress_${puzzle.metadata.puzzleID}`);
+    onExit();
   };
 
   if (isComplete) {
     return (
-      <div className="flex flex-col items-center justify-center w-[400px] h-[400px] border-2 border-black bg-white rounded-lg p-8">
-        <h1 className="text-4xl font-bold text-green-600 mb-4">You Win!</h1>
+      <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-lg shadow-md p-8">
+        <h1 className="text-4xl font-bold text-green-600 mb-4">🎉 Congratulations!</h1>
+        <p className="text-xl text-gray-700 mb-6">You completed the crossword puzzle!</p>
         <div className="flex gap-4">
-          <Button onClick={resetGame} variant="filled">Play Again</Button>
-          <Button onClick={onExit} variant="outline">Exit</Button>
+          <button
+            onClick={() => {
+              setIsComplete(false);
+              clearGrid();
+            }}
+            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            Play Again
+          </button>
+          <button
+            onClick={onExit}
+            className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+          >
+            Exit
+          </button>
         </div>
       </div>
     );
   }
 
-  const acrossClues = CROSSWORD_DATA.filter(word => word.direction === 'across');
-  const downClues = CROSSWORD_DATA.filter(word => word.direction === 'down');
+  const gridSize = puzzle.metadata.gridSize;
+  const acrossWords = puzzle.words.filter(word => word.direction === 'across');
+  const downWords = puzzle.words.filter(word => word.direction === 'down');
 
   return (
-    <div className="flex flex-col w-[400px] h-[400px] border-2 border-black bg-white rounded-lg p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Crossword Puzzle</h2>
+    <div className="bg-white rounded-lg shadow-md p-6 max-w-6xl mx-auto">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="text-2xl font-bold">{puzzle.metadata.title}</h2>
+          <p className="text-gray-600">Fill in the crossword puzzle</p>
+        </div>
         <div className="flex gap-2">
-          <Button onClick={saveAndExit} variant="outline" className="text-xs px-2 py-1">
-            Save & Exit
-          </Button>
+          <button
+            onClick={() => setShowHints(!showHints)}
+            className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors"
+          >
+            {showHints ? 'Hide Hints' : 'Show Hints'}
+          </button>
+          <button
+            onClick={saveProgress}
+            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+          >
+            Save Progress
+          </button>
+          <button
+            onClick={clearGrid}
+            className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors"
+          >
+            Clear
+          </button>
+          <button
+            onClick={deletePuzzle}
+            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+          >
+            Delete
+          </button>
+          <button
+            onClick={onExit}
+            className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+          >
+            Exit
+          </button>
         </div>
       </div>
 
-      <div className="flex gap-4 flex-1">
+      <div className="flex gap-8">
         {/* Grid */}
         <div className="flex-1">
-          <div className="grid grid-cols-5 gap-1 w-fit">
-            {grid.map((row, rowIndex) =>
-              row.map((cell, colIndex) => (
-                <div
-                  key={`${rowIndex}-${colIndex}`}
-                  className={`
-                    w-8 h-8 border border-gray-400 flex items-center justify-center cursor-pointer relative text-xs font-bold
-                    ${cell.isBlocked ? 'bg-black' : 'bg-white hover:bg-blue-50'}
-                    ${selectedCell?.row === rowIndex && selectedCell?.col === colIndex ? 'bg-blue-200' : ''}
-                  `}
-                  onClick={() => handleCellClick(rowIndex, colIndex)}
-                >
-                  {!cell.isBlocked && (
-                    <>
-                      {cell.number && (
-                        <span className="absolute top-0 left-0 text-[8px] leading-none">
-                          {cell.number}
-                        </span>
-                      )}
-                      <input
-                        type="text"
-                        value={cell.userInput}
-                        onChange={(e) => handleInputChange(rowIndex, colIndex, e.target.value)}
-                        className="w-full h-full text-center bg-transparent border-none outline-none text-xs font-bold"
-                        maxLength={1}
-                      />
-                    </>
-                  )}
-                </div>
-              ))
+          <div 
+            className="inline-grid gap-px bg-gray-300 p-2 rounded-lg"
+            style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}
+          >
+            {userGrid.map((row, rowIndex) =>
+              row.map((cell, colIndex) => {
+                const isAnswerCell = puzzle.answerGrid[rowIndex][colIndex] !== null;
+                const isSelected = selectedCell?.row === rowIndex && selectedCell?.col === colIndex;
+                const isInSelectedWord = selectedWord && (
+                  (selectedWord.direction === 'across' && 
+                   rowIndex === selectedWord.startRow && 
+                   colIndex >= selectedWord.startCol && 
+                   colIndex < selectedWord.startCol + selectedWord.length) ||
+                  (selectedWord.direction === 'down' && 
+                   colIndex === selectedWord.startCol && 
+                   rowIndex >= selectedWord.startRow && 
+                   rowIndex < selectedWord.startRow + selectedWord.length)
+                );
+                
+                // Find word number for this cell
+                const wordNumber = puzzle.words.find(word => 
+                  word.startRow === rowIndex && word.startCol === colIndex
+                )?.number;
+
+                return (
+                  <div
+                    key={`${rowIndex}-${colIndex}`}
+                    className={`
+                      w-8 h-8 border border-gray-400 flex items-center justify-center relative text-xs font-bold
+                      ${!isAnswerCell ? 'bg-black' : 'bg-white cursor-pointer hover:bg-blue-50'}
+                      ${isSelected ? 'ring-2 ring-blue-500' : ''}
+                      ${isInSelectedWord && !isSelected ? 'bg-blue-100' : ''}
+                    `}
+                    onClick={() => handleCellClick(rowIndex, colIndex)}
+                  >
+                    {isAnswerCell && (
+                      <>
+                        {wordNumber && (
+                          <span className="absolute top-0 left-0 text-[8px] leading-none text-blue-600 font-bold">
+                            {wordNumber}
+                          </span>
+                        )}
+                        <input
+                          type="text"
+                          value={cell || ''}
+                          onChange={(e) => handleInputChange(rowIndex, colIndex, e.target.value)}
+                          onKeyDown={(e) => handleKeyDown(e, rowIndex, colIndex)}
+                          className="w-full h-full text-center bg-transparent border-none outline-none text-xs font-bold uppercase"
+                          maxLength={1}
+                          autoComplete="off"
+                        />
+                      </>
+                    )}
+                  </div>
+                );
+              })
             )}
           </div>
         </div>
 
-        {/* Clues */}
-        <div className="w-32 text-xs overflow-y-auto">
-          <div className="mb-2">
-            <h3 className="font-bold text-xs mb-1">Across</h3>
-            {acrossClues.map((word) => (
-              <div key={word.id} className="mb-1">
-                <span className="font-semibold">{word.id}.</span> {word.clue}
+        {/* Hints */}
+        {showHints && (
+          <div className="w-80 max-h-96 overflow-y-auto">
+            <div className="mb-6">
+              <h3 className="text-lg font-bold mb-3 text-blue-600">Across</h3>
+              <div className="space-y-2">
+                {acrossWords.map((word) => (
+                  <div 
+                    key={word.number}
+                    className={`p-2 rounded cursor-pointer transition-colors ${
+                      selectedWord?.number === word.number ? 'bg-blue-100 border-l-4 border-blue-500' : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => {
+                      setSelectedWord(word);
+                      setSelectedCell({ row: word.startRow, col: word.startCol });
+                    }}
+                  >
+                    <span className="font-semibold text-blue-600">{word.number}.</span> {word.hint}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          
-          <div>
-            <h3 className="font-bold text-xs mb-1">Down</h3>
-            {downClues.map((word) => (
-              <div key={word.id} className="mb-1">
-                <span className="font-semibold">{word.id}.</span> {word.clue}
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-bold mb-3 text-green-600">Down</h3>
+              <div className="space-y-2">
+                {downWords.map((word) => (
+                  <div 
+                    key={word.number}
+                    className={`p-2 rounded cursor-pointer transition-colors ${
+                      selectedWord?.number === word.number ? 'bg-green-100 border-l-4 border-green-500' : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => {
+                      setSelectedWord(word);
+                      setSelectedCell({ row: word.startRow, col: word.startCol });
+                    }}
+                  >
+                    <span className="font-semibold text-green-600">{word.number}.</span> {word.hint}
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
+
+      {/* Selected word info */}
+      {selectedWord && (
+        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+          <p className="font-semibold">
+            {selectedWord.number} {selectedWord.direction.toUpperCase()}: {selectedWord.hint}
+          </p>
+          <p className="text-sm text-gray-600">
+            {selectedWord.length} letters • Click on the word in the grid to edit
+          </p>
+        </div>
+      )}
     </div>
   );
 }
