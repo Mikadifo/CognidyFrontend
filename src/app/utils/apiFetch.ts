@@ -119,6 +119,80 @@ export const api = {
       },
       body: JSON.stringify({ completed }),
     }),
+  fetchFlashcards: (section?: string) =>
+    request<{ id: string; front: string; back: string; section?: string }[]>(
+      section ? `/study/flashcards?section=${encodeURIComponent(section)}` : `/study/flashcards`, 
+      {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+        },
+      }
+    ),
+
+  createFlashcard: (card: {front: string; back: string; section?: string}) =>
+    request<{ id:string; front: string; back: string; section?: string }>(
+      `/study/flashcards`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getAuthHeader(),
+        },
+        body: JSON.stringify(card),
+      }
+    ),
+
+  deleteFlashcard: (id: string) =>
+    request<{message: string}>(
+      `/study/flashcards/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getAuthHeader()
+        },
+      } 
+    ),
+
+  createAiCard: (topic: string, section?: string) =>
+    request<{id:string; front: string; back: string; section?: string}>(
+      `/study/ai-card`,{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getAuthHeader()
+        },
+        body: JSON.stringify( section ? {topic, section } : {topic} ),
+      }
+    ),
+
+  editFlashcard: (id: string, data: Partial<{front: string; back: string; section?: string}>)=>
+    request<{ id: string; front: string; back: string; section?: string}> (
+      `/study/flashcards/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getAuthHeader()
+        },
+        body: JSON.stringify(data)
+      }
+    ),
+
+  createAiMulticards: (topic: string, count: number, section?: string) => 
+    request<{ cards: {id:string; front: string; back: string; section?: string}[] }>(
+      `/study/ai-card/multi`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getAuthHeader()
+        },
+        body: JSON.stringify( section ? {topic, count, section}:{topic, count}),
+      }
+    ),
+  
   fetchQuizzes: () =>
     request<{ data: QuizzesDto[] }>("/quizzes", {
       headers: {
