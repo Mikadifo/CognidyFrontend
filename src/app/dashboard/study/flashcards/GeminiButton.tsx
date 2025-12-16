@@ -2,20 +2,25 @@
 import { useState } from "react";
 import {api} from "@/app/utils/apiFetch"
 
-type ApiCard = { id: string; front: string; back: string; section?: string; };
+type ApiCard = { 
+  id: string; 
+  front: string; 
+  back: string; 
+  section?: string; 
+}; //shape of flashcard
 
 export default function GeminiCard({
   onCreated,
   className = "",
   section,
 }: {
-  onCreated?: (card: ApiCard) => void;
-  className?: string;
-  section?: string;
+  onCreated?: (card: ApiCard) => void; //sends newly created card to parent
+  className?: string; //styling
+  section?: string; //optional section for created card
 }) {
-  const [topic, setTopic] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
-  const [err, setErr] = useState("");
+  const [topic, setTopic] = useState(""); //input for what type of card is requested
+  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");// status checker for actual button
+  const [err, setErr] = useState("");//error checker
 
   const canGo = topic.trim().length > 0 && status !== "loading"; //button disabled unless you type something in
 
@@ -37,7 +42,7 @@ export default function GeminiCard({
     try {
       setErr("");
       setStatus("loading");
-      const resp = await api.createAiCard(
+      const resp = await api.createAiCard( //uses ai create a card backend 
         topic.trim(),
         section?.trim() || undefined
       )
@@ -61,9 +66,9 @@ export default function GeminiCard({
     >
       <div className="flex flex-col gap-3 md:flex-row md:items-end">
         <div className="flex-1">
-          {/* <label className="block text-sm text-black/70 mb-1">
-            Create Flashcards With Google Gemini
-          </label> */}
+          <label className="block text-sm text-black/70 mb-1">
+            Topic/Question
+          </label> 
           <input
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
