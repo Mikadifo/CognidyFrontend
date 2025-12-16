@@ -10,6 +10,7 @@
   --color-brand: #1e4dd8;
   --color-brand-84: rgba(30, 77, 216, 0.84);
   --color-brand-16: rgba(30, 77, 216, 0.16);
+  --color-brand-08: rgba(30, 77, 216, 0.08);
   --color-cyan: #0086eb;
   --color-white: #f2f3f9;
   --color-dark: #020712;
@@ -18,6 +19,7 @@
   --color-dark-16: rgba(2, 7, 18, 0.16);
   --color-dark-88: rgba(2, 7, 18, 0.88);
   --color-red: #c60024;
+  --color-red-800: rgba(198, 0, 36, 0.8);
   --color-green: #00af7f;
   --color-yellow: #ffbf52;
   --color-yellow-88: #fdc666;

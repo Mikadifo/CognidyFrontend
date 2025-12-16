@@ -7,6 +7,7 @@ import { UserLoginDto, UserSignUpDto } from "../dtos/UserDto";
 import { Note } from "../models/Note";
 import RoadmapGoal from "../models/RoadmapGoal";
 import SessionDto from "../dtos/SessionDto";
+import PuzzlesDto from "../dtos/PuzzlesDto";
 
 function getAuthHeader() {
   const token = localStorage.getItem("token");
@@ -118,8 +119,89 @@ export const api = {
       },
       body: JSON.stringify({ completed }),
     }),
+  fetchFlashcards: (section?: string) =>
+    request<{ id: string; front: string; back: string; section?: string }[]>(
+      section ? `/study/flashcards?section=${encodeURIComponent(section)}` : `/study/flashcards`, 
+      {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+        },
+      }
+    ),
+
+  createFlashcard: (card: {front: string; back: string; section?: string}) =>
+    request<{ id:string; front: string; back: string; section?: string }>(
+      `/study/flashcards`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getAuthHeader(),
+        },
+        body: JSON.stringify(card),
+      }
+    ),
+
+  deleteFlashcard: (id: string) =>
+    request<{message: string}>(
+      `/study/flashcards/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getAuthHeader()
+        },
+      } 
+    ),
+
+  createAiCard: (topic: string, section?: string) =>
+    request<{id:string; front: string; back: string; section?: string}>(
+      `/study/ai-card`,{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getAuthHeader()
+        },
+        body: JSON.stringify( section ? {topic, section } : {topic} ),
+      }
+    ),
+
+  editFlashcard: (id: string, data: Partial<{front: string; back: string; section?: string}>)=>
+    request<{ id: string; front: string; back: string; section?: string}> (
+      `/study/flashcards/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getAuthHeader()
+        },
+        body: JSON.stringify(data)
+      }
+    ),
+
+  createAiMulticards: (topic: string, count: number, section?: string) => 
+    request<{ cards: {id:string; front: string; back: string; section?: string}[] }>(
+      `/study/ai-card/multi`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: getAuthHeader()
+        },
+        body: JSON.stringify( section ? {topic, count, section}:{topic, count}),
+      }
+    ),
+  
   fetchQuizzes: () =>
     request<{ data: QuizzesDto[] }>("/quizzes", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+    }),
+  fetchPuzzlesPairs: () =>
+    request<{ data: PuzzlesDto[] }>("/puzzles-pairs", {
       headers: {
         "Content-Type": "application/json",
         Authorization: getAuthHeader(),
@@ -145,6 +227,35 @@ export const api = {
         Authorization: getAuthHeader(),
       },
     }),
+
+    // Get user settings
+  getUserSettings: () =>
+  request<{
+    data: {
+      settings: {
+        autoDeleteGeneratedContent: boolean;
+      };
+    };
+  }>("/users/settings", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: getAuthHeader(),
+    },
+  }),
+
+
+  // Update user settings
+  updateUserSettings: (payload: { autoDeleteGeneratedContent: boolean }) =>
+    request<{ message: string }>("/users/settings", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+      body: JSON.stringify(payload),
+    }),
+  
   updateUser: (payload: { username: string; email: string }) =>
     request<{ message: string; token: string }>(`/users/update`, {
       method: "PUT",
@@ -163,6 +274,33 @@ export const api = {
       },
       body: JSON.stringify(payload),
     }),
+
+  // Check old password
+  checkPassword: (payload: { password: string }) =>
+    request<{ data: { valid: boolean } }>(`/users/check_password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getAuthHeader(),
+      },
+      body: JSON.stringify(payload),
+    }),
+
+  // Forgot Password Public Endpoints
+  requestPasswordReset: (payload: { email: string }) =>
+    request<{ message: string }>("/users/request_password_reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }),
+
+  resetPasswordPublic: (payload: { token: string; new_password: string }) =>
+    request<{ message: string }>("/users/reset_password_public", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }),
+
   fetchSessions: () =>
     request<{ data: Session[] }>("/sessions", {
       headers: {

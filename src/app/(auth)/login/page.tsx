@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Logo from "../../assets/logo.svg";
 import { Button } from "@/app/components/Button";
@@ -11,8 +11,14 @@ import { UserLoginDto } from "@/app/dtos/UserDto";
 import { api } from "@/app/utils/apiFetch";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks/useAuth";
+import Alert from "@/app/components/Alert";
 
 export default function LoginPage() {
+  const [alert, setAlert] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
   const [form, setForm] = useState({ username: "", password: "" });
   const router = useRouter();
   const { saveUser } = useAuth();
@@ -20,8 +26,19 @@ export default function LoginPage() {
   const {
     loading,
     submit: login,
-    //error,
+    error,
   } = useApi<string, [body: UserLoginDto]>(api.login);
+
+  useEffect(() => {
+    if (error && typeof error === "string") {
+      console.log(error);
+      setAlert({
+        open: true,
+        message: error,
+        severity: "error",
+      });
+    }
+  }, [error]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -32,15 +49,13 @@ export default function LoginPage() {
     const response = await login(form);
 
     if (response.error) {
-      console.error(response.error);
       return;
     }
 
     //If login worked, save the token
     if (response.data) {
       saveUser(response.data);
-      console.log("Token saved:", response.data);
-      router.push("/dashboard");
+      router.push("/dashboard/study");
     } else {
       console.error("No token received:", response);
     }
@@ -49,7 +64,7 @@ export default function LoginPage() {
   // Guest login button handler
   const handleGuest = () => {
     saveUser("guest");
-    router.push("/dashboard");
+    router.push("/dashboard/study");
   };
 
   return (
@@ -86,7 +101,7 @@ export default function LoginPage() {
                 required
               />
               <Link
-                href="#"
+                href="/forgot-password"
                 className="text-dark text-sm hover:underline self-end cursor-pointer"
               >
                 Forgot Password
@@ -125,6 +140,8 @@ export default function LoginPage() {
           Continue as Guest
         </Button>
       </div>
+
+      <Alert alert={alert} setAlert={setAlert} closeAfter={3000} />
     </div>
   );
 }

@@ -16,7 +16,6 @@ export default function Flashcards() {
         subheading="Practice and test your memory with quick study cards"
       />
       <FlashcardsApi/>
-      <GeminiCard/>
     </div>
   ) 
 }
