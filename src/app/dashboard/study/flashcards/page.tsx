@@ -1,6 +1,5 @@
 import { DashboardHeader } from "@/app/components/DashboardHeader";
 import FlashcardsApi from "./FlashcardsAPI";
-import GeminiCard from "./GeminiButton";
 
 export const metadata = {
   title: "Cognidy | Flashcards",

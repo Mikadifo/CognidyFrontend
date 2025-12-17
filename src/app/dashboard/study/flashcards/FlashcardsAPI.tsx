@@ -204,11 +204,13 @@ export default function FlashcardsApi() {
         return;
       }
       else {
+        
         const resp = await api.editFlashcard(editingID, { //backend edit route
           front: editFront.trim(),
           back: editBack.trim(),
           section: editSection.trim()
         });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const updated = (resp as any).data ?? resp;
         setCards(prev =>
         (prev ?? []).map(c => (c.id === editingID ? (updated as ApiCard) : c))
@@ -227,7 +229,7 @@ export default function FlashcardsApi() {
   }
 
 
-  async function  handleGenerateMulti(e: React.FormEvent) {
+  async function handleGenerateMulti(e: React.FormEvent) {
     e.preventDefault();
     if(!canGenerateMulti) return;
 
@@ -505,7 +507,7 @@ export default function FlashcardsApi() {
     </div>
     </div>
     ):(
-    <div className="mt-4 rounded-2x1 border border-black/10 bg-white p-4 shadow-sm">
+    <div className="mt-4 rounded-2xl border border-black/10 bg-white p-4 shadow-sm">
     <div className="mb-3 flex items-center justify-between gap-2">
       <p className="text-sm font-semibold text-black/80">
         Create Flashcards With Google Gemini
