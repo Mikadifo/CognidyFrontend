@@ -7,8 +7,18 @@ import { DashboardHeader } from "@/app/components/DashboardHeader";
 import { useApi } from "@/app/hooks/useApi";
 import { api } from "@/app/utils/apiFetch";
 import Alert from "@/app/components/Alert";
+import { isStrongPassword } from "@/app/utils/validation";
+import PasswordRules from "@/app/(auth)/signup/PasswordRules";
+
 
 export default function Settings() {
+    // Toggle state
+  const [autoDelete, setAutoDelete] = useState(true);
+
+  // API hooks for settings
+  const { submit: fetchSettings } = useApi(api.getUserSettings);
+  const { submit: updateSettings } = useApi(api.updateUserSettings);
+
   const [alert, setAlert] = useState({
     open: false,
     message: "",
@@ -44,7 +54,13 @@ export default function Settings() {
         setEmail(res.data.email);
       }
     });
-  }, [fetchUser]);
+    
+    fetchSettings().then((res) => {
+    if (res?.data?.settings) {
+      setAutoDelete(res.data.settings.autoDeleteGeneratedContent);
+    }
+  });
+}, [fetchUser, fetchSettings]);
 
   if (fetchingUser) return <div className="p-6">Loading...</div>;
 
@@ -83,6 +99,16 @@ export default function Settings() {
         severity: "error",
       });
     }
+    if (!isStrongPassword(newPassword)) {
+    setAlert({
+      message:
+        "Password must be at least 8 characters and include uppercase, lowercase, number, and symbol.",
+      severity: "error",
+      open: true,
+    });
+    return;
+}
+
 
     try {
       const res = await resetPasswordApi({
@@ -145,7 +171,7 @@ export default function Settings() {
         subheading="Customize your experience and app preferences"
       />
       {/* Form Section */}
-      <div className="flex flex-col gap-6 max-w-md">
+      <div className="flex flex-col gap-6 max-w-md">        
         {/* Username Field */}
         <div>
           <label className="text-sm font-semibold">Username:</label>
@@ -229,6 +255,8 @@ export default function Settings() {
                 className="w-full border border-gray-300 rounded-md px-3 py-2 bg-white"
               />
             </div>
+            <PasswordRules password={newPassword} />
+
 
             {/* Submit */}
             <Button
@@ -261,7 +289,45 @@ export default function Settings() {
             Save Changes
           </Button>
         </div>
-      </div>
+
+        {/* App Preferences */}
+     <div className="mt-12 max-w-md">
+       <h3 className="text-base font-semibold mb-4">
+       App Preferences
+       </h3>
+
+    <div className="flex items-center justify-between">
+    <div className="flex flex-col pr-6">
+      <span className="text-sm font-medium text-gray-900">
+        Auto-delete generated content
+      </span>
+      <span className="text-sm text-gray-500 leading-snug mt-1">
+        Automatically delete flashcards, quizzes, and goals when a note is deleted.
+      </span>
+    </div>
+
+    <button
+      onClick={async () => {
+        const newValue = !autoDelete;
+        setAutoDelete(newValue);
+
+        await updateSettings({
+          autoDeleteGeneratedContent: newValue,
+        });
+      }}
+      className={`relative inline-flex h-5 w-10 items-center rounded-full transition-colors duration-200 ${
+        autoDelete ? "bg-brand" : "bg-gray-300"
+      }`}
+    >
+      <span
+        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${
+          autoDelete ? "translate-x-5" : "translate-x-1"
+        }`}
+      />
+     </button>
+     </div>
+    </div>
+    </div>
       <Alert alert={alert} setAlert={setAlert} closeAfter={3000} />
     </div>
   );

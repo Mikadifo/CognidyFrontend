@@ -46,7 +46,7 @@ export default function GenerationNotification({
       const result = await getGenerationStatuts(getNewNoteId());
 
       if (result.error) {
-        console.error(result.error);
+        //console.error(result.error);
         clearInterval(pollInterval);
         return;
       }

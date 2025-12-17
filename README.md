@@ -29,10 +29,13 @@ Cognidy is a student helper app that helps users create, organize, and learn not
 | `/`                           | Landing / Home page   |
 | `/dashboard/study`            | Study section page    |
 | `/dashboard/study/flashcard`  | Flashcard page        |
+| `/dashboard/study/pomodoro`   | Flashcard page        |
 | `/dashboard/learning`         | Learning section page |
 | `/dashboard/learning/puzzles` | Puzzles page          |
+| `/dashboard/learning/quizzes` | Puzzles page          |
 | `/dashboard/progress`         | Progress section page |
 | `/dashboard/progress/roadmap` | Roadmap page          |
+| `/dashboard/progress/trends`  | Roadmap page          |
 | `/dashboard/notes`            | Notes section page    |
 | `/dashboard/settings`         | User settings page    |
 | `/login`                      | Login screen          |

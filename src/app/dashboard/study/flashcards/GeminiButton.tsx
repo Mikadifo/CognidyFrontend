@@ -1,20 +1,26 @@
 "use client";
 import { useState } from "react";
+import { api } from "@/app/utils/apiFetch";
 
-type ApiCard = { id: string; front: string; back: string };
+type ApiCard = {
+  id: string;
+  front: string;
+  back: string;
+  section?: string;
+}; //shape of flashcard
 
 export default function GeminiCard({
-  url = "http://127.0.0.1:8000/api/study/ai-card", //backend
   onCreated,
   className = "",
+  section,
 }: {
-  url?: string;
-  onCreated?: (card: ApiCard) => void;
-  className?: string;
+  onCreated?: (card: ApiCard) => void; //sends newly created card to parent
+  className?: string; //styling
+  section?: string; //optional section for created card
 }) {
-  const [topic, setTopic] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
-  const [err, setErr] = useState("");
+  const [topic, setTopic] = useState(""); //input for what type of card is requested
+  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle"); // status checker for actual button
+  const [err, setErr] = useState(""); //error checker
 
   const canGo = topic.trim().length > 0 && status !== "loading"; //button disabled unless you type something in
 
@@ -36,26 +42,21 @@ export default function GeminiCard({
     try {
       setErr("");
       setStatus("loading");
-      const res = await fetch(url, {
-        //post method from backend
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic: topic.trim() }),
-      });
-      const data = await res.json();
-
-      if (!res.ok || data?.error) {
-        setStatus("error");
-        setErr(mapError(data?.error, data?.preview));
-        return;
-      }
-
-      onCreated?.(data as ApiCard);
+      const resp = await api.createAiCard(
+        //uses ai create a card backend
+        topic.trim(),
+        section?.trim() || undefined,
+      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const card = (resp as any).data ?? resp;
+      onCreated?.(card as ApiCard);
       setTopic("");
       setStatus("idle");
-    } catch {
+    } catch (e) {
       setStatus("error");
       setErr("Network error.");
+      const msg = e instanceof Error ? e.message : undefined;
+      setErr(mapError(msg));
     }
   }
   return (
@@ -68,7 +69,7 @@ export default function GeminiCard({
       <div className="flex flex-col gap-3 md:flex-row md:items-end">
         <div className="flex-1">
           <label className="block text-sm text-black/70 mb-1">
-            Create Flashcards With Google Gemini
+            Topic/Question
           </label>
           <input
             value={topic}
@@ -83,7 +84,7 @@ export default function GeminiCard({
           onClick={handleCreate}
           disabled={!canGo}
           aria-busy={status === "loading"}
-          className="rounded-xl bg-black text-white px-4 py-2 text-sm disabled:opacity-50"
+          className="rounded-xl bg-brand px-4 py-2 text-white disabled:opacity-50"
         >
           {status === "loading" ? "Generating..." : "Generate flashcard"}
         </button>
@@ -94,4 +95,3 @@ export default function GeminiCard({
     </div>
   );
 }
-
