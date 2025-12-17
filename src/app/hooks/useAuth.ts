@@ -1,10 +1,7 @@
-"use client";
-
 import { useRouter } from "next/navigation";
 
 export function useAuth() {
   const router = useRouter();
-
 
   // Save token (for login or signup)
   const saveUser = (token: string) => {
