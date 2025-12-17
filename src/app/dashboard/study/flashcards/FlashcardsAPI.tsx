@@ -51,7 +51,11 @@ export default function FlashcardsApi() {
     !generatingMulti;
 
   const { getToken } = useAuth(); //authentication
-  const token = getToken();
+  const [token, setToken] = useState<string | null> (null);
+  useEffect(() => { 
+    const t = getToken();
+    setToken(t);
+  }, [getToken]);
   const guestMode = !token || token === "guest";
 
   const [section, setSection] = useState(""); //card tag filtering
@@ -231,7 +235,7 @@ export default function FlashcardsApi() {
           back: editBack.trim(),
           section: editSection.trim(),
         });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const updated = (resp as any).data ?? resp;
         setCards((prev) =>
