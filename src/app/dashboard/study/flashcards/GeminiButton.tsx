@@ -45,8 +45,8 @@ export default function GeminiCard({
       const resp = await api.createAiCard(
         //uses ai create a card backend
         topic.trim(),
-        section?.trim() || undefined,
-      );
+        section?.trim() || undefined
+      )
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const card = (resp as any).data ?? resp;
       onCreated?.(card as ApiCard);

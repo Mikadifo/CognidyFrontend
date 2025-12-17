@@ -223,13 +223,15 @@ export default function FlashcardsApi() {
         setCards(editGuest.cards);
         setEditingID(null);
         return;
-      } else {
-        const resp = await api.editFlashcard(editingID, {
-          //backend edit route
+      }
+      else {
+        
+        const resp = await api.editFlashcard(editingID, { //backend edit route
           front: editFront.trim(),
           back: editBack.trim(),
           section: editSection.trim(),
         });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const updated = (resp as any).data ?? resp;
         setCards((prev) =>
@@ -252,6 +254,7 @@ export default function FlashcardsApi() {
       setSavingEdit(false);
     }
   }
+
 
   async function handleGenerateMulti(e: React.FormEvent) {
     e.preventDefault();
@@ -524,49 +527,49 @@ export default function FlashcardsApi() {
         </div>
       )}
 
-      {/* ai section */}
-      {guestMode ? ( //if guest mode tell user the feature is only available if they signup/login
-        <div className="mt-4 rounded-2xl border border-black/10 bg-white p-4 shadow-sm">
-          <div className="mb-3 flex items-center justify-between gap-2">
-            <p className="text-sm font-semibold text-black/80">
-              Create Flashcards With Google Gemini
-            </p>
-          </div>
-          <div className="text-lg font-bold text-black/40 text-center">
-            To use this feature, please create an account or sign in.
-          </div>
-        </div>
-      ) : (
-        <div className="mt-4 rounded-2x1 border border-black/10 bg-white p-4 shadow-sm">
-          <div className="mb-3 flex items-center justify-between gap-2">
-            <p className="text-sm font-semibold text-black/80">
-              Create Flashcards With Google Gemini
-            </p>
-            <div className="flex gap-2 text-xs font-medium">
-              <button
-                type="button"
-                onClick={() => setAiMode("single")}
-                className={`rounded-full px-3 py-1 ${
-                  aiMode === "single"
-                    ? "bg-black text-white"
-                    : "bg-black/5 text-black"
-                }`}
-              >
-                Single
-              </button>
-              <button
-                type="button"
-                onClick={() => setAiMode("multi")}
-                className={`rounded-full px-3 py-1 ${
-                  aiMode === "multi"
-                    ? "bg-black text-white"
-                    : "bg-black/5 text-black"
-                }`}
-              >
-                Multi
-              </button>
-            </div>
-          </div>
+    {/* ai section */}
+    {guestMode ? ( //if guest mode tell user the feature is only available if they signup/login
+    <div className="mt-4 rounded-2xl border border-black/10 bg-white p-4 shadow-sm">
+    <div className="mb-3 flex items-center justify-between gap-2">
+      <p className="text-sm font-semibold text-black/80">
+        Create Flashcards With Google Gemini
+      </p> 
+    </div>
+    <div className="text-lg font-bold text-black/40 text-center">
+        To use this feature, please create an account or sign in.
+    </div>
+    </div>
+    ):(
+    <div className="mt-4 rounded-2xl border border-black/10 bg-white p-4 shadow-sm">
+    <div className="mb-3 flex items-center justify-between gap-2">
+      <p className="text-sm font-semibold text-black/80">
+        Create Flashcards With Google Gemini
+      </p>
+      <div className="flex gap-2 text-xs font-medium">
+        <button
+        type="button"
+        onClick={() => setAiMode("single")}
+        className={`rounded-full px-3 py-1 ${
+          aiMode === "single"
+          ? "bg-black text-white"
+          : "bg-black/5 text-black"
+        }`}
+        >
+          Single
+        </button>
+        <button
+        type="button"
+        onClick={() => setAiMode("multi")}
+        className={`rounded-full px-3 py-1 ${
+          aiMode === "multi"
+          ? "bg-black text-white"
+          : "bg-black/5 text-black"
+        }`}
+        >
+          Multi
+        </button>
+      </div>
+    </div>
 
           {aiMode === "single" ? ( //uses gemini card module to create a single card
             <div className="flex flex-col gap-3">
