@@ -48,9 +48,6 @@ export default function GeminiCard({
         section?.trim() || undefined
       )
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        section?.trim() || undefined,
-      );
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const card = (resp as any).data ?? resp;
       onCreated?.(card as ApiCard);
       setTopic("");
