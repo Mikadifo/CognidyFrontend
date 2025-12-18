@@ -1,52 +1,68 @@
-"use client";
-import React, { useState } from 'react'
-import { Button } from '@/app/components/Button'
-import textNotes from "@/app/assets/icons/textNotes.svg";
-import { CrosswordGame } from '@/app/components/CrosswordGame';
+//UNUSED CODE
 
-function PuzzleCard(){
-   const [showGame, setShowGame] = useState(false);
+//"use client";
+//import React, { useState } from "react";
+//import { Button } from "@/app/components/Button";
+//import textNotes from "@/app/assets/icons/textNotes.svg";
+//import { CrosswordGame } from "@/app/components/CrosswordGame";
 
-   const handlePlayClick = () => {
-      setShowGame(true);
-   };
+//function PuzzleCard() {
+//const [showGame, setShowGame] = useState(false);
 
-   const handleExitGame = () => {
-      setShowGame(false);
-   };
+//const handlePlayClick = () => {
+//setShowGame(true);
+//};
 
-   if (showGame) {
-      return <CrosswordGame onExit={handleExitGame} />;
-   }
+//const handleExitGame = () => {
+//setShowGame(false);
+//};
 
-   return (
-      <div className='flex flex-col items-center justify-center w-50 h-50 border border-black bg-white py-1 rounded-lg'>
-         <PuzzleCardTitle title='discrete.txt puzzle'></PuzzleCardTitle>
-         <PuzzleCardPreview />
-         <div className='flex flex-row gap-2'>
-            <CardButton label="Play" onClick={handlePlayClick}/>
-            <CardButton label="Delete"/>
-         </div>
-      </div>
-   );
-}
+//if (showGame) {
+//return <CrosswordGame puzzle={} onExit={handleExitGame} />;
+//}
 
-export { PuzzleCard };
+//return (
+//<div className="flex flex-col items-center justify-center w-50 h-50 border border-black bg-white py-1 rounded-lg">
+//<PuzzleCardTitle title="discrete.txt puzzle"></PuzzleCardTitle>
+//<PuzzleCardPreview />
+//<div className="flex flex-row gap-2">
+//<CardButton label="Play" onClick={handlePlayClick} />
+//<CardButton label="Delete" />
+//</div>
+//</div>
+//);
+//}
 
-function PuzzleCardTitle({ title }: { title: string }){
-   if (title.length == 0){
-      return <h2>Crossword Puzzle</h2>
-   }
-   else{
-      return <h2>{title}</h2>
-   }
-}
+//export { PuzzleCard };
 
-function PuzzleCardPreview(){
-   const TextNotesIcon = textNotes;
-   return <div className='w-24 h-24'><TextNotesIcon className='w-full h-full' /></div>
-}
+//function PuzzleCardTitle({ title }: { title: string }) {
+//if (title.length == 0) {
+//return <h2>Crossword Puzzle</h2>;
+//} else {
+//return <h2>{title}</h2>;
+//}
+//}
 
-function CardButton({ label, onClick }: { label: string, onClick?: () => void }){
-   return <Button variant="filled" onClick={onClick}>{label}</Button>
-}
+//function PuzzleCardPreview() {
+//const TextNotesIcon = textNotes;
+//return (
+//<div className="w-24 h-24">
+//<TextNotesIcon className="w-full h-full" />
+//</div>
+//);
+//}
+
+//function CardButton({
+//label,
+//onClick,
+//}: {
+//label: string;
+//onClick?: () => void;
+//}) {
+//return (
+//<Button variant="filled" onClick={onClick}>
+//{label}
+//</Button>
+//);
+//}
+
